@@ -2,7 +2,7 @@ import axios from 'axios';
 import { fetchHtml, fetchJson, clearCache } from './fetcher';
 
 jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+const mockedAxios = jest.mocked(axios);
 
 describe('fetcher', () => {
   beforeEach(() => {
