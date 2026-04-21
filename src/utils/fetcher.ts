@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 interface CacheEntry {
-  data: string;
+  data: any;
   timestamp: number;
 }
 
@@ -13,7 +13,7 @@ export function clearCache() {
   cache.clear();
 }
 
-export async function fetchHtml(url: string): Promise<string> {
+async function fetchWithCache(url: string, isJson: boolean): Promise<any> {
   const now = Date.now();
   const cached = cache.get(url);
 
@@ -23,12 +23,13 @@ export async function fetchHtml(url: string): Promise<string> {
 
   try {
     const { data } = await axios.get(url, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
+      headers: { 
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+        'Accept': isJson ? 'application/json' : 'text/html'
+      }
     });
 
     if (cache.size >= MAX_CACHE_SIZE) {
-      // Very simple pruning: just clear it or remove first item
-      // For now, let's just clear it to keep it simple as requested
       cache.clear();
     }
 
@@ -40,4 +41,12 @@ export async function fetchHtml(url: string): Promise<string> {
     }
     throw error;
   }
+}
+
+export async function fetchHtml(url: string): Promise<string> {
+  return fetchWithCache(url, false);
+}
+
+export async function fetchJson<T = any>(url: string): Promise<T> {
+  return fetchWithCache(url, true);
 }

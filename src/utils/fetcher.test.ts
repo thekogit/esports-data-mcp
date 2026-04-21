@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { fetchHtml, clearCache } from './fetcher';
+import { fetchHtml, fetchJson, clearCache } from './fetcher';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -26,6 +26,25 @@ describe('fetcher', () => {
     expect(firstCall).toBe('<html>Example</html>');
     expect(secondCall).toBe('<html>Example</html>');
     expect(mockedAxios.get).toHaveBeenCalledTimes(1);
+    expect(mockedAxios.get).toHaveBeenCalledWith(url, expect.objectContaining({
+      headers: expect.objectContaining({ 'Accept': 'text/html' })
+    }));
+  });
+
+  it('should fetch JSON content and cache it', async () => {
+    const jsonData = { key: 'value' };
+    mockedAxios.get.mockResolvedValue({ data: jsonData });
+
+    const url = 'https://example.com/json';
+    const firstCall = await fetchJson(url);
+    const secondCall = await fetchJson(url);
+
+    expect(firstCall).toEqual(jsonData);
+    expect(secondCall).toEqual(jsonData);
+    expect(mockedAxios.get).toHaveBeenCalledTimes(1);
+    expect(mockedAxios.get).toHaveBeenCalledWith(url, expect.objectContaining({
+      headers: expect.objectContaining({ 'Accept': 'application/json' })
+    }));
   });
 
   it('should expire cache after 5 minutes', async () => {

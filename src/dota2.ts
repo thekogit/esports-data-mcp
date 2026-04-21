@@ -1,7 +1,8 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
-import axios from 'axios';
+import { getLiquipediaTournaments } from './utils/liquipedia';
+import { fetchJson } from './utils/fetcher';
 
 const server = new Server(
   { name: "dota2-mcp", version: "1.0.0" },
@@ -12,17 +13,18 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
       {
-        name: "get_dota2_counters_synergies",
-        description: "Get hero matchups/counters from OpenDota",
-        inputSchema: {
-          type: "object",
-          properties: { heroId: { type: "number" } },
-          required: ["heroId"]
-        }
+        name: "get_dota2_leagues",
+        description: "List all active leagues and tournaments",
+        inputSchema: { type: "object", properties: {} }
+      },
+      {
+        name: "get_dota2_live_matches",
+        description: "Get real-time scores and in-game stats for pro matches",
+        inputSchema: { type: "object", properties: {} }
       },
       {
         name: "get_dota2_team_info",
-        description: "Get pro team rosters",
+        description: "Get detailed pro team info and history",
         inputSchema: {
           type: "object",
           properties: { teamId: { type: "number" } },
@@ -30,12 +32,21 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         }
       },
       {
-        name: "get_dota2_player_stats",
-        description: "Get pro player historical data",
+        name: "get_dota2_player_info",
+        description: "Get detailed pro player info and historical stats",
         inputSchema: {
           type: "object",
           properties: { accountId: { type: "number" } },
           required: ["accountId"]
+        }
+      },
+      {
+        name: "get_dota2_hero_stats",
+        description: "Get hero matchups/counters from OpenDota",
+        inputSchema: {
+          type: "object",
+          properties: { heroId: { type: "number" } },
+          required: ["heroId"]
         }
       }
     ]
@@ -43,20 +54,32 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 });
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  if (request.params.name === "get_dota2_counters_synergies") {
-    const heroId = request.params.arguments?.heroId as number;
-    const { data } = await axios.get(`https://api.opendota.com/api/heroes/${heroId}/matchups`);
+  const args = request.params.arguments || {};
+
+  if (request.params.name === "get_dota2_leagues") {
+    const data = await getLiquipediaTournaments('dota2');
+    return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+  }
+
+  if (request.params.name === "get_dota2_live_matches") {
+    const data = await fetchJson('https://api.opendota.com/api/live');
     return { content: [{ type: "text", text: JSON.stringify(data.slice(0, 10), null, 2) }] };
   }
+
   if (request.params.name === "get_dota2_team_info") {
-    const teamId = request.params.arguments?.teamId as number;
-    const { data } = await axios.get(`https://api.opendota.com/api/teams/${teamId}/players`);
+    const data = await fetchJson(`https://api.opendota.com/api/teams/${args.teamId}`);
     return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
   }
-  if (request.params.name === "get_dota2_player_stats") {
-    const accountId = request.params.arguments?.accountId as number;
-    const { data } = await axios.get(`https://api.opendota.com/api/players/${accountId}/wl`);
+
+  if (request.params.name === "get_dota2_player_info") {
+    const data = await fetchJson(`https://api.opendota.com/api/players/${args.accountId}`);
     return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+  }
+
+  if (request.params.name === "get_dota2_hero_stats") {
+    const heroId = args.heroId as number;
+    const data = await fetchJson(`https://api.opendota.com/api/heroes/${heroId}/matchups`);
+    return { content: [{ type: "text", text: JSON.stringify(data.slice(0, 15), null, 2) }] };
   }
   throw new Error("Tool not found");
 });
