@@ -12,39 +12,51 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
       {
-        name: "get_cs2_team_map_performance",
+        name: "get_cs2_events",
+        description: "List all HLTV events (all tiers)",
+        inputSchema: { type: "object", properties: {} }
+      },
+      {
+        name: "get_cs2_matches",
+        description: "Get live scorebot and upcoming matches with odds",
+        inputSchema: { type: "object", properties: {} }
+      },
+      {
+        name: "get_cs2_team_rankings",
+        description: "Get global rankings (limited to top 20)",
+        inputSchema: { type: "object", properties: {} }
+      },
+      {
+        name: "get_cs2_map_performance",
         description: "Get team performance on specific maps",
         inputSchema: {
           type: "object",
-          properties: { teamId: { type: "number" } },
-          required: ["teamId"]
-        }
-      },
-      {
-        name: "get_cs2_player_map_performance",
-        description: "Get player stats on chosen maps",
-        inputSchema: {
-          type: "object",
-          properties: { playerId: { type: "number" } },
-          required: ["playerId"]
-        }
-      },
-      {
-        name: "get_cs2_team_info",
-        description: "Get team tiers and active rosters",
-        inputSchema: {
-          type: "object",
-          properties: { teamId: { type: "number" } },
+          properties: { 
+            teamId: { type: "number" },
+            mapName: { type: "string" }
+          },
           required: ["teamId"]
         }
       },
       {
         name: "get_cs2_player_stats",
-        description: "Get historical performance for a player",
+        description: "Get historical performance metrics for a player",
         inputSchema: {
           type: "object",
           properties: { playerId: { type: "number" } },
           required: ["playerId"]
+        }
+      },
+      {
+        name: "get_cs2_player_map_performance",
+        description: "Get player performance on specific maps",
+        inputSchema: {
+          type: "object",
+          properties: { 
+            playerId: { type: "number" },
+            mapName: { type: "string" }
+          },
+          required: ["playerId", "mapName"]
         }
       }
     ]
@@ -52,25 +64,38 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 });
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  if (request.params.name === "get_cs2_team_map_performance") {
-    const teamId = request.params.arguments?.teamId as number;
-    const stats = await HLTV.getTeamStats({ id: teamId });
-    return { content: [{ type: "text", text: JSON.stringify(stats.mapStats, null, 2) }] };
+  const args = request.params.arguments || {};
+  
+  if (request.params.name === "get_cs2_events") {
+    const events = await HLTV.getEvents();
+    return { content: [{ type: "text", text: JSON.stringify(events, null, 2) }] };
   }
-  if (request.params.name === "get_cs2_player_map_performance") {
-    // simplified implementation
-    const playerId = request.params.arguments?.playerId as number;
-    const stats = await HLTV.getPlayerStats({ id: playerId });
+  
+  if (request.params.name === "get_cs2_matches") {
+    const matches = await HLTV.getMatches();
+    return { content: [{ type: "text", text: JSON.stringify(matches.slice(0, 15), null, 2) }] };
+  }
+
+  if (request.params.name === "get_cs2_team_rankings") {
+    const rankings = await HLTV.getTeamRanking();
+    return { content: [{ type: "text", text: JSON.stringify(rankings.slice(0, 20), null, 2) }] };
+  }
+
+  if (request.params.name === "get_cs2_player_stats") {
+    const stats = await HLTV.getPlayerStats({ id: args.playerId as number });
     return { content: [{ type: "text", text: JSON.stringify(stats, null, 2) }] };
   }
-  if (request.params.name === "get_cs2_team_info") {
-    const teamId = request.params.arguments?.teamId as number;
-    const info = await HLTV.getTeam({ id: teamId });
-    return { content: [{ type: "text", text: JSON.stringify(info, null, 2) }] };
+
+  if (request.params.name === "get_cs2_map_performance") {
+    const stats = await HLTV.getTeamStats({ id: args.teamId as number });
+    return { content: [{ type: "text", text: JSON.stringify(stats.mapStats, null, 2) }] };
   }
-  if (request.params.name === "get_cs2_player_stats") {
-    const playerId = request.params.arguments?.playerId as number;
-    const stats = await HLTV.getPlayerStats({ id: playerId });
+
+  if (request.params.name === "get_cs2_player_map_performance") {
+    const stats = await HLTV.getPlayerStats({ 
+      id: args.playerId as number,
+      maps: args.mapName ? [args.mapName as any] : undefined
+    });
     return { content: [{ type: "text", text: JSON.stringify(stats, null, 2) }] };
   }
   throw new Error("Tool not found");
