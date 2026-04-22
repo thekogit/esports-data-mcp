@@ -81,6 +81,15 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
           required: ["playerId", "mapName"]
         }
+      },
+      {
+        name: "get_cs2_team_match_history",
+        description: "Get recent match history for a specific CS2 team",
+        inputSchema: {
+          type: "object",
+          properties: { teamId: { type: "number" } },
+          required: ["teamId"]
+        }
       }
     ]
   };
@@ -110,6 +119,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const teamId = args.teamId as number;
     const teamInfo = await getCachedData(`team_${teamId}`, () => HLTV.getTeam({ id: teamId }));
     return { content: [{ type: "text", text: JSON.stringify(teamInfo, null, 2) }] };
+  }
+
+  if (request.params.name === "get_cs2_team_match_history") {
+    const teamId = args.teamId as number;
+    const teamInfo = await getCachedData(`team_${teamId}`, () => HLTV.getTeam({ id: teamId }));
+    return { content: [{ type: "text", text: JSON.stringify(teamInfo.recentResults || [], null, 2) }] };
   }
 
   if (request.params.name === "get_cs2_team_rankings") {

@@ -47,27 +47,35 @@ export async function getPolymarketProbability(teamA: string, teamB: string): Pr
       return null;
     }
 
+    const parseProb = (val: string): number | null => {
+      const p = parseFloat(val);
+      return isNaN(p) ? null : p;
+    };
+
     // 2. Map "Yes" to the correct team
     // "Will {Team X} beat {Team Y}?" -> Yes (index 0) is Team X
     const question = market.question.toLowerCase();
     const teamALower = teamA.toLowerCase();
     
-    // Check if Team A is the subject of the "Will X beat Y" question
-    // This is a heuristic: if Team A appears before "beat" or at the start of the question
-    const beatIndex = question.indexOf("beat");
-    const teamAIndex = question.indexOf(teamALower);
-    
-    if (beatIndex !== -1 && teamAIndex !== -1 && teamAIndex < beatIndex) {
-      // Team A is X in "Will X beat Y?" -> Index 0 (Yes) is Team A
-      return parseFloat(prices[0]) || null;
-    } else if (beatIndex !== -1 && teamAIndex !== -1 && teamAIndex > beatIndex) {
-      // Team A is Y in "Will X beat Y?" -> Index 1 (No) is Team A
-      return parseFloat(prices[1]) || null;
+    // Check if Team A is the subject or object of the "beat" question
+    if (question.includes(`will ${teamALower} beat`)) {
+      // "Will Team A beat Team B?" -> Yes (index 0) is Team A winning
+      return parseProb(prices[0]);
     }
     
-    // Fallback: if we can't determine from "beat", check if it starts with Team A
+    if (question.includes(`beat ${teamALower}`)) {
+      // "Will Team B beat Team A?" -> No (index 1) is Team A winning
+      return parseProb(prices[1]);
+    }
+    
+    // Fallback: if we can't determine from "beat", check if it starts with Team A winning
+    if (question.startsWith(`will ${teamALower} win`) || question.startsWith(`will ${teamALower} be the winner`)) {
+      return parseProb(prices[0]);
+    }
+
+    // Try a more loose check as a last resort
     if (question.startsWith(`will ${teamALower}`)) {
-      return parseFloat(prices[0]) || null;
+      return parseProb(prices[0]);
     }
 
     // If we still can't be sure, return null to be safe rather than returning wrong probability

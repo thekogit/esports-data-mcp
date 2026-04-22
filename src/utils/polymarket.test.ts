@@ -62,6 +62,34 @@ describe('getPolymarketProbability', () => {
     expect(prob).toBe(0.65);
   });
 
+  it('handles 0 probability correctly', async () => {
+    (fetchJson as jest.Mock).mockResolvedValue([
+      {
+        question: 'Will G2 beat Navi?',
+        outcomePrices: '["0", "1"]',
+        volume: 100,
+        active: true,
+        closed: false
+      }
+    ]);
+    const prob = await getPolymarketProbability('G2', 'Navi');
+    expect(prob).toBe(0);
+  });
+
+  it('returns null when probability cannot be determined', async () => {
+    (fetchJson as jest.Mock).mockResolvedValue([
+      {
+        question: 'Random question with G2 and Navi but no winner logic',
+        outcomePrices: '["0.5", "0.5"]',
+        volume: 100,
+        active: true,
+        closed: false
+      }
+    ]);
+    const prob = await getPolymarketProbability('G2', 'Navi');
+    expect(prob).toBeNull();
+  });
+
   it('returns null when no relevant market is found', async () => {
     (fetchJson as jest.Mock).mockResolvedValue([]);
     const prob = await getPolymarketProbability('T1', 'GenG');

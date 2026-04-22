@@ -16,9 +16,11 @@
   "type": "commonjs",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
+    "@types/string-similarity": "^4.0.2",
     "axios": "^1.15.1",
     "cheerio": "^1.2.0",
-    "hltv": "^3.5.0"
+    "hltv": "^3.5.0",
+    "string-similarity": "^4.0.4"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",

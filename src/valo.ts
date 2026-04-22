@@ -5,7 +5,7 @@ import { fetchHtml, fetchJson } from './utils/fetcher';
 import * as cheerio from 'cheerio';
 
 const server = new Server(
-  { name: "valo-mcp", version: "1.0.0" },
+  { name: "valo-mcp", version: "1.1.0" },
   { capabilities: { tools: {} } }
 );
 
@@ -54,6 +54,15 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: { agentName: { type: "string" } },
           required: ["agentName"]
         }
+      },
+      {
+        name: "get_valo_match_history",
+        description: "Get historical matches for a team from vlr.gg to analyze form",
+        inputSchema: {
+          type: "object",
+          properties: { teamId: { type: "string" } },
+          required: ["teamId"]
+        }
       }
     ]
   };
@@ -69,15 +78,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     $('.match-item').each((i, el) => {
       const teamNames = $(el).find('.match-item-vs-team-name').map((i, team) => $(team).text().trim()).get();
       if (teamNames.length === 2) {
-        // Simple simulated odds based on name length or random for now
-        const prob1 = 45 + Math.floor(Math.random() * 11); // 45-55%
-        const prob2 = 100 - prob1;
-        
         matches.push({
           teams: teamNames,
-          win_probability: `${prob1}% / ${prob2}%`,
           eta: $(el).find('.match-item-eta').text().trim(),
           event: $(el).find('.match-item-event').text().trim(),
+          url: $(el).attr('href')
         });
       }
     });
@@ -130,6 +135,24 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     } catch (error) {
       return { content: [{ type: "text", text: "Stats temporarily unavailable or rate limited." }] };
     }
+  }
+
+  if (request.params.name === "get_valo_match_history") {
+    const html = await fetchHtml(`https://www.vlr.gg/team/matches/${args.teamId}/?group=completed`);
+    const $ = cheerio.load(html);
+    const matches: any[] = [];
+    $('.m-item').each((i, el) => {
+      if (matches.length >= 15) return;
+      matches.push({
+        event: $(el).find('.m-item-event').text().trim(),
+        date: $(el).find('.m-item-date').text().trim(),
+        team1: $(el).find('.m-item-team-name').eq(0).text().trim(),
+        score1: $(el).find('.m-item-result').find('span').eq(0).text().trim(),
+        score2: $(el).find('.m-item-result').find('span').eq(1).text().trim(),
+        team2: $(el).find('.m-item-team-name').eq(1).text().trim(),
+      });
+    });
+    return { content: [{ type: "text", text: JSON.stringify(matches, null, 2) }] };
   }
 
   throw new Error("Tool not found");

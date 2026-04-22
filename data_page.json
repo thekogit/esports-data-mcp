@@ -1,0 +1,4364 @@
+{
+  "component": "SeriesPage",
+  "props": {
+    "errors": {},
+    "appUrl": "https://hawk.live",
+    "isProduction": true,
+    "isCrawlerMode": true,
+    "languages": [
+      {
+        "id": 1,
+        "codeName": "en",
+        "name": "English",
+        "hasSiteTranslation": true
+      },
+      {
+        "id": 2,
+        "codeName": "ru",
+        "name": "Русский",
+        "hasSiteTranslation": true
+      }
+    ],
+    "initialTheme": "auto",
+    "initialVolume": 64,
+    "userCountryCode": "PL",
+    "user": null,
+    "disabledGamblingAdRegions": [
+      "AS",
+      "GU",
+      "MP",
+      "PR",
+      "UM",
+      "VI",
+      "AI",
+      "BM",
+      "IO",
+      "KY",
+      "FK",
+      "GI",
+      "MS",
+      "PN",
+      "SH",
+      "GS",
+      "TC",
+      "VG",
+      "GF",
+      "PF",
+      "TF",
+      "GP",
+      "MQ",
+      "YT",
+      "NC",
+      "RE",
+      "BL",
+      "MF",
+      "PM",
+      "WF",
+      "CW",
+      "SX",
+      "BQ",
+      "AW",
+      "CY",
+      "MT",
+      "TH",
+      "ID",
+      "IR",
+      "SA",
+      "TW",
+      "CN",
+      "HK",
+      "MY",
+      "SG",
+      "AE",
+      "KP",
+      "TR",
+      "SY",
+      "AF",
+      "IQ",
+      "KW",
+      "BH",
+      "YE",
+      "QA",
+      "LA",
+      "BN",
+      "JO",
+      "SD",
+      "OM",
+      "KH",
+      "BE",
+      "IL",
+      "JP",
+      "TJ",
+      "MO",
+      "NP",
+      "UA",
+      "KZ",
+      "PE",
+      "AR",
+      "BR",
+      "US",
+      "GB",
+      "NL",
+      "FR",
+      "AU",
+      "BY",
+      "IE",
+      "PL",
+      "DE",
+      "AT",
+      "ES",
+      "BG",
+      "HU",
+      "PT",
+      "NZ",
+      "CO",
+      "MX",
+      "NG",
+      "IN"
+    ],
+    "isGamblingAdDisabled": true,
+    "partner": {
+      "name": "stake",
+      "oddsProviderCodeName": "betboom",
+      "logo": {
+        "light": "stake-light-theme.png",
+        "dark": "stake-dark-theme.png"
+      },
+      "text": "<b>LATEST BONUSES</b>",
+      "images": {
+        "catfishPost": "stake/small-en-1812.gif",
+        "small": "stake/small-en-1812.gif",
+        "medium": "stake/medium-en-1812.gif",
+        "large": "stake/large-en-1812.gif"
+      },
+      "links": {
+        "info_catfish_post": "https://primebrand.site/stake",
+        "info_small": "https://primebrand.site/stake",
+        "info_medium": "https://primebrand.site/stake",
+        "info_large": "https://primebrand.site/stake",
+        "info_bonus": "https://primebrand.site/stake",
+        "info_button": "https://primebrand.site/stake",
+        "info_top_series": "https://primebrand.site/stake",
+        "info_odds": "https://primebrand.site/stake",
+        "info_lost_profit": "https://primebrand.site/stake",
+        "info_upcoming_series_odds": "https://primebrand.site/stake"
+      }
+    },
+    "infoBonusCookieName": "is_info_bonus_viewed",
+    "isInfoBonusViewed": false,
+    "oddsProviders": [
+      {
+        "id": 1,
+        "codeName": "ggbet",
+        "name": "GGBET",
+        "logoLightThemeUrl": "https://hawk.live/storage/odds-providers/logos/UKiTVBnDx2hH8kIHorkboJCLI7K914HKTBBeGJbg.png",
+        "logoDarkThemeUrl": "https://hawk.live/storage/odds-providers/logos/GN1j9K0XL0BukkG5xzjbtOz4wkGx1BLhfL1Qol4z.png"
+      },
+      {
+        "id": 2,
+        "codeName": "egb_com",
+        "name": "EGB",
+        "logoLightThemeUrl": "https://hawk.live/storage/odds-providers/logos//D7gS3fnY1kEjmbmnR7rCXtvPAxbYJK08Lugz0kq5.png",
+        "logoDarkThemeUrl": "https://hawk.live/storage/odds-providers/logos//AAS8j4Yg0jLgV7cQ463Bs3Tmvq52r2q3udrai80k.png"
+      },
+      {
+        "id": 3,
+        "codeName": "stake_com",
+        "name": "Stake",
+        "logoLightThemeUrl": "https://hawk.live/storage/odds-providers/logos//v76sg9MrlXDcXuWQLpyQajx6VJG6Cl5AKVxt137W.png",
+        "logoDarkThemeUrl": "https://hawk.live/storage/odds-providers/logos//cwlpwxiFskIHZ4Hzh6LWN7p91fnAbcjsrgcmudrC.png"
+      },
+      {
+        "id": 4,
+        "codeName": "betboom",
+        "name": "BetBoom",
+        "logoLightThemeUrl": "https://hawk.live/storage/odds-providers/logos/MkTcKTY4s0t6fMwCnwMkyShEQzIhNxmqvO5se6oI.png",
+        "logoDarkThemeUrl": "https://hawk.live/storage/odds-providers/logos/2ze6dolux2fqBCqbQwsd2LuxhgU529Gpdoi4t5sU.png"
+      },
+      {
+        "id": 5,
+        "codeName": "coinplay",
+        "name": "Coinplay",
+        "logoLightThemeUrl": "https://hawk.live/storage/odds-providers/logos/IZMKns3enRSBxk3OohDb4KRZOqNiQiHh8F9GWkbX.png",
+        "logoDarkThemeUrl": "https://hawk.live/storage/odds-providers/logos/xVzcyfj9QfiJ3VLgIXAgyg84DokSdUqH4bMH7H65.png"
+      },
+      {
+        "id": 6,
+        "codeName": "parimatch",
+        "name": "Parimatch",
+        "logoLightThemeUrl": "https://hawk.live/storage/odds-providers/logos/zphTb3UHeMPERMwfiq6J7Z8r5lA3bKV6Qe9Uomfo.png",
+        "logoDarkThemeUrl": "https://hawk.live/storage/odds-providers/logos/KJV1h1JgVOCRbo5L62DR8s2olAEFQs7aakOYXwWe.png"
+      },
+      {
+        "id": 7,
+        "codeName": "megapari",
+        "name": "Megapari",
+        "logoLightThemeUrl": "https://hawk.live/storage/odds-providers/logos/q2GBhXsPaMG4o3FLjdVpGFV6ur0BynFzBVcgyKCo.png",
+        "logoDarkThemeUrl": "https://hawk.live/storage/odds-providers/logos/NZypisivDPHbrPBFW6pE4dC3XplxcQ52MlBSEc8l.png"
+      },
+      {
+        "id": 8,
+        "codeName": "1xbit",
+        "name": "1xBit",
+        "logoLightThemeUrl": "https://hawk.live/storage/odds-providers/logos/uoKWlHLUViVLjvS87SHa1jfCMIzBLvzBD2NcpTao.png",
+        "logoDarkThemeUrl": "https://hawk.live/storage/odds-providers/logos/bQYIcJVcYCdcBh4L4RB2hV66RueQyWt5Hn2m456f.png"
+      },
+      {
+        "id": 9,
+        "codeName": "bc_game",
+        "name": "BC.GAME",
+        "logoLightThemeUrl": "https://hawk.live/storage/odds-providers/logos/xK3PbLAcGY1LHX10mCyj40wAYwTmSZUvI8Amz3Xj.png",
+        "logoDarkThemeUrl": "https://hawk.live/storage/odds-providers/logos/1tjc2mSR0PPfVerphkmxoFdrR9rsqSK24144A9Jo.png"
+      },
+      {
+        "id": 10,
+        "codeName": "spin-better",
+        "name": "SpinBetter",
+        "logoLightThemeUrl": "https://hawk.live/storage/odds-providers/logos/0qL6vZkAlNMcTGfyjn4L8EGxnW0WR8SeV6ZzgN4F.png",
+        "logoDarkThemeUrl": "https://hawk.live/storage/odds-providers/logos/EPjnoFHs7dl5DX8cDGNKRp4v35xiihJ3xW8s519A.png"
+      }
+    ],
+    "wsConfig": {
+      "host": "ws.hawk.live",
+      "port": "8443",
+      "key": "hawk-zFtQJ67624bp0F32n0S",
+      "shouldForceTls": true
+    },
+    "locale": "en",
+    "seriesPageData": {
+      "id": 94364,
+      "slug": "team-lynx-vs-nemiga-gaming",
+      "championship": {
+        "id": 2257,
+        "name": "DreamLeague Division 2 Season 4: Group Stage",
+        "slug": "dreamleague-division-2-season-4-group-stage"
+      },
+      "team1": {
+        "id": 8707,
+        "name": "team lynx",
+        "logoUrl": "https://hawk.live/storage/teams/8707.png"
+      },
+      "team2": {
+        "id": 83,
+        "name": "Nemiga Gaming",
+        "logoUrl": "https://hawk.live/storage/teams/83.png"
+      },
+      "bestOf": 3,
+      "startAt": "2026-04-22T12:00:00.000000Z",
+      "streams": [
+        {
+          "id": 731,
+          "name": "esl_dota2storm",
+          "url": "https://player.twitch.tv/?channel=esl_dota2storm",
+          "languageCodeName": "en"
+        }
+      ],
+      "matches": [
+        {
+          "id": 200174,
+          "number": 1,
+          "isTeam1Radiant": true,
+          "picks": [
+            {
+              "isRadiant": true,
+              "hero": {
+                "id": 65,
+                "name": "Batrider",
+                "codeName": "npc_dota_hero_batrider"
+              },
+              "player": {
+                "id": 1048617659,
+                "name": "крекер",
+                "officialName": null
+              }
+            },
+            {
+              "isRadiant": false,
+              "hero": {
+                "id": 105,
+                "name": "Techies",
+                "codeName": "npc_dota_hero_techies"
+              },
+              "player": {
+                "id": 114162163,
+                "name": "opium",
+                "officialName": null
+              }
+            },
+            {
+              "isRadiant": true,
+              "hero": {
+                "id": 29,
+                "name": "Tidehunter",
+                "codeName": "npc_dota_hero_tidehunter"
+              },
+              "player": {
+                "id": 148612029,
+                "name": "TUNDRA.OneJey",
+                "officialName": null
+              }
+            },
+            {
+              "isRadiant": false,
+              "hero": {
+                "id": 87,
+                "name": "Disruptor",
+                "codeName": "npc_dota_hero_disruptor"
+              },
+              "player": {
+                "id": 120840516,
+                "name": "VaniLLl",
+                "officialName": null
+              }
+            },
+            {
+              "isRadiant": false,
+              "hero": {
+                "id": 28,
+                "name": "Slardar",
+                "codeName": "npc_dota_hero_slardar"
+              },
+              "player": {
+                "id": 127530803,
+                "name": "Serenityy",
+                "officialName": null
+              }
+            },
+            {
+              "isRadiant": false,
+              "hero": {
+                "id": 2,
+                "name": "Axe",
+                "codeName": "npc_dota_hero_axe"
+              },
+              "player": {
+                "id": 158072796,
+                "name": "Momo",
+                "officialName": null
+              }
+            },
+            {
+              "isRadiant": true,
+              "hero": {
+                "id": 120,
+                "name": "Pangolier",
+                "codeName": "npc_dota_hero_pangolier"
+              },
+              "player": {
+                "id": 40805086,
+                "name": "dota maniac",
+                "officialName": null
+              }
+            },
+            {
+              "isRadiant": true,
+              "hero": {
+                "id": 123,
+                "name": "Hoodwink",
+                "codeName": "npc_dota_hero_hoodwink"
+              },
+              "player": {
+                "id": 276449590,
+                "name": "remain calm and scale",
+                "officialName": null
+              }
+            },
+            {
+              "isRadiant": false,
+              "hero": {
+                "id": 41,
+                "name": "Faceless Void",
+                "codeName": "npc_dota_hero_faceless_void"
+              },
+              "player": {
+                "id": 1041276674,
+                "name": "cortisol expert",
+                "officialName": null
+              }
+            },
+            {
+              "isRadiant": true,
+              "hero": {
+                "id": 19,
+                "name": "Tiny",
+                "codeName": "npc_dota_hero_tiny"
+              },
+              "player": {
+                "id": 293731272,
+                "name": "200 inside",
+                "officialName": null
+              }
+            }
+          ],
+          "isRadiantWinner": null,
+          "states": [
+            {
+              "id": 11588008,
+              "radiantScore": 0,
+              "direScore": 0,
+              "radiantNetWorthAdvantage": 0,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": -9
+            },
+            {
+              "id": 11588039,
+              "radiantScore": 0,
+              "direScore": 0,
+              "radiantNetWorthAdvantage": 0,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 579
+            },
+            {
+              "id": 11588045,
+              "radiantScore": 0,
+              "direScore": 0,
+              "radiantNetWorthAdvantage": 0,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 645
+            },
+            {
+              "id": 11588053,
+              "radiantScore": 0,
+              "direScore": 0,
+              "radiantNetWorthAdvantage": 0,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 721
+            },
+            {
+              "id": 11588057,
+              "radiantScore": 0,
+              "direScore": 0,
+              "radiantNetWorthAdvantage": 0,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 770
+            },
+            {
+              "id": 11588061,
+              "radiantScore": 0,
+              "direScore": 0,
+              "radiantNetWorthAdvantage": 0,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 811
+            },
+            {
+              "id": 11588065,
+              "radiantScore": 0,
+              "direScore": 0,
+              "radiantNetWorthAdvantage": 0,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 906
+            },
+            {
+              "id": 11588069,
+              "radiantScore": 0,
+              "direScore": 0,
+              "radiantNetWorthAdvantage": 0,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": -60
+            },
+            {
+              "id": 11588073,
+              "radiantScore": 0,
+              "direScore": 0,
+              "radiantNetWorthAdvantage": 0,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": -16
+            },
+            {
+              "id": 11588074,
+              "radiantScore": 0,
+              "direScore": 0,
+              "radiantNetWorthAdvantage": 0,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": -89
+            },
+            {
+              "id": 11588075,
+              "radiantScore": 0,
+              "direScore": 0,
+              "radiantNetWorthAdvantage": 0,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": -79
+            },
+            {
+              "id": 11588082,
+              "radiantScore": 0,
+              "direScore": 0,
+              "radiantNetWorthAdvantage": -50,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 0
+            },
+            {
+              "id": 11588084,
+              "radiantScore": 0,
+              "direScore": 1,
+              "radiantNetWorthAdvantage": -938,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 6
+            },
+            {
+              "id": 11588089,
+              "radiantScore": 1,
+              "direScore": 3,
+              "radiantNetWorthAdvantage": -881,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 66
+            },
+            {
+              "id": 11588100,
+              "radiantScore": 1,
+              "direScore": 4,
+              "radiantNetWorthAdvantage": -655,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 207
+            },
+            {
+              "id": 11588107,
+              "radiantScore": 1,
+              "direScore": 5,
+              "radiantNetWorthAdvantage": -729,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 308
+            },
+            {
+              "id": 11588113,
+              "radiantScore": 1,
+              "direScore": 7,
+              "radiantNetWorthAdvantage": -578,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 369
+            },
+            {
+              "id": 11588117,
+              "radiantScore": 1,
+              "direScore": 7,
+              "radiantNetWorthAdvantage": -578,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 414
+            },
+            {
+              "id": 11588122,
+              "radiantScore": 1,
+              "direScore": 8,
+              "radiantNetWorthAdvantage": -811,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 449
+            },
+            {
+              "id": 11588126,
+              "radiantScore": 3,
+              "direScore": 10,
+              "radiantNetWorthAdvantage": 92,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 510
+            },
+            {
+              "id": 11588139,
+              "radiantScore": 3,
+              "direScore": 11,
+              "radiantNetWorthAdvantage": 599,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 609
+            },
+            {
+              "id": 11588149,
+              "radiantScore": 4,
+              "direScore": 11,
+              "radiantNetWorthAdvantage": 1610,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 691
+            },
+            {
+              "id": 11588157,
+              "radiantScore": 5,
+              "direScore": 13,
+              "radiantNetWorthAdvantage": 1840,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 751
+            },
+            {
+              "id": 11588165,
+              "radiantScore": 6,
+              "direScore": 13,
+              "radiantNetWorthAdvantage": 2425,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "01111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 811
+            },
+            {
+              "id": 11588171,
+              "radiantScore": 9,
+              "direScore": 13,
+              "radiantNetWorthAdvantage": 4605,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "01111",
+                  "mid": "01111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 871
+            },
+            {
+              "id": 11588173,
+              "radiantScore": 9,
+              "direScore": 13,
+              "radiantNetWorthAdvantage": 4605,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "01111",
+                  "mid": "01111",
+                  "bot": "11111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 894
+            },
+            {
+              "id": 11588180,
+              "radiantScore": 9,
+              "direScore": 13,
+              "radiantNetWorthAdvantage": 4939,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "01111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 951
+            },
+            {
+              "id": 11588189,
+              "radiantScore": 11,
+              "direScore": 15,
+              "radiantNetWorthAdvantage": 5303,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "01111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 1011
+            },
+            {
+              "id": 11588190,
+              "radiantScore": 11,
+              "direScore": 15,
+              "radiantNetWorthAdvantage": 5303,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "01111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 1014
+            },
+            {
+              "id": 11588199,
+              "radiantScore": 12,
+              "direScore": 16,
+              "radiantNetWorthAdvantage": 5381,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "11111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "01111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 1071
+            },
+            {
+              "id": 11588209,
+              "radiantScore": 12,
+              "direScore": 16,
+              "radiantNetWorthAdvantage": 4818,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "01111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 1152
+            },
+            {
+              "id": 11588225,
+              "radiantScore": 12,
+              "direScore": 16,
+              "radiantNetWorthAdvantage": 9500,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 1321
+            },
+            {
+              "id": 11588231,
+              "radiantScore": 17,
+              "direScore": 18,
+              "radiantNetWorthAdvantage": 11122,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 1382
+            },
+            {
+              "id": 11588239,
+              "radiantScore": 17,
+              "direScore": 18,
+              "radiantNetWorthAdvantage": 11122,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 1434
+            },
+            {
+              "id": 11588240,
+              "radiantScore": 18,
+              "direScore": 18,
+              "radiantNetWorthAdvantage": 12838,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "01111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 1442
+            },
+            {
+              "id": 11588247,
+              "radiantScore": 20,
+              "direScore": 18,
+              "radiantNetWorthAdvantage": 14595,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 1502
+            },
+            {
+              "id": 11588258,
+              "radiantScore": 21,
+              "direScore": 18,
+              "radiantNetWorthAdvantage": 14900,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 1562
+            },
+            {
+              "id": 11588262,
+              "radiantScore": 21,
+              "direScore": 18,
+              "radiantNetWorthAdvantage": 14900,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 1614
+            },
+            {
+              "id": 11588265,
+              "radiantScore": 24,
+              "direScore": 21,
+              "radiantNetWorthAdvantage": 13666,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "11111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 1622
+            },
+            {
+              "id": 11588273,
+              "radiantScore": 24,
+              "direScore": 22,
+              "radiantNetWorthAdvantage": 11231,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 1682
+            },
+            {
+              "id": 11588279,
+              "radiantScore": 24,
+              "direScore": 23,
+              "radiantNetWorthAdvantage": 10521,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 1742
+            },
+            {
+              "id": 11588284,
+              "radiantScore": 26,
+              "direScore": 27,
+              "radiantNetWorthAdvantage": 8302,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 1803
+            },
+            {
+              "id": 11588288,
+              "radiantScore": 26,
+              "direScore": 27,
+              "radiantNetWorthAdvantage": 8302,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 1854
+            },
+            {
+              "id": 11588290,
+              "radiantScore": 27,
+              "direScore": 27,
+              "radiantNetWorthAdvantage": 10288,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00111",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 1879
+            },
+            {
+              "id": 11588295,
+              "radiantScore": 29,
+              "direScore": 30,
+              "radiantNetWorthAdvantage": 11859,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00011",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 1940
+            },
+            {
+              "id": 11588297,
+              "radiantScore": 29,
+              "direScore": 30,
+              "radiantNetWorthAdvantage": 11859,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00011",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 1974
+            },
+            {
+              "id": 11588299,
+              "radiantScore": 30,
+              "direScore": 31,
+              "radiantNetWorthAdvantage": 10980,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00011",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 2000
+            },
+            {
+              "id": 11588319,
+              "radiantScore": 30,
+              "direScore": 32,
+              "radiantNetWorthAdvantage": 10886,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00011",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 2181
+            },
+            {
+              "id": 11588325,
+              "radiantScore": 30,
+              "direScore": 33,
+              "radiantNetWorthAdvantage": 10584,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00011",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 2241
+            },
+            {
+              "id": 11588337,
+              "radiantScore": 30,
+              "direScore": 34,
+              "radiantNetWorthAdvantage": 6862,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00011",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 2382
+            },
+            {
+              "id": 11588341,
+              "radiantScore": 31,
+              "direScore": 34,
+              "radiantNetWorthAdvantage": 7061,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00011",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 2468
+            },
+            {
+              "id": 11588345,
+              "radiantScore": 32,
+              "direScore": 39,
+              "radiantNetWorthAdvantage": 746,
+              "buildingState": {
+                "radiant": {
+                  "top": "11111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00011",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 2528
+            },
+            {
+              "id": 11588351,
+              "radiantScore": 32,
+              "direScore": 39,
+              "radiantNetWorthAdvantage": -1209,
+              "buildingState": {
+                "radiant": {
+                  "top": "01111",
+                  "mid": "01111",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00011",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 2582
+            },
+            {
+              "id": 11588355,
+              "radiantScore": 32,
+              "direScore": 39,
+              "radiantNetWorthAdvantage": -3357,
+              "buildingState": {
+                "radiant": {
+                  "top": "01111",
+                  "mid": "00111",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00011",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 2642
+            },
+            {
+              "id": 11588360,
+              "radiantScore": 34,
+              "direScore": 39,
+              "radiantNetWorthAdvantage": 2111,
+              "buildingState": {
+                "radiant": {
+                  "top": "01111",
+                  "mid": "00111",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00011",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 2703
+            },
+            {
+              "id": 11588365,
+              "radiantScore": 34,
+              "direScore": 43,
+              "radiantNetWorthAdvantage": -3681,
+              "buildingState": {
+                "radiant": {
+                  "top": "01111",
+                  "mid": "00111",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00011",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 2763
+            },
+            {
+              "id": 11588366,
+              "radiantScore": 34,
+              "direScore": 43,
+              "radiantNetWorthAdvantage": -3681,
+              "buildingState": {
+                "radiant": {
+                  "top": "01111",
+                  "mid": "00111",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00011",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 2768
+            },
+            {
+              "id": 11588371,
+              "radiantScore": 34,
+              "direScore": 43,
+              "radiantNetWorthAdvantage": -5549,
+              "buildingState": {
+                "radiant": {
+                  "top": "01111",
+                  "mid": "00011",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00011",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 2823
+            },
+            {
+              "id": 11588375,
+              "radiantScore": 34,
+              "direScore": 44,
+              "radiantNetWorthAdvantage": -6587,
+              "buildingState": {
+                "radiant": {
+                  "top": "01111",
+                  "mid": "00011",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00011",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 2883
+            },
+            {
+              "id": 11588377,
+              "radiantScore": 34,
+              "direScore": 44,
+              "radiantNetWorthAdvantage": -6587,
+              "buildingState": {
+                "radiant": {
+                  "top": "01111",
+                  "mid": "00011",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00011",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 2888
+            },
+            {
+              "id": 11588381,
+              "radiantScore": 35,
+              "direScore": 44,
+              "radiantNetWorthAdvantage": -5964,
+              "buildingState": {
+                "radiant": {
+                  "top": "00111",
+                  "mid": "00011",
+                  "bot": "01111",
+                  "t4": "11"
+                },
+                "dire": {
+                  "top": "00111",
+                  "mid": "00111",
+                  "bot": "00011",
+                  "t4": "11"
+                }
+              },
+              "gameTime": 2943
+            }
+          ],
+          "oddsBundles": [
+            {
+              "id": 204122,
+              "oddsProviderCodeName": "spin-better",
+              "isTeam1First": true,
+              "externalId": "325946650",
+              "odds": [
+                {
+                  "id": 10961657,
+                  "firstTeamWin": "1.47",
+                  "secondTeamWin": "2.62"
+                },
+                {
+                  "id": 10967887,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10967901,
+                  "firstTeamWin": "1.47",
+                  "secondTeamWin": "2.58"
+                },
+                {
+                  "id": 10968192,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10968532,
+                  "firstTeamWin": "1.48",
+                  "secondTeamWin": "2.55"
+                },
+                {
+                  "id": 10968768,
+                  "firstTeamWin": "1.53",
+                  "secondTeamWin": "2.40"
+                },
+                {
+                  "id": 10968830,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10968844,
+                  "firstTeamWin": "1.72",
+                  "secondTeamWin": "2.05"
+                },
+                {
+                  "id": 10968855,
+                  "firstTeamWin": "1.67",
+                  "secondTeamWin": "2.13"
+                },
+                {
+                  "id": 10968892,
+                  "firstTeamWin": "1.62",
+                  "secondTeamWin": "2.22"
+                },
+                {
+                  "id": 10968902,
+                  "firstTeamWin": "1.57",
+                  "secondTeamWin": "2.32"
+                },
+                {
+                  "id": 10968909,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10968912,
+                  "firstTeamWin": "1.67",
+                  "secondTeamWin": "2.13"
+                },
+                {
+                  "id": 10968923,
+                  "firstTeamWin": "1.72",
+                  "secondTeamWin": "2.05"
+                },
+                {
+                  "id": 10968940,
+                  "firstTeamWin": "1.67",
+                  "secondTeamWin": "2.13"
+                },
+                {
+                  "id": 10968943,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10968954,
+                  "firstTeamWin": "1.87",
+                  "secondTeamWin": "1.87"
+                },
+                {
+                  "id": 10968966,
+                  "firstTeamWin": "1.92",
+                  "secondTeamWin": "1.82"
+                },
+                {
+                  "id": 10968973,
+                  "firstTeamWin": "2.02",
+                  "secondTeamWin": "1.74"
+                },
+                {
+                  "id": 10968974,
+                  "firstTeamWin": "2.18",
+                  "secondTeamWin": "1.64"
+                },
+                {
+                  "id": 10968986,
+                  "firstTeamWin": "2.02",
+                  "secondTeamWin": "1.74"
+                },
+                {
+                  "id": 10969025,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969053,
+                  "firstTeamWin": "1.67",
+                  "secondTeamWin": "2.13"
+                },
+                {
+                  "id": 10969062,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969073,
+                  "firstTeamWin": "1.87",
+                  "secondTeamWin": "1.87"
+                },
+                {
+                  "id": 10969092,
+                  "firstTeamWin": "1.72",
+                  "secondTeamWin": "2.05"
+                },
+                {
+                  "id": 10969116,
+                  "firstTeamWin": "1.62",
+                  "secondTeamWin": "2.22"
+                },
+                {
+                  "id": 10969121,
+                  "firstTeamWin": "1.57",
+                  "secondTeamWin": "2.32"
+                },
+                {
+                  "id": 10969130,
+                  "firstTeamWin": "1.53",
+                  "secondTeamWin": "2.40"
+                },
+                {
+                  "id": 10969135,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969143,
+                  "firstTeamWin": "1.62",
+                  "secondTeamWin": "2.22"
+                },
+                {
+                  "id": 10969149,
+                  "firstTeamWin": "1.57",
+                  "secondTeamWin": "2.32"
+                },
+                {
+                  "id": 10969176,
+                  "firstTeamWin": "1.53",
+                  "secondTeamWin": "2.40"
+                },
+                {
+                  "id": 10969183,
+                  "firstTeamWin": "1.48",
+                  "secondTeamWin": "2.55"
+                },
+                {
+                  "id": 10969186,
+                  "firstTeamWin": "1.53",
+                  "secondTeamWin": "2.40"
+                },
+                {
+                  "id": 10969188,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969201,
+                  "firstTeamWin": "1.32",
+                  "secondTeamWin": "3.20"
+                },
+                {
+                  "id": 10969212,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969234,
+                  "firstTeamWin": "1.57",
+                  "secondTeamWin": "2.32"
+                },
+                {
+                  "id": 10969247,
+                  "firstTeamWin": "1.53",
+                  "secondTeamWin": "2.40"
+                },
+                {
+                  "id": 10969252,
+                  "firstTeamWin": "1.43",
+                  "secondTeamWin": "2.70"
+                },
+                {
+                  "id": 10969255,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969261,
+                  "firstTeamWin": "1.32",
+                  "secondTeamWin": "3.20"
+                },
+                {
+                  "id": 10969297,
+                  "firstTeamWin": "1.27",
+                  "secondTeamWin": "3.55"
+                },
+                {
+                  "id": 10969299,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969309,
+                  "firstTeamWin": "1.14",
+                  "secondTeamWin": "5.14"
+                },
+                {
+                  "id": 10969312,
+                  "firstTeamWin": "1.09",
+                  "secondTeamWin": "6.65"
+                },
+                {
+                  "id": 10969371,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969379,
+                  "firstTeamWin": "1.09",
+                  "secondTeamWin": "6.65"
+                },
+                {
+                  "id": 10969399,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969428,
+                  "firstTeamWin": "1.14",
+                  "secondTeamWin": "5.14"
+                },
+                {
+                  "id": 10969462,
+                  "firstTeamWin": "1.20",
+                  "secondTeamWin": "4.26"
+                },
+                {
+                  "id": 10969480,
+                  "firstTeamWin": "1.14",
+                  "secondTeamWin": "5.14"
+                },
+                {
+                  "id": 10969551,
+                  "firstTeamWin": "1.09",
+                  "secondTeamWin": "6.65"
+                },
+                {
+                  "id": 10969605,
+                  "firstTeamWin": "1.05",
+                  "secondTeamWin": "8.95"
+                },
+                {
+                  "id": 10969610,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969630,
+                  "firstTeamWin": "1.02",
+                  "secondTeamWin": "11.00"
+                },
+                {
+                  "id": 10969659,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969745,
+                  "firstTeamWin": "1.10",
+                  "secondTeamWin": "6.27"
+                },
+                {
+                  "id": 10969749,
+                  "firstTeamWin": "1.15",
+                  "secondTeamWin": "4.93"
+                },
+                {
+                  "id": 10969750,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969753,
+                  "firstTeamWin": "1.21",
+                  "secondTeamWin": "4.13"
+                },
+                {
+                  "id": 10969755,
+                  "firstTeamWin": "1.28",
+                  "secondTeamWin": "3.51"
+                },
+                {
+                  "id": 10969764,
+                  "firstTeamWin": "1.33",
+                  "secondTeamWin": "3.17"
+                },
+                {
+                  "id": 10969768,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969791,
+                  "firstTeamWin": "1.87",
+                  "secondTeamWin": "1.87"
+                },
+                {
+                  "id": 10969795,
+                  "firstTeamWin": "2.28",
+                  "secondTeamWin": "1.59"
+                },
+                {
+                  "id": 10969797,
+                  "firstTeamWin": "2.43",
+                  "secondTeamWin": "1.52"
+                },
+                {
+                  "id": 10969803,
+                  "firstTeamWin": "2.55",
+                  "secondTeamWin": "1.48"
+                },
+                {
+                  "id": 10969813,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969829,
+                  "firstTeamWin": "1.43",
+                  "secondTeamWin": "2.70"
+                },
+                {
+                  "id": 10969833,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969852,
+                  "firstTeamWin": "1.43",
+                  "secondTeamWin": "2.70"
+                },
+                {
+                  "id": 10969858,
+                  "firstTeamWin": "1.47",
+                  "secondTeamWin": "2.58"
+                },
+                {
+                  "id": 10969862,
+                  "firstTeamWin": "1.52",
+                  "secondTeamWin": "2.43"
+                },
+                {
+                  "id": 10969867,
+                  "firstTeamWin": "1.47",
+                  "secondTeamWin": "2.58"
+                },
+                {
+                  "id": 10969877,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969879,
+                  "firstTeamWin": "1.48",
+                  "secondTeamWin": "2.55"
+                },
+                {
+                  "id": 10969890,
+                  "firstTeamWin": "1.42",
+                  "secondTeamWin": "2.74"
+                },
+                {
+                  "id": 10969892,
+                  "firstTeamWin": "1.36",
+                  "secondTeamWin": "2.98"
+                },
+                {
+                  "id": 10969895,
+                  "firstTeamWin": "1.30",
+                  "secondTeamWin": "3.31"
+                },
+                {
+                  "id": 10969901,
+                  "firstTeamWin": "1.36",
+                  "secondTeamWin": "2.98"
+                },
+                {
+                  "id": 10969910,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969912,
+                  "firstTeamWin": "1.53",
+                  "secondTeamWin": "2.41"
+                },
+                {
+                  "id": 10969917,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969923,
+                  "firstTeamWin": "1.66",
+                  "secondTeamWin": "2.14"
+                },
+                {
+                  "id": 10969936,
+                  "firstTeamWin": "1.69",
+                  "secondTeamWin": "2.10"
+                },
+                {
+                  "id": 10969938,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969953,
+                  "firstTeamWin": "1.93",
+                  "secondTeamWin": "1.82"
+                },
+                {
+                  "id": 10969964,
+                  "firstTeamWin": "1.93",
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969967,
+                  "firstTeamWin": "1.88",
+                  "secondTeamWin": "1.86"
+                },
+                {
+                  "id": 10969976,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969984,
+                  "firstTeamWin": "2.18",
+                  "secondTeamWin": "1.64"
+                },
+                {
+                  "id": 10969988,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10970018,
+                  "firstTeamWin": "7.09",
+                  "secondTeamWin": "1.08"
+                },
+                {
+                  "id": 10970026,
+                  "firstTeamWin": "8.22",
+                  "secondTeamWin": "1.06"
+                },
+                {
+                  "id": 10970040,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10970089,
+                  "firstTeamWin": "4.93",
+                  "secondTeamWin": "1.15"
+                },
+                {
+                  "id": 10970091,
+                  "firstTeamWin": "5.24",
+                  "secondTeamWin": "1.14"
+                }
+              ]
+            },
+            {
+              "id": 204123,
+              "oddsProviderCodeName": "ggbet",
+              "isTeam1First": true,
+              "externalId": "5:00fe1ed9-4c6b-41b4-9f11-4ea7836c1a54",
+              "odds": [
+                {
+                  "id": 10961658,
+                  "firstTeamWin": "1.51",
+                  "secondTeamWin": "2.44"
+                },
+                {
+                  "id": 10961841,
+                  "firstTeamWin": "1.51",
+                  "secondTeamWin": "2.46"
+                },
+                {
+                  "id": 10966921,
+                  "firstTeamWin": "1.51",
+                  "secondTeamWin": "2.47"
+                },
+                {
+                  "id": 10967856,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10967866,
+                  "firstTeamWin": "1.51",
+                  "secondTeamWin": "2.47"
+                },
+                {
+                  "id": 10968264,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10968272,
+                  "firstTeamWin": "1.51",
+                  "secondTeamWin": "2.47"
+                },
+                {
+                  "id": 10968824,
+                  "firstTeamWin": "1.55",
+                  "secondTeamWin": "2.35"
+                },
+                {
+                  "id": 10968825,
+                  "firstTeamWin": "1.63",
+                  "secondTeamWin": "2.20"
+                },
+                {
+                  "id": 10968826,
+                  "firstTeamWin": "2.00",
+                  "secondTeamWin": "1.75"
+                },
+                {
+                  "id": 10968834,
+                  "firstTeamWin": "1.83",
+                  "secondTeamWin": "1.91"
+                },
+                {
+                  "id": 10968845,
+                  "firstTeamWin": "1.70",
+                  "secondTeamWin": "2.08"
+                },
+                {
+                  "id": 10968878,
+                  "firstTeamWin": "1.62",
+                  "secondTeamWin": "2.22"
+                },
+                {
+                  "id": 10968886,
+                  "firstTeamWin": "1.55",
+                  "secondTeamWin": "2.34"
+                },
+                {
+                  "id": 10968897,
+                  "firstTeamWin": "1.63",
+                  "secondTeamWin": "2.19"
+                },
+                {
+                  "id": 10968915,
+                  "firstTeamWin": "1.75",
+                  "secondTeamWin": "2.01"
+                },
+                {
+                  "id": 10968922,
+                  "firstTeamWin": "1.66",
+                  "secondTeamWin": "2.14"
+                },
+                {
+                  "id": 10968936,
+                  "firstTeamWin": "1.58",
+                  "secondTeamWin": "2.29"
+                },
+                {
+                  "id": 10968942,
+                  "firstTeamWin": "1.70",
+                  "secondTeamWin": "2.08"
+                },
+                {
+                  "id": 10968945,
+                  "firstTeamWin": "1.79",
+                  "secondTeamWin": "1.96"
+                },
+                {
+                  "id": 10968961,
+                  "firstTeamWin": "1.87",
+                  "secondTeamWin": "1.87"
+                },
+                {
+                  "id": 10968976,
+                  "firstTeamWin": "1.77",
+                  "secondTeamWin": "1.98"
+                },
+                {
+                  "id": 10968979,
+                  "firstTeamWin": "1.70",
+                  "secondTeamWin": "2.08"
+                },
+                {
+                  "id": 10968990,
+                  "firstTeamWin": "1.62",
+                  "secondTeamWin": "2.21"
+                },
+                {
+                  "id": 10968993,
+                  "firstTeamWin": "1.68",
+                  "secondTeamWin": "2.11"
+                },
+                {
+                  "id": 10969006,
+                  "firstTeamWin": "1.77",
+                  "secondTeamWin": "1.98"
+                },
+                {
+                  "id": 10969011,
+                  "firstTeamWin": "1.70",
+                  "secondTeamWin": "2.08"
+                },
+                {
+                  "id": 10969024,
+                  "firstTeamWin": "1.64",
+                  "secondTeamWin": "2.17"
+                },
+                {
+                  "id": 10969040,
+                  "firstTeamWin": "1.49",
+                  "secondTeamWin": "2.50"
+                },
+                {
+                  "id": 10969049,
+                  "firstTeamWin": "1.45",
+                  "secondTeamWin": "2.62"
+                },
+                {
+                  "id": 10969065,
+                  "firstTeamWin": "1.52",
+                  "secondTeamWin": "2.43"
+                },
+                {
+                  "id": 10969084,
+                  "firstTeamWin": "1.49",
+                  "secondTeamWin": "2.52"
+                },
+                {
+                  "id": 10969098,
+                  "firstTeamWin": "1.55",
+                  "secondTeamWin": "2.36"
+                },
+                {
+                  "id": 10969104,
+                  "firstTeamWin": "1.47",
+                  "secondTeamWin": "2.57"
+                },
+                {
+                  "id": 10969109,
+                  "firstTeamWin": "1.43",
+                  "secondTeamWin": "2.71"
+                },
+                {
+                  "id": 10969132,
+                  "firstTeamWin": "1.48",
+                  "secondTeamWin": "2.54"
+                },
+                {
+                  "id": 10969142,
+                  "firstTeamWin": "1.42",
+                  "secondTeamWin": "2.73"
+                },
+                {
+                  "id": 10969144,
+                  "firstTeamWin": "1.47",
+                  "secondTeamWin": "2.56"
+                },
+                {
+                  "id": 10969156,
+                  "firstTeamWin": "1.42",
+                  "secondTeamWin": "2.72"
+                },
+                {
+                  "id": 10969167,
+                  "firstTeamWin": "1.38",
+                  "secondTeamWin": "2.90"
+                },
+                {
+                  "id": 10969179,
+                  "firstTeamWin": "1.44",
+                  "secondTeamWin": "2.68"
+                },
+                {
+                  "id": 10969185,
+                  "firstTeamWin": "1.49",
+                  "secondTeamWin": "2.50"
+                },
+                {
+                  "id": 10969187,
+                  "firstTeamWin": "1.37",
+                  "secondTeamWin": "2.95"
+                },
+                {
+                  "id": 10969189,
+                  "firstTeamWin": "1.33",
+                  "secondTeamWin": "3.15"
+                },
+                {
+                  "id": 10969191,
+                  "firstTeamWin": "1.27",
+                  "secondTeamWin": "3.58"
+                },
+                {
+                  "id": 10969210,
+                  "firstTeamWin": "1.24",
+                  "secondTeamWin": "3.75"
+                },
+                {
+                  "id": 10969217,
+                  "firstTeamWin": "1.34",
+                  "secondTeamWin": "3.11"
+                },
+                {
+                  "id": 10969223,
+                  "firstTeamWin": "1.43",
+                  "secondTeamWin": "2.69"
+                },
+                {
+                  "id": 10969239,
+                  "firstTeamWin": "1.38",
+                  "secondTeamWin": "2.89"
+                },
+                {
+                  "id": 10969251,
+                  "firstTeamWin": "1.35",
+                  "secondTeamWin": "3.06"
+                },
+                {
+                  "id": 10969265,
+                  "firstTeamWin": "1.31",
+                  "secondTeamWin": "3.28"
+                },
+                {
+                  "id": 10969284,
+                  "firstTeamWin": "1.39",
+                  "secondTeamWin": "2.84"
+                },
+                {
+                  "id": 10969287,
+                  "firstTeamWin": "1.33",
+                  "secondTeamWin": "3.15"
+                },
+                {
+                  "id": 10969302,
+                  "firstTeamWin": "1.28",
+                  "secondTeamWin": "3.47"
+                },
+                {
+                  "id": 10969304,
+                  "firstTeamWin": "1.22",
+                  "secondTeamWin": "4.04"
+                },
+                {
+                  "id": 10969311,
+                  "firstTeamWin": "1.19",
+                  "secondTeamWin": "4.38"
+                },
+                {
+                  "id": 10969319,
+                  "firstTeamWin": "1.14",
+                  "secondTeamWin": "5.17"
+                },
+                {
+                  "id": 10969324,
+                  "firstTeamWin": "1.19",
+                  "secondTeamWin": "4.40"
+                },
+                {
+                  "id": 10969364,
+                  "firstTeamWin": "1.21",
+                  "secondTeamWin": "4.10"
+                },
+                {
+                  "id": 10969370,
+                  "firstTeamWin": "1.15",
+                  "secondTeamWin": "4.92"
+                },
+                {
+                  "id": 10969375,
+                  "firstTeamWin": "1.12",
+                  "secondTeamWin": "5.70"
+                },
+                {
+                  "id": 10969383,
+                  "firstTeamWin": "1.16",
+                  "secondTeamWin": "4.82"
+                },
+                {
+                  "id": 10969397,
+                  "firstTeamWin": "1.14",
+                  "secondTeamWin": "5.25"
+                },
+                {
+                  "id": 10969404,
+                  "firstTeamWin": "1.12",
+                  "secondTeamWin": "5.70"
+                },
+                {
+                  "id": 10969411,
+                  "firstTeamWin": "1.15",
+                  "secondTeamWin": "5.04"
+                },
+                {
+                  "id": 10969416,
+                  "firstTeamWin": "1.10",
+                  "secondTeamWin": "6.31"
+                },
+                {
+                  "id": 10969420,
+                  "firstTeamWin": "1.16",
+                  "secondTeamWin": "4.87"
+                },
+                {
+                  "id": 10969443,
+                  "firstTeamWin": "1.14",
+                  "secondTeamWin": "5.22"
+                },
+                {
+                  "id": 10969454,
+                  "firstTeamWin": "1.17",
+                  "secondTeamWin": "4.60"
+                },
+                {
+                  "id": 10969490,
+                  "firstTeamWin": "1.22",
+                  "secondTeamWin": "3.97"
+                },
+                {
+                  "id": 10969495,
+                  "firstTeamWin": "1.17",
+                  "secondTeamWin": "4.60"
+                },
+                {
+                  "id": 10969498,
+                  "firstTeamWin": "1.21",
+                  "secondTeamWin": "4.08"
+                },
+                {
+                  "id": 10969523,
+                  "firstTeamWin": "1.17",
+                  "secondTeamWin": "4.60"
+                },
+                {
+                  "id": 10969556,
+                  "firstTeamWin": "1.08",
+                  "secondTeamWin": "7.00"
+                },
+                {
+                  "id": 10969583,
+                  "firstTeamWin": "1.06",
+                  "secondTeamWin": "7.88"
+                },
+                {
+                  "id": 10969608,
+                  "firstTeamWin": "1.05",
+                  "secondTeamWin": "8.42"
+                },
+                {
+                  "id": 10969616,
+                  "firstTeamWin": "1.03",
+                  "secondTeamWin": "9.77"
+                },
+                {
+                  "id": 10969632,
+                  "firstTeamWin": "1.02",
+                  "secondTeamWin": "11.03"
+                },
+                {
+                  "id": 10969636,
+                  "firstTeamWin": "1.04",
+                  "secondTeamWin": "8.93"
+                },
+                {
+                  "id": 10969638,
+                  "firstTeamWin": "1.03",
+                  "secondTeamWin": "10.23"
+                },
+                {
+                  "id": 10969641,
+                  "firstTeamWin": "1.02",
+                  "secondTeamWin": "11.33"
+                },
+                {
+                  "id": 10969673,
+                  "firstTeamWin": "1.01",
+                  "secondTeamWin": "12.75"
+                },
+                {
+                  "id": 10969682,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969710,
+                  "firstTeamWin": "1.01",
+                  "secondTeamWin": "12.06"
+                },
+                {
+                  "id": 10969714,
+                  "firstTeamWin": "1.02",
+                  "secondTeamWin": "11.00"
+                },
+                {
+                  "id": 10969735,
+                  "firstTeamWin": "1.04",
+                  "secondTeamWin": "9.04"
+                },
+                {
+                  "id": 10969743,
+                  "firstTeamWin": "1.06",
+                  "secondTeamWin": "8.01"
+                },
+                {
+                  "id": 10969751,
+                  "firstTeamWin": "1.08",
+                  "secondTeamWin": "7.00"
+                },
+                {
+                  "id": 10969773,
+                  "firstTeamWin": "1.12",
+                  "secondTeamWin": "5.76"
+                },
+                {
+                  "id": 10969781,
+                  "firstTeamWin": "1.08",
+                  "secondTeamWin": "6.82"
+                },
+                {
+                  "id": 10969782,
+                  "firstTeamWin": "1.13",
+                  "secondTeamWin": "5.42"
+                },
+                {
+                  "id": 10969784,
+                  "firstTeamWin": "1.18",
+                  "secondTeamWin": "4.50"
+                },
+                {
+                  "id": 10969792,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                }
+              ]
+            },
+            {
+              "id": 204124,
+              "oddsProviderCodeName": "betboom",
+              "isTeam1First": true,
+              "externalId": "4550492",
+              "odds": [
+                {
+                  "id": 10961659,
+                  "firstTeamWin": "1.45",
+                  "secondTeamWin": "2.60"
+                },
+                {
+                  "id": 10968669,
+                  "firstTeamWin": "1.42",
+                  "secondTeamWin": "2.70"
+                },
+                {
+                  "id": 10968677,
+                  "firstTeamWin": "1.48",
+                  "secondTeamWin": "2.50"
+                },
+                {
+                  "id": 10968767,
+                  "firstTeamWin": "1.52",
+                  "secondTeamWin": "2.40"
+                },
+                {
+                  "id": 10968809,
+                  "firstTeamWin": "1.48",
+                  "secondTeamWin": "2.50"
+                },
+                {
+                  "id": 10968829,
+                  "firstTeamWin": "1.52",
+                  "secondTeamWin": "2.40"
+                },
+                {
+                  "id": 10968832,
+                  "firstTeamWin": "1.65",
+                  "secondTeamWin": "2.10"
+                },
+                {
+                  "id": 10968835,
+                  "firstTeamWin": "1.82",
+                  "secondTeamWin": "1.90"
+                },
+                {
+                  "id": 10968840,
+                  "firstTeamWin": "1.75",
+                  "secondTeamWin": "1.98"
+                },
+                {
+                  "id": 10968849,
+                  "firstTeamWin": "1.65",
+                  "secondTeamWin": "1.98"
+                },
+                {
+                  "id": 10968851,
+                  "firstTeamWin": "1.65",
+                  "secondTeamWin": "2.15"
+                },
+                {
+                  "id": 10968861,
+                  "firstTeamWin": "1.72",
+                  "secondTeamWin": "2.00"
+                },
+                {
+                  "id": 10968869,
+                  "firstTeamWin": "1.65",
+                  "secondTeamWin": "2.10"
+                },
+                {
+                  "id": 10968880,
+                  "firstTeamWin": "1.55",
+                  "secondTeamWin": "2.30"
+                },
+                {
+                  "id": 10968893,
+                  "firstTeamWin": "1.52",
+                  "secondTeamWin": "2.40"
+                },
+                {
+                  "id": 10968903,
+                  "firstTeamWin": "1.48",
+                  "secondTeamWin": "2.50"
+                },
+                {
+                  "id": 10968908,
+                  "firstTeamWin": "1.65",
+                  "secondTeamWin": "2.10"
+                },
+                {
+                  "id": 10968917,
+                  "firstTeamWin": "1.72",
+                  "secondTeamWin": "2.00"
+                },
+                {
+                  "id": 10968928,
+                  "firstTeamWin": "1.70",
+                  "secondTeamWin": "2.05"
+                },
+                {
+                  "id": 10968933,
+                  "firstTeamWin": "1.60",
+                  "secondTeamWin": "2.05"
+                },
+                {
+                  "id": 10968935,
+                  "firstTeamWin": "1.58",
+                  "secondTeamWin": "2.25"
+                },
+                {
+                  "id": 10968944,
+                  "firstTeamWin": "1.70",
+                  "secondTeamWin": "2.05"
+                },
+                {
+                  "id": 10968949,
+                  "firstTeamWin": "1.65",
+                  "secondTeamWin": "2.10"
+                },
+                {
+                  "id": 10968950,
+                  "firstTeamWin": "1.75",
+                  "secondTeamWin": "2.10"
+                },
+                {
+                  "id": 10968952,
+                  "firstTeamWin": "1.75",
+                  "secondTeamWin": "1.90"
+                },
+                {
+                  "id": 10968958,
+                  "firstTeamWin": "1.85",
+                  "secondTeamWin": "1.90"
+                },
+                {
+                  "id": 10968963,
+                  "firstTeamWin": "1.98",
+                  "secondTeamWin": "1.75"
+                },
+                {
+                  "id": 10968969,
+                  "firstTeamWin": "1.90",
+                  "secondTeamWin": "1.82"
+                },
+                {
+                  "id": 10968975,
+                  "firstTeamWin": "1.80",
+                  "secondTeamWin": "1.92"
+                },
+                {
+                  "id": 10968984,
+                  "firstTeamWin": "1.90",
+                  "secondTeamWin": "1.82"
+                },
+                {
+                  "id": 10968989,
+                  "firstTeamWin": "1.75",
+                  "secondTeamWin": "1.98"
+                },
+                {
+                  "id": 10968995,
+                  "firstTeamWin": "1.62",
+                  "secondTeamWin": "2.15"
+                },
+                {
+                  "id": 10969014,
+                  "firstTeamWin": "1.55",
+                  "secondTeamWin": "2.30"
+                },
+                {
+                  "id": 10969031,
+                  "firstTeamWin": "1.52",
+                  "secondTeamWin": "2.40"
+                },
+                {
+                  "id": 10969036,
+                  "firstTeamWin": "1.75",
+                  "secondTeamWin": "1.98"
+                },
+                {
+                  "id": 10969042,
+                  "firstTeamWin": "1.52",
+                  "secondTeamWin": "2.40"
+                },
+                {
+                  "id": 10969048,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969058,
+                  "firstTeamWin": "1.48",
+                  "secondTeamWin": "2.50"
+                },
+                {
+                  "id": 10969064,
+                  "firstTeamWin": "1.52",
+                  "secondTeamWin": "2.40"
+                },
+                {
+                  "id": 10969071,
+                  "firstTeamWin": "1.75",
+                  "secondTeamWin": "1.98"
+                },
+                {
+                  "id": 10969074,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969076,
+                  "firstTeamWin": "1.72",
+                  "secondTeamWin": "2.00"
+                },
+                {
+                  "id": 10969088,
+                  "firstTeamWin": "1.65",
+                  "secondTeamWin": "2.10"
+                },
+                {
+                  "id": 10969091,
+                  "firstTeamWin": "1.58",
+                  "secondTeamWin": "2.25"
+                },
+                {
+                  "id": 10969102,
+                  "firstTeamWin": "1.65",
+                  "secondTeamWin": "2.10"
+                },
+                {
+                  "id": 10969107,
+                  "firstTeamWin": "1.58",
+                  "secondTeamWin": "2.25"
+                },
+                {
+                  "id": 10969120,
+                  "firstTeamWin": "1.48",
+                  "secondTeamWin": "2.50"
+                },
+                {
+                  "id": 10969138,
+                  "firstTeamWin": "1.52",
+                  "secondTeamWin": "2.40"
+                },
+                {
+                  "id": 10969163,
+                  "firstTeamWin": "1.48",
+                  "secondTeamWin": "2.50"
+                },
+                {
+                  "id": 10969182,
+                  "firstTeamWin": "1.42",
+                  "secondTeamWin": "2.70"
+                },
+                {
+                  "id": 10969190,
+                  "firstTeamWin": "1.32",
+                  "secondTeamWin": "3.10"
+                },
+                {
+                  "id": 10969200,
+                  "firstTeamWin": "1.22",
+                  "secondTeamWin": "4.00"
+                },
+                {
+                  "id": 10969205,
+                  "firstTeamWin": "1.25",
+                  "secondTeamWin": "3.60"
+                },
+                {
+                  "id": 10969218,
+                  "firstTeamWin": "1.38",
+                  "secondTeamWin": "2.80"
+                },
+                {
+                  "id": 10969224,
+                  "firstTeamWin": "1.52",
+                  "secondTeamWin": "2.40"
+                },
+                {
+                  "id": 10969226,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969242,
+                  "firstTeamWin": "1.42",
+                  "secondTeamWin": "2.70"
+                },
+                {
+                  "id": 10969246,
+                  "firstTeamWin": "1.35",
+                  "secondTeamWin": "3.00"
+                },
+                {
+                  "id": 10969258,
+                  "firstTeamWin": "1.25",
+                  "secondTeamWin": "3.40"
+                },
+                {
+                  "id": 10969279,
+                  "firstTeamWin": "1.25",
+                  "secondTeamWin": "4.00"
+                },
+                {
+                  "id": 10969294,
+                  "firstTeamWin": "1.22",
+                  "secondTeamWin": "4.00"
+                },
+                {
+                  "id": 10969298,
+                  "firstTeamWin": "1.22",
+                  "secondTeamWin": "3.60"
+                },
+                {
+                  "id": 10969307,
+                  "firstTeamWin": "1.10",
+                  "secondTeamWin": "6.00"
+                },
+                {
+                  "id": 10969310,
+                  "firstTeamWin": "1.08",
+                  "secondTeamWin": "6.60"
+                },
+                {
+                  "id": 10969334,
+                  "firstTeamWin": "1.08",
+                  "secondTeamWin": "5.30"
+                },
+                {
+                  "id": 10969345,
+                  "firstTeamWin": "1.13",
+                  "secondTeamWin": "5.30"
+                },
+                {
+                  "id": 10969358,
+                  "firstTeamWin": "1.13",
+                  "secondTeamWin": "4.50"
+                },
+                {
+                  "id": 10969362,
+                  "firstTeamWin": "1.17",
+                  "secondTeamWin": "4.50"
+                },
+                {
+                  "id": 10969377,
+                  "firstTeamWin": "1.17",
+                  "secondTeamWin": "4.80"
+                },
+                {
+                  "id": 10969378,
+                  "firstTeamWin": "1.10",
+                  "secondTeamWin": "6.00"
+                },
+                {
+                  "id": 10969401,
+                  "firstTeamWin": "1.12",
+                  "secondTeamWin": "5.30"
+                },
+                {
+                  "id": 10969407,
+                  "firstTeamWin": "1.12",
+                  "secondTeamWin": "6.60"
+                },
+                {
+                  "id": 10969410,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969441,
+                  "firstTeamWin": "1.17",
+                  "secondTeamWin": "4.50"
+                },
+                {
+                  "id": 10969448,
+                  "firstTeamWin": "1.20",
+                  "secondTeamWin": "4.20"
+                },
+                {
+                  "id": 10969455,
+                  "firstTeamWin": "1.15",
+                  "secondTeamWin": "4.80"
+                },
+                {
+                  "id": 10969471,
+                  "firstTeamWin": "1.17",
+                  "secondTeamWin": "4.50"
+                },
+                {
+                  "id": 10969505,
+                  "firstTeamWin": "1.17",
+                  "secondTeamWin": "4.40"
+                },
+                {
+                  "id": 10969530,
+                  "firstTeamWin": "1.17",
+                  "secondTeamWin": "4.50"
+                },
+                {
+                  "id": 10969539,
+                  "firstTeamWin": "1.15",
+                  "secondTeamWin": "4.50"
+                },
+                {
+                  "id": 10969553,
+                  "firstTeamWin": "1.15",
+                  "secondTeamWin": "4.80"
+                },
+                {
+                  "id": 10969571,
+                  "firstTeamWin": "1.10",
+                  "secondTeamWin": "6.00"
+                },
+                {
+                  "id": 10969582,
+                  "firstTeamWin": "1.08",
+                  "secondTeamWin": "6.60"
+                },
+                {
+                  "id": 10969600,
+                  "firstTeamWin": "1.06",
+                  "secondTeamWin": "7.50"
+                },
+                {
+                  "id": 10969620,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969626,
+                  "firstTeamWin": "1.04",
+                  "secondTeamWin": "8.50"
+                },
+                {
+                  "id": 10969635,
+                  "firstTeamWin": "1.02",
+                  "secondTeamWin": "10.00"
+                },
+                {
+                  "id": 10969642,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969664,
+                  "firstTeamWin": "1.02",
+                  "secondTeamWin": "10.00"
+                },
+                {
+                  "id": 10969666,
+                  "firstTeamWin": "1.01",
+                  "secondTeamWin": "11.00"
+                },
+                {
+                  "id": 10969678,
+                  "firstTeamWin": null,
+                  "secondTeamWin": "12.00"
+                },
+                {
+                  "id": 10969691,
+                  "firstTeamWin": null,
+                  "secondTeamWin": "13.00"
+                },
+                {
+                  "id": 10969698,
+                  "firstTeamWin": null,
+                  "secondTeamWin": "12.00"
+                },
+                {
+                  "id": 10969707,
+                  "firstTeamWin": null,
+                  "secondTeamWin": "13.00"
+                },
+                {
+                  "id": 10969711,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969722,
+                  "firstTeamWin": "1.06",
+                  "secondTeamWin": "7.50"
+                },
+                {
+                  "id": 10969734,
+                  "firstTeamWin": "1.10",
+                  "secondTeamWin": "6.00"
+                },
+                {
+                  "id": 10969736,
+                  "firstTeamWin": "1.17",
+                  "secondTeamWin": "3.60"
+                },
+                {
+                  "id": 10969740,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969747,
+                  "firstTeamWin": "1.26",
+                  "secondTeamWin": "3.50"
+                },
+                {
+                  "id": 10969748,
+                  "firstTeamWin": "1.22",
+                  "secondTeamWin": "4.00"
+                },
+                {
+                  "id": 10969752,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969760,
+                  "firstTeamWin": "1.32",
+                  "secondTeamWin": "3.10"
+                },
+                {
+                  "id": 10969763,
+                  "firstTeamWin": "1.26",
+                  "secondTeamWin": "3.50"
+                },
+                {
+                  "id": 10969766,
+                  "firstTeamWin": "1.30",
+                  "secondTeamWin": "3.20"
+                },
+                {
+                  "id": 10969772,
+                  "firstTeamWin": "1.38",
+                  "secondTeamWin": "2.80"
+                },
+                {
+                  "id": 10969779,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969802,
+                  "firstTeamWin": "2.05",
+                  "secondTeamWin": "1.70"
+                },
+                {
+                  "id": 10969806,
+                  "firstTeamWin": "1.92",
+                  "secondTeamWin": "1.80"
+                },
+                {
+                  "id": 10969808,
+                  "firstTeamWin": "2.15",
+                  "secondTeamWin": "1.62"
+                },
+                {
+                  "id": 10969814,
+                  "firstTeamWin": "2.20",
+                  "secondTeamWin": "1.60"
+                },
+                {
+                  "id": 10969819,
+                  "firstTeamWin": "2.20",
+                  "secondTeamWin": "1.70"
+                },
+                {
+                  "id": 10969820,
+                  "firstTeamWin": "2.00",
+                  "secondTeamWin": "1.70"
+                },
+                {
+                  "id": 10969826,
+                  "firstTeamWin": "2.00",
+                  "secondTeamWin": "1.80"
+                },
+                {
+                  "id": 10969828,
+                  "firstTeamWin": "1.85",
+                  "secondTeamWin": "1.85"
+                },
+                {
+                  "id": 10969831,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969860,
+                  "firstTeamWin": "1.52",
+                  "secondTeamWin": "2.40"
+                },
+                {
+                  "id": 10969864,
+                  "firstTeamWin": "1.32",
+                  "secondTeamWin": "3.10"
+                },
+                {
+                  "id": 10969865,
+                  "firstTeamWin": "1.42",
+                  "secondTeamWin": "2.70"
+                },
+                {
+                  "id": 10969873,
+                  "firstTeamWin": "1.52",
+                  "secondTeamWin": "2.40"
+                },
+                {
+                  "id": 10969882,
+                  "firstTeamWin": "1.42",
+                  "secondTeamWin": "2.70"
+                },
+                {
+                  "id": 10969883,
+                  "firstTeamWin": "1.35",
+                  "secondTeamWin": "3.00"
+                },
+                {
+                  "id": 10969891,
+                  "firstTeamWin": "1.38",
+                  "secondTeamWin": "2.80"
+                },
+                {
+                  "id": 10969893,
+                  "firstTeamWin": "1.28",
+                  "secondTeamWin": "3.40"
+                },
+                {
+                  "id": 10969898,
+                  "firstTeamWin": "1.30",
+                  "secondTeamWin": "3.20"
+                },
+                {
+                  "id": 10969909,
+                  "firstTeamWin": "1.35",
+                  "secondTeamWin": "3.00"
+                },
+                {
+                  "id": 10969911,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969914,
+                  "firstTeamWin": "1.52",
+                  "secondTeamWin": "2.40"
+                },
+                {
+                  "id": 10969915,
+                  "firstTeamWin": "1.55",
+                  "secondTeamWin": "2.30"
+                },
+                {
+                  "id": 10969921,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969929,
+                  "firstTeamWin": "1.65",
+                  "secondTeamWin": "2.10"
+                },
+                {
+                  "id": 10969932,
+                  "firstTeamWin": "1.72",
+                  "secondTeamWin": "2.00"
+                },
+                {
+                  "id": 10969934,
+                  "firstTeamWin": "1.85",
+                  "secondTeamWin": "1.85"
+                },
+                {
+                  "id": 10969943,
+                  "firstTeamWin": "2.25",
+                  "secondTeamWin": "1.58"
+                },
+                {
+                  "id": 10969946,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969947,
+                  "firstTeamWin": "1.98",
+                  "secondTeamWin": "1.75"
+                },
+                {
+                  "id": 10969952,
+                  "firstTeamWin": "1.85",
+                  "secondTeamWin": "1.85"
+                },
+                {
+                  "id": 10969962,
+                  "firstTeamWin": "1.82",
+                  "secondTeamWin": "1.90"
+                },
+                {
+                  "id": 10969965,
+                  "firstTeamWin": "1.70",
+                  "secondTeamWin": "2.05"
+                },
+                {
+                  "id": 10969971,
+                  "firstTeamWin": "1.75",
+                  "secondTeamWin": "1.98"
+                },
+                {
+                  "id": 10969974,
+                  "firstTeamWin": "1.82",
+                  "secondTeamWin": "1.90"
+                },
+                {
+                  "id": 10969977,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                }
+              ]
+            },
+            {
+              "id": 204125,
+              "oddsProviderCodeName": "parimatch",
+              "isTeam1First": true,
+              "externalId": "16421952",
+              "odds": [
+                {
+                  "id": 10961660,
+                  "firstTeamWin": "1.45",
+                  "secondTeamWin": "2.56"
+                },
+                {
+                  "id": 10968679,
+                  "firstTeamWin": "1.47",
+                  "secondTeamWin": "2.50"
+                },
+                {
+                  "id": 10968779,
+                  "firstTeamWin": "1.49",
+                  "secondTeamWin": "2.44"
+                },
+                {
+                  "id": 10968827,
+                  "firstTeamWin": "1.54",
+                  "secondTeamWin": "2.32"
+                },
+                {
+                  "id": 10968833,
+                  "firstTeamWin": "1.61",
+                  "secondTeamWin": "2.17"
+                },
+                {
+                  "id": 10968837,
+                  "firstTeamWin": "1.69",
+                  "secondTeamWin": "2.04"
+                },
+                {
+                  "id": 10968873,
+                  "firstTeamWin": "1.67",
+                  "secondTeamWin": "2.08"
+                },
+                {
+                  "id": 10968907,
+                  "firstTeamWin": "1.61",
+                  "secondTeamWin": "2.17"
+                },
+                {
+                  "id": 10968911,
+                  "firstTeamWin": "1.67",
+                  "secondTeamWin": "2.08"
+                },
+                {
+                  "id": 10968947,
+                  "firstTeamWin": "1.89",
+                  "secondTeamWin": "1.82"
+                },
+                {
+                  "id": 10968965,
+                  "firstTeamWin": "2.13",
+                  "secondTeamWin": "1.64"
+                },
+                {
+                  "id": 10968972,
+                  "firstTeamWin": "2.04",
+                  "secondTeamWin": "1.69"
+                },
+                {
+                  "id": 10968980,
+                  "firstTeamWin": "1.89",
+                  "secondTeamWin": "1.82"
+                },
+                {
+                  "id": 10969005,
+                  "firstTeamWin": "1.67",
+                  "secondTeamWin": "2.08"
+                },
+                {
+                  "id": 10969033,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969045,
+                  "firstTeamWin": "1.56",
+                  "secondTeamWin": "2.27"
+                },
+                {
+                  "id": 10969052,
+                  "firstTeamWin": "1.49",
+                  "secondTeamWin": "2.44"
+                },
+                {
+                  "id": 10969067,
+                  "firstTeamWin": "1.56",
+                  "secondTeamWin": "2.27"
+                },
+                {
+                  "id": 10969105,
+                  "firstTeamWin": "1.51",
+                  "secondTeamWin": "2.38"
+                },
+                {
+                  "id": 10969193,
+                  "firstTeamWin": "1.27",
+                  "secondTeamWin": "3.45"
+                },
+                {
+                  "id": 10969208,
+                  "firstTeamWin": "1.30",
+                  "secondTeamWin": "3.23"
+                },
+                {
+                  "id": 10969222,
+                  "firstTeamWin": "1.35",
+                  "secondTeamWin": "2.94"
+                },
+                {
+                  "id": 10969260,
+                  "firstTeamWin": "1.32",
+                  "secondTeamWin": "3.13"
+                },
+                {
+                  "id": 10969290,
+                  "firstTeamWin": "1.27",
+                  "secondTeamWin": "3.45"
+                },
+                {
+                  "id": 10969300,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969314,
+                  "firstTeamWin": "1.10",
+                  "secondTeamWin": "5.98"
+                },
+                {
+                  "id": 10969320,
+                  "firstTeamWin": "1.07",
+                  "secondTeamWin": "7.34"
+                },
+                {
+                  "id": 10969374,
+                  "firstTeamWin": "1.06",
+                  "secondTeamWin": "7.96"
+                },
+                {
+                  "id": 10969418,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969431,
+                  "firstTeamWin": "1.09",
+                  "secondTeamWin": "6.37"
+                },
+                {
+                  "id": 10969450,
+                  "firstTeamWin": "1.14",
+                  "secondTeamWin": "5.05"
+                },
+                {
+                  "id": 10969489,
+                  "firstTeamWin": "1.11",
+                  "secondTeamWin": "5.63"
+                },
+                {
+                  "id": 10969560,
+                  "firstTeamWin": "1.10",
+                  "secondTeamWin": "5.98"
+                },
+                {
+                  "id": 10969592,
+                  "firstTeamWin": "1.07",
+                  "secondTeamWin": "7.34"
+                },
+                {
+                  "id": 10969614,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969761,
+                  "firstTeamWin": "1.43",
+                  "secondTeamWin": "2.63"
+                },
+                {
+                  "id": 10969767,
+                  "firstTeamWin": "1.33",
+                  "secondTeamWin": "3.03"
+                },
+                {
+                  "id": 10969769,
+                  "firstTeamWin": "1.51",
+                  "secondTeamWin": "2.38"
+                },
+                {
+                  "id": 10969780,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969788,
+                  "firstTeamWin": "2.04",
+                  "secondTeamWin": "1.69"
+                },
+                {
+                  "id": 10969793,
+                  "firstTeamWin": "2.38",
+                  "secondTeamWin": "1.51"
+                },
+                {
+                  "id": 10969805,
+                  "firstTeamWin": "2.63",
+                  "secondTeamWin": "1.43"
+                },
+                {
+                  "id": 10969809,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969815,
+                  "firstTeamWin": "2.63",
+                  "secondTeamWin": "1.43"
+                },
+                {
+                  "id": 10969832,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969848,
+                  "firstTeamWin": "1.51",
+                  "secondTeamWin": "2.38"
+                },
+                {
+                  "id": 10969853,
+                  "firstTeamWin": "1.43",
+                  "secondTeamWin": "2.63"
+                },
+                {
+                  "id": 10969896,
+                  "firstTeamWin": "1.37",
+                  "secondTeamWin": "2.86"
+                },
+                {
+                  "id": 10969907,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                },
+                {
+                  "id": 10969913,
+                  "firstTeamWin": "1.43",
+                  "secondTeamWin": "2.63"
+                },
+                {
+                  "id": 10969919,
+                  "firstTeamWin": "1.56",
+                  "secondTeamWin": "2.27"
+                },
+                {
+                  "id": 10969933,
+                  "firstTeamWin": "1.61",
+                  "secondTeamWin": "2.17"
+                },
+                {
+                  "id": 10969944,
+                  "firstTeamWin": "1.85",
+                  "secondTeamWin": "1.85"
+                },
+                {
+                  "id": 10969980,
+                  "firstTeamWin": null,
+                  "secondTeamWin": null
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "headToHeadSeriesList": [
+        {
+          "id": 94110,
+          "slug": "team-lynx-vs-nemiga-gaming-2",
+          "championship": {
+            "id": 2228,
+            "name": "European Pro League Season 36",
+            "slug": "european-pro-league-season-36"
+          },
+          "team1": {
+            "id": 8707,
+            "name": "team lynx",
+            "logoUrl": "https://hawk.live/storage/teams/8707.png"
+          },
+          "team2": {
+            "id": 83,
+            "name": "Nemiga Gaming",
+            "logoUrl": "https://hawk.live/storage/teams/83.png"
+          },
+          "bestOf": 3,
+          "startAt": "2026-04-16T12:00:00.000000Z",
+          "team1Score": 2,
+          "team2Score": 0,
+          "isTeam1Winner": true
+        },
+        {
+          "id": 93455,
+          "slug": "team-lynx-vs-nemiga-gaming",
+          "championship": {
+            "id": 2228,
+            "name": "European Pro League Season 36",
+            "slug": "european-pro-league-season-36"
+          },
+          "team1": {
+            "id": 8707,
+            "name": "team lynx",
+            "logoUrl": "https://hawk.live/storage/teams/8707.png"
+          },
+          "team2": {
+            "id": 83,
+            "name": "Nemiga Gaming",
+            "logoUrl": "https://hawk.live/storage/teams/83.png"
+          },
+          "bestOf": 3,
+          "startAt": "2026-04-03T15:15:00.000000Z",
+          "team1Score": 2,
+          "team2Score": 1,
+          "isTeam1Winner": true
+        },
+        {
+          "id": 92975,
+          "slug": "nemiga-gaming-vs-team-lynx",
+          "championship": {
+            "id": 2194,
+            "name": "European Pro League Season 35",
+            "slug": "european-pro-league-season-35"
+          },
+          "team1": {
+            "id": 83,
+            "name": "Nemiga Gaming",
+            "logoUrl": "https://hawk.live/storage/teams/83.png"
+          },
+          "team2": {
+            "id": 8707,
+            "name": "team lynx",
+            "logoUrl": "https://hawk.live/storage/teams/8707.png"
+          },
+          "bestOf": 3,
+          "startAt": "2026-03-23T19:00:00.000000Z",
+          "team1Score": 0,
+          "team2Score": 2,
+          "isTeam1Winner": false
+        },
+        {
+          "id": 81450,
+          "slug": "nemiga-gaming-vs-team-lynx",
+          "championship": {
+            "id": 1919,
+            "name": "European Pro League 28",
+            "slug": "european-pro-league-28"
+          },
+          "team1": {
+            "id": 83,
+            "name": "Nemiga Gaming",
+            "logoUrl": "https://hawk.live/storage/teams/83.png"
+          },
+          "team2": {
+            "id": 8707,
+            "name": "team lynx",
+            "logoUrl": "https://hawk.live/storage/teams/8707.png"
+          },
+          "bestOf": 3,
+          "startAt": "2025-07-25T09:00:43.000000Z",
+          "team1Score": 2,
+          "team2Score": 1,
+          "isTeam1Winner": true
+        }
+      ]
+    },
+    "upcomingSeriesList": [
+      {
+        "id": 94365,
+        "slug": "power-rangers-vs-l1ga-team",
+        "championship": {
+          "id": 2257,
+          "name": "DreamLeague Division 2 Season 4: Group Stage",
+          "slug": "dreamleague-division-2-season-4-group-stage"
+        },
+        "team1": {
+          "id": 8486,
+          "name": "Power Rangers",
+          "logoUrl": "https://hawk.live/storage/teams/8486.png"
+        },
+        "team2": {
+          "id": 6397,
+          "name": "L1ga Team",
+          "logoUrl": "https://hawk.live/storage/teams/6397.png"
+        },
+        "bestOf": 3,
+        "startAt": "2026-04-22T15:00:00.000000Z",
+        "moneylines": [
+          {
+            "oddsProviderCodeName": "parimatch",
+            "externalId": "16421956",
+            "team1WinOdds": "2.08",
+            "team2WinOdds": "1.67"
+          },
+          {
+            "oddsProviderCodeName": "spin-better",
+            "externalId": "325951876",
+            "team1WinOdds": "1.84",
+            "team2WinOdds": "1.93"
+          },
+          {
+            "oddsProviderCodeName": "betboom",
+            "externalId": "4550496",
+            "team1WinOdds": "1.92",
+            "team2WinOdds": "1.82"
+          },
+          {
+            "oddsProviderCodeName": "ggbet",
+            "externalId": "5:84a9de15-3f1f-4f88-bdde-3261e207c394",
+            "team1WinOdds": "1.97",
+            "team2WinOdds": "1.74"
+          }
+        ]
+      },
+      {
+        "id": 94366,
+        "slug": "zero-tenacity-vs-breeki-cheeki",
+        "championship": {
+          "id": 2257,
+          "name": "DreamLeague Division 2 Season 4: Group Stage",
+          "slug": "dreamleague-division-2-season-4-group-stage"
+        },
+        "team1": {
+          "id": 7989,
+          "name": "Zero Tenacity",
+          "logoUrl": "https://hawk.live/storage/teams/7989.png"
+        },
+        "team2": {
+          "id": 10360,
+          "name": "Breeki Cheeki",
+          "logoUrl": null
+        },
+        "bestOf": 3,
+        "startAt": "2026-04-22T15:00:00.000000Z",
+        "moneylines": [
+          {
+            "oddsProviderCodeName": "ggbet",
+            "externalId": "5:96208050-ddda-46cf-8918-c731ac09b511",
+            "team1WinOdds": "1.57",
+            "team2WinOdds": "2.24"
+          },
+          {
+            "oddsProviderCodeName": "spin-better",
+            "externalId": "325951888",
+            "team1WinOdds": "1.72",
+            "team2WinOdds": "2.10"
+          },
+          {
+            "oddsProviderCodeName": "parimatch",
+            "externalId": "16421957",
+            "team1WinOdds": "1.63",
+            "team2WinOdds": "2.15"
+          }
+        ]
+      },
+      {
+        "id": 94367,
+        "slug": "south-america-rejects-vs-alis-ventorus",
+        "championship": {
+          "id": 2257,
+          "name": "DreamLeague Division 2 Season 4: Group Stage",
+          "slug": "dreamleague-division-2-season-4-group-stage"
+        },
+        "team1": {
+          "id": 5077,
+          "name": "South America Rejects",
+          "logoUrl": "https://hawk.live/storage/teams/5077.png"
+        },
+        "team2": {
+          "id": 3201,
+          "name": "ALIS VENTORUS",
+          "logoUrl": "https://hawk.live/storage/teams/3201.png"
+        },
+        "bestOf": 3,
+        "startAt": "2026-04-22T15:00:00.000000Z",
+        "moneylines": [
+          {
+            "oddsProviderCodeName": "ggbet",
+            "externalId": "5:fed9185e-98cd-41a1-8a22-bee451caf8e7",
+            "team1WinOdds": "1.04",
+            "team2WinOdds": "8.06"
+          },
+          {
+            "oddsProviderCodeName": "betboom",
+            "externalId": "4550701",
+            "team1WinOdds": "1.03",
+            "team2WinOdds": "10.00"
+          }
+        ]
+      },
+      {
+        "id": 94368,
+        "slug": "btc-gaming-vs-south-america-rejects",
+        "championship": {
+          "id": 2257,
+          "name": "DreamLeague Division 2 Season 4: Group Stage",
+          "slug": "dreamleague-division-2-season-4-group-stage"
+        },
+        "team1": {
+          "id": 10006,
+          "name": "BTC Gaming",
+          "logoUrl": "https://hawk.live/storage/teams/10006.png"
+        },
+        "team2": {
+          "id": 5077,
+          "name": "South America Rejects",
+          "logoUrl": "https://hawk.live/storage/teams/5077.png"
+        },
+        "bestOf": 3,
+        "startAt": "2026-04-22T18:00:00.000000Z",
+        "moneylines": [
+          {
+            "oddsProviderCodeName": "betboom",
+            "externalId": "4553717",
+            "team1WinOdds": "8.00",
+            "team2WinOdds": "1.04"
+          },
+          {
+            "oddsProviderCodeName": "ggbet",
+            "externalId": "5:649a626f-f9cf-4000-bd05-7735680f3133",
+            "team1WinOdds": "9.60",
+            "team2WinOdds": "1.02"
+          },
+          {
+            "oddsProviderCodeName": "spin-better",
+            "externalId": "326159000",
+            "team1WinOdds": "9.00",
+            "team2WinOdds": "1.01"
+          }
+        ]
+      },
+      {
+        "id": 94369,
+        "slug": "breeki-cheeki-vs-l1ga-team",
+        "championship": {
+          "id": 2257,
+          "name": "DreamLeague Division 2 Season 4: Group Stage",
+          "slug": "dreamleague-division-2-season-4-group-stage"
+        },
+        "team1": {
+          "id": 10360,
+          "name": "Breeki Cheeki",
+          "logoUrl": null
+        },
+        "team2": {
+          "id": 6397,
+          "name": "L1ga Team",
+          "logoUrl": "https://hawk.live/storage/teams/6397.png"
+        },
+        "bestOf": 3,
+        "startAt": "2026-04-22T18:00:00.000000Z",
+        "moneylines": [
+          {
+            "oddsProviderCodeName": "parimatch",
+            "externalId": "16421932",
+            "team1WinOdds": "3.10",
+            "team2WinOdds": "1.32"
+          },
+          {
+            "oddsProviderCodeName": "spin-better",
+            "externalId": "325955870",
+            "team1WinOdds": "2.82",
+            "team2WinOdds": "1.41"
+          },
+          {
+            "oddsProviderCodeName": "ggbet",
+            "externalId": "5:0d85bef8-12e6-4b85-bdac-cc0d9316f11c",
+            "team1WinOdds": "2.87",
+            "team2WinOdds": "1.38"
+          },
+          {
+            "oddsProviderCodeName": "betboom",
+            "externalId": "4550495",
+            "team1WinOdds": "2.90",
+            "team2WinOdds": "1.35"
+          }
+        ]
+      }
+    ],
+    "latestPosts": [
+      {
+        "id": 15609,
+        "schemaType": "Article",
+        "title": "PGL Wallachia Season 8: Schedule, Standings, Results",
+        "slug": "pgl-wallachia-season-8-schedule-standings-results",
+        "image": {
+          "id": 24621,
+          "url": "https://hawk.live/storage/images/posts/pgl-wallachia-season-8-24621.jpg",
+          "width": 1200,
+          "height": 628,
+          "altText": "PGL Wallachia Season 8",
+          "variants": [
+            {
+              "id": 8489,
+              "url": "https://hawk.live/storage/images/variants/posts/c748b0157161d2a7983ab75524110b9c4d7e2c5aa21f3198afcb71a530ac333c-w240-h126.webp",
+              "width": 240,
+              "height": 126,
+              "format": "webp"
+            },
+            {
+              "id": 8490,
+              "url": "https://hawk.live/storage/images/variants/posts/8932b9643f3bb30d2f8524f1c422f999d16187d13d3ebf9be5784c54cfe2269d-w240-h126.avif",
+              "width": 240,
+              "height": 126,
+              "format": "avif"
+            }
+          ]
+        },
+        "publishAt": "2026-04-17T10:45:00.000000Z"
+      },
+      {
+        "id": 15651,
+        "schemaType": "Article",
+        "title": "M0NESY comments on the new update for Counter-Strike 2",
+        "slug": "m0nesy-comments-new-update-counter-strike-2",
+        "image": {
+          "id": 24202,
+          "url": "https://hawk.live/storage/images/posts/m0nesy-comments-counter-strike-global-offensives-return-24202.jpg",
+          "width": 1200,
+          "height": 628,
+          "altText": "M0NESY spoke about the CS2 update",
+          "variants": [
+            {
+              "id": 5309,
+              "url": "https://hawk.live/storage/images/variants/posts/012d5580fe03f478fd80dc2ce9b93dd08440d103f35b98a5cc24a8682c337e69-w240-h126.webp",
+              "width": 240,
+              "height": 126,
+              "format": "webp"
+            },
+            {
+              "id": 5310,
+              "url": "https://hawk.live/storage/images/variants/posts/2362b5a8a402141500ea170fcea12f29e501f8654b4d819be279d46b6fac5e46-w240-h126.avif",
+              "width": 240,
+              "height": 126,
+              "format": "avif"
+            }
+          ]
+        },
+        "publishAt": "2026-04-22T13:06:00.000000Z"
+      },
+      {
+        "id": 15650,
+        "schemaType": "NewsArticle",
+        "title": "RAMZES666 Speaks Out on Tier-1 Pro Teams' Participation in 322",
+        "slug": "ramzes666-speaks-tier-1-pro-teams-participation-322",
+        "image": {
+          "id": 24179,
+          "url": "https://hawk.live/storage/images/posts/ramzes666-assessed-team-spirits-form-pgl-wallachia-season-7-24179.jpg",
+          "width": 1200,
+          "height": 628,
+          "altText": "RAMZES666 spoke about 322 on the pro scene",
+          "variants": [
+            {
+              "id": 5149,
+              "url": "https://hawk.live/storage/images/variants/posts/e40d89439b86a86feb92ce03726b09e5e055cb0ff929161a51c7dff500a49a96-w240-h126.webp",
+              "width": 240,
+              "height": 126,
+              "format": "webp"
+            },
+            {
+              "id": 5150,
+              "url": "https://hawk.live/storage/images/variants/posts/cef72c15389d21c72c7b5711b907c4f8b6e93dba414f5046e69edf8b02ca2df9-w240-h126.avif",
+              "width": 240,
+              "height": 126,
+              "format": "avif"
+            }
+          ]
+        },
+        "publishAt": "2026-04-22T11:10:00.000000Z"
+      },
+      {
+        "id": 15649,
+        "schemaType": "Article",
+        "title": "Chopper Speaks Out After Team Spirit's Loss at IEM Rio",
+        "slug": "chopper-speaks-team-spirit-loss-iem-rio",
+        "image": {
+          "id": 24335,
+          "url": "https://hawk.live/storage/images/posts/chopper-compiled-list-best-coaches-24335.jpg",
+          "width": 1200,
+          "height": 628,
+          "altText": "Chopper comments on Team Spirit’s loss",
+          "variants": [
+            {
+              "id": 6419,
+              "url": "https://hawk.live/storage/images/variants/posts/5effe8ab5d096efe1555c23b5968fa846ea34b55f0fb1d2da84a11a7ca96a7a3-w240-h126.webp",
+              "width": 240,
+              "height": 126,
+              "format": "webp"
+            },
+            {
+              "id": 6420,
+              "url": "https://hawk.live/storage/images/variants/posts/4d5d898064d769af979a2f0d332bd4b029f6d2aa485b1d148d98f439dcb5f522-w240-h126.avif",
+              "width": 240,
+              "height": 126,
+              "format": "avif"
+            }
+          ]
+        },
+        "publishAt": "2026-04-22T09:28:00.000000Z"
+      },
+      {
+        "id": 15648,
+        "schemaType": "NewsArticle",
+        "title": "Mind_Control Returns to the Dota 2 Pro Scene as a Coach",
+        "slug": "mindcontrol-returns-dota-2-pro-scene-coach",
+        "image": {
+          "id": 24647,
+          "url": "https://hawk.live/storage/images/posts/mindcontrol-become-dota-2-teams-coach-24647.jpg",
+          "width": 1200,
+          "height": 628,
+          "altText": "Mind_Control has become the Dota 2 team’s coach",
+          "variants": [
+            {
+              "id": 8709,
+              "url": "https://hawk.live/storage/images/variants/posts/8ab5579cccb5a369ddda26494e3c4548cf58d3cabba3ea42ff84a149d6e745bc-w240-h126.webp",
+              "width": 240,
+              "height": 126,
+              "format": "webp"
+            },
+            {
+              "id": 8710,
+              "url": "https://hawk.live/storage/images/variants/posts/5e08e9f33c5bedc9aea8276059cbe3fc9b839ea360be86e19b77eb4f5f465619-w240-h126.avif",
+              "width": 240,
+              "height": 126,
+              "format": "avif"
+            }
+          ]
+        },
+        "publishAt": "2026-04-22T06:34:00.000000Z"
+      }
+    ],
+    "latestSeriesResults": [
+      {
+        "id": 94385,
+        "slug": "flawless-goblins-vs-riftwalkers",
+        "championship": {
+          "id": 2258,
+          "name": "Destiny League 2026 Season 41",
+          "slug": "destiny-league-2026-season-41"
+        },
+        "team1": {
+          "id": 3098,
+          "name": "Flawless Goblins",
+          "logoUrl": "https://hawk.live/storage/teams/3098.png"
+        },
+        "team2": {
+          "id": 9473,
+          "name": "Riftwalkers",
+          "logoUrl": "https://hawk.live/storage/teams/9473.png"
+        },
+        "bestOf": 3,
+        "startAt": "2026-04-22T12:00:00.000000Z",
+        "team1Score": 2,
+        "team2Score": 0,
+        "isTeam1Winner": true
+      },
+      {
+        "id": 94384,
+        "slug": "azure-dragons-vs-immortal-squad-6",
+        "championship": {
+          "id": 2220,
+          "name": "Mad Dogs League 2026 Season 44",
+          "slug": "mad-dogs-league-2026-season-44"
+        },
+        "team1": {
+          "id": 5732,
+          "name": "Azure Dragons",
+          "logoUrl": "https://hawk.live/storage/teams/5732.png"
+        },
+        "team2": {
+          "id": 5731,
+          "name": "Immortal Squad",
+          "logoUrl": "https://hawk.live/storage/teams/5731.png"
+        },
+        "bestOf": 3,
+        "startAt": "2026-04-22T11:00:00.000000Z",
+        "team1Score": 0,
+        "team2Score": 2,
+        "isTeam1Winner": false
+      },
+      {
+        "id": 94383,
+        "slug": "ghost-sheep-vs-nethercore-2",
+        "championship": {
+          "id": 2224,
+          "name": "Ultras Dota Pro League 2025-2026 Season 53",
+          "slug": "ultras-dota-pro-league-2025-2026-season-53"
+        },
+        "team1": {
+          "id": 4562,
+          "name": "Ghost Sheep",
+          "logoUrl": "https://hawk.live/storage/teams/4562.png"
+        },
+        "team2": {
+          "id": 7916,
+          "name": "Nethercore",
+          "logoUrl": "https://hawk.live/storage/teams/7916.png"
+        },
+        "bestOf": 3,
+        "startAt": "2026-04-22T10:00:00.000000Z",
+        "team1Score": 0,
+        "team2Score": 2,
+        "isTeam1Winner": false
+      },
+      {
+        "id": 94382,
+        "slug": "dark-tamplars-vs-peacekeepers-team-4",
+        "championship": {
+          "id": 2220,
+          "name": "Mad Dogs League 2026 Season 44",
+          "slug": "mad-dogs-league-2026-season-44"
+        },
+        "team1": {
+          "id": 5899,
+          "name": "Dark Tamplars",
+          "logoUrl": "https://hawk.live/storage/teams/5899.png"
+        },
+        "team2": {
+          "id": 4466,
+          "name": "Peacekeepers Team",
+          "logoUrl": "https://hawk.live/storage/teams/4466.png"
+        },
+        "bestOf": 3,
+        "startAt": "2026-04-22T10:00:00.000000Z",
+        "team1Score": 2,
+        "team2Score": 0,
+        "isTeam1Winner": true
+      },
+      {
+        "id": 94381,
+        "slug": "dark-rebellion-vs-lunar-vibes",
+        "championship": {
+          "id": 2258,
+          "name": "Destiny League 2026 Season 41",
+          "slug": "destiny-league-2026-season-41"
+        },
+        "team1": {
+          "id": 6985,
+          "name": "Dark Rebellion",
+          "logoUrl": "https://hawk.live/storage/teams/6985.png"
+        },
+        "team2": {
+          "id": 8743,
+          "name": "Lunar Vibes",
+          "logoUrl": "https://hawk.live/storage/teams/8743.png"
+        },
+        "bestOf": 3,
+        "startAt": "2026-04-22T09:00:00.000000Z",
+        "team1Score": 0,
+        "team2Score": 2,
+        "isTeam1Winner": false
+      },
+      {
+        "id": 94352,
+        "slug": "south-america-rejects-vs-mouz",
+        "championship": {
+          "id": 2255,
+          "name": "PGL Wallachia Season 8: Group Stage",
+          "slug": "pgl-wallachia-season-8-group-stage"
+        },
+        "team1": {
+          "id": 5077,
+          "name": "South America Rejects",
+          "logoUrl": "https://hawk.live/storage/teams/5077.png"
+        },
+        "team2": {
+          "id": 6709,
+          "name": "MOUZ",
+          "logoUrl": "https://hawk.live/storage/teams/6709.png"
+        },
+        "bestOf": 3,
+        "startAt": "2026-04-22T09:00:00.000000Z",
+        "team1Score": 2,
+        "team2Score": 1,
+        "isTeam1Winner": true
+      },
+      {
+        "id": 94345,
+        "slug": "rune-eaters-vs-modus",
+        "championship": {
+          "id": 2257,
+          "name": "DreamLeague Division 2 Season 4: Group Stage",
+          "slug": "dreamleague-division-2-season-4-group-stage"
+        },
+        "team1": {
+          "id": 3465,
+          "name": "Rune Eaters",
+          "logoUrl": "https://hawk.live/storage/teams/3465.png"
+        },
+        "team2": {
+          "id": 10308,
+          "name": "MODUS",
+          "logoUrl": "https://hawk.live/storage/teams/10308.png"
+        },
+        "bestOf": 3,
+        "startAt": "2026-04-22T09:00:00.000000Z",
+        "team1Score": 2,
+        "team2Score": 1,
+        "isTeam1Winner": true
+      },
+      {
+        "id": 94344,
+        "slug": "roar-gaming-vs-team-lynx",
+        "championship": {
+          "id": 2257,
+          "name": "DreamLeague Division 2 Season 4: Group Stage",
+          "slug": "dreamleague-division-2-season-4-group-stage"
+        },
+        "team1": {
+          "id": 8768,
+          "name": "Roar Gaming",
+          "logoUrl": "https://hawk.live/storage/teams/8768.png"
+        },
+        "team2": {
+          "id": 8707,
+          "name": "team lynx",
+          "logoUrl": "https://hawk.live/storage/teams/8707.png"
+        },
+        "bestOf": 3,
+        "startAt": "2026-04-22T09:00:00.000000Z",
+        "team1Score": 0,
+        "team2Score": 2,
+        "isTeam1Winner": false
+      }
+    ],
+    "isLatestSeriesResultsVisible": false,
+    "topSeries": {
+      "id": 94353,
+      "slug": "xtreme-gaming-vs-team-spirit",
+      "championship": {
+        "id": 2255,
+        "name": "PGL Wallachia Season 8: Group Stage",
+        "slug": "pgl-wallachia-season-8-group-stage"
+      },
+      "team1": {
+        "id": 1105,
+        "name": "Xtreme Gaming",
+        "logoUrl": "https://hawk.live/storage/teams/1105.png"
+      },
+      "team2": {
+        "id": 19,
+        "name": "Team Spirit",
+        "logoUrl": "https://hawk.live/storage/teams/19.png"
+      },
+      "bestOf": 3,
+      "startAt": "2026-04-22T13:30:00.000000Z",
+      "moneylines": [
+        {
+          "oddsProviderCodeName": "parimatch",
+          "externalId": "16456422",
+          "team1WinOdds": "1.90",
+          "team2WinOdds": "1.90"
+        },
+        {
+          "oddsProviderCodeName": "spin-better",
+          "externalId": "325959516",
+          "team1WinOdds": "1.90",
+          "team2WinOdds": "1.90"
+        },
+        {
+          "oddsProviderCodeName": "ggbet",
+          "externalId": "5:85db08b5-8d2a-42f0-a18b-6946f97c653c",
+          "team1WinOdds": "1.83",
+          "team2WinOdds": "1.88"
+        },
+        {
+          "oddsProviderCodeName": "betboom",
+          "externalId": "4550474",
+          "team1WinOdds": "1.78",
+          "team2WinOdds": "2.05"
+        }
+      ]
+    }
+  },
+  "url": "/dota-2/matches/dreamleague-division-2-season-4-group-stage/team-lynx-vs-nemiga-gaming",
+  "version": "3589651a4788e8f1a21b7cf6ec101664",
+  "clearHistory": false,
+  "encryptHistory": false
+}
