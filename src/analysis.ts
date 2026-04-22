@@ -141,10 +141,27 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   if (request.params.name === "calculate_kelly_wager") {
     const p = args.winProbability as number;
-    const b = (args.decimalOdds as number) - 1; // b is net odds
-    const q = 1 - p;
-    const fraction = (args.fraction as number) || 0.5; // Default half-kelly
+    const decimalOdds = args.decimalOdds as number;
     const bankroll = args.bankroll as number;
+    const fraction = (args.fraction as number) || 0.5; // Default half-kelly
+
+    if (decimalOdds <= 1.0) {
+      return { 
+        content: [{ 
+          type: "text", 
+          text: JSON.stringify({
+            optimal_kelly_percentage: "0.00%",
+            adjusted_kelly_percentage: "0.00%",
+            recommended_wager_amount: "0.00",
+            bankroll_remaining: bankroll.toFixed(2),
+            note: "Odds must be greater than 1.0 for Kelly Criterion."
+          }, null, 2) 
+        }] 
+      };
+    }
+
+    const b = decimalOdds - 1; // b is net odds
+    const q = 1 - p;
     
     const kellyPct = (p * b - q) / b;
     const adjustedKellyPct = Math.max(0, kellyPct * fraction);
@@ -246,13 +263,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     let recommendation = "No Value Bet - Skip";
 
     if (bestTeam !== "None") {
-      const b = odds - 1;
-      const q = 1 - prob;
-      kellyPct = (prob * b - q) / b;
-      
-      // Use Fractional Kelly (1/4 Kelly) to adjust for Overinference/Underinference risks noted in literature
-      const fractionalKelly = kellyPct * 0.25; 
-      recommendedWager = Math.max(0, bankroll * fractionalKelly);
+      if (odds > 1.0) {
+        const b = odds - 1;
+        const q = 1 - prob;
+        kellyPct = (prob * b - q) / b;
+        
+        // Use Fractional Kelly (1/4 Kelly) to adjust for Overinference/Underinference risks noted in literature
+        const fractionalKelly = kellyPct * 0.25; 
+        recommendedWager = Math.max(0, bankroll * fractionalKelly);
+      } else {
+        kellyPct = 0;
+        recommendedWager = 0;
+      }
       
       recommendation = ev > 0.10 ? "Strong Value Bet" : "Marginal Value Bet";
     }
