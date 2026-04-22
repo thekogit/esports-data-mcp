@@ -174,6 +174,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     momentumScore += (clutches * 0.05); // 5% boost per clutch
     momentumScore -= (throws * 0.08); // 8% penalty per throw (tilting is stronger than clutching)
     
+    momentumScore = Math.max(0.1, momentumScore);
+    
     return { 
       content: [{ 
         type: "text", 
@@ -190,8 +192,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const eloB = args.teamBElo as number;
     const draftAdv = (args.teamADraftAdvantage as number) || 0;
     const actionScoreB = (args.teamBActionScore as number) || 0;
-    const momentumA = (args.teamAMomentum as number) || 1.0;
-    const momentumB = (args.teamBMomentum as number) || 1.0;
+    const momentumA = Math.max(0.1, (args.teamAMomentum as number) ?? 1.0);
+    const momentumB = Math.max(0.1, (args.teamBMomentum as number) ?? 1.0);
     const oddsA = args.bookmakerOddsTeamA as number;
     const oddsB = args.bookmakerOddsTeamB as number;
     const bankroll = args.bankroll as number;
@@ -260,20 +262,20 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     let evMarket: number | undefined = undefined;
 
     if (polymarketProbA !== undefined && bestTeam !== "None") {
+      marketValidation = "Neutral";
       const modelProb = bestTeam === "Team A" ? probA : probB;
       const marketProb = bestTeam === "Team A" ? polymarketProbA : (1 - polymarketProbA);
       const impliedBookieProb = bestTeam === "Team A" ? impliedProbA : impliedProbB;
 
-      const modelEdge = modelProb - impliedBookieProb;
       const marketEdge = marketProb - impliedBookieProb;
 
       // EV relative to the market (how much better/worse our model is than the crowd)
       evMarket = marketProb > 0 ? (modelProb / marketProb) - 1 : 0;
 
-      if (modelEdge > 0 && marketEdge > 0) {
+      if (marketEdge > 0) {
         marketValidation = "Confirmed";
         if (recommendation === "Strong Value Bet") recommendation = "Confirmed Strong Value Bet";
-      } else if ((modelEdge > 0 && marketEdge < 0) || (modelEdge < 0 && marketEdge > 0)) {
+      } else if (marketEdge < 0) {
         marketValidation = "Divergent";
       }
 
