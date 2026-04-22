@@ -3,3 +3,4 @@ dist/
 .omg/
 .env
 *.log
+.worktrees/
