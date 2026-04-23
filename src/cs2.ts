@@ -32,7 +32,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: "get_cs2_matches",
-        description: "Get live scorebot and upcoming matches with odds",
+        description: "Get live scorebot and upcoming matches. Note: If odds are null, fetch them via web-search (e.g., using google_web_search on vlr.gg or hltv.org).",
         inputSchema: { type: "object", properties: {} }
       },
       {
@@ -107,10 +107,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const rawMatches = await getCachedData("matches", () => HLTV.getMatches());
     const matchesWithOdds = rawMatches.map((m: any) => ({
       ...m,
-      odds: m.odds || {
-        team1: (Math.random() * (3.5 - 1.1) + 1.1).toFixed(2),
-        team2: (Math.random() * (3.5 - 1.1) + 1.1).toFixed(2)
-      }
+      odds: m.odds || null
     }));
     return { content: [{ type: "text", text: JSON.stringify(matchesWithOdds.slice(0, 15), null, 2) }] };
   }
