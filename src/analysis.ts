@@ -73,6 +73,17 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             teamBElo: { type: "number" },
             teamADraftAdvantage: { type: "number", description: "Draft synergy/counter advantage for Team A (-0.1 to 0.1)" },
             teamBActionScore: { type: "number", description: "Recent average action impact score of Team B vs Team A" },
+            playerImpacts: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  impact: { type: "number", description: "The impact score for the player" },
+                  position: { type: "number", enum: [1, 2, 3, 4, 5], description: "The player's position (1=Carry, 2=Mid, 3=Offlane, 4=Soft Support, 5=Hard Support)" }
+                },
+                required: ["impact", "position"]
+              }
+            },
             teamAMomentum: { type: "number", description: "Momentum multiplier for Team A (e.g. 1.05)" },
             teamBMomentum: { type: "number", description: "Momentum multiplier for Team B (e.g. 0.95)" },
             bookmakerOddsTeamA: { type: "number", description: "Decimal odds for Team A" },
@@ -250,6 +261,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const eloB = args.teamBElo as number;
     const draftAdv = (args.teamADraftAdvantage as number) || 0;
     const actionScoreB = (args.teamBActionScore as number) || 0;
+    const playerImpacts = args.playerImpacts as { impact: number; position: number }[] | undefined;
     const momentumA = Math.max(0.1, (args.teamAMomentum as number) ?? 1.0);
     const momentumB = Math.max(0.1, (args.teamBMomentum as number) ?? 1.0);
     const oddsA = args.bookmakerOddsTeamA as number;
@@ -258,10 +270,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const polymarketProbA = args.polymarketProbabilityTeamA as number | undefined;
 
     // 1. Calculate Fair Probability (Elo + Draft + ActionScore)
-    // Action2Score adjustment (if B has a high action score, A's win probability goes down slightly)
+    const weightMap: Record<number, number> = { 1: 1.2, 2: 1.1, 3: 1.0, 4: 0.8, 5: 0.8 };
+    
     let probA = 1 / (1 + Math.pow(10, (eloB - eloA) / 400));
     probA += draftAdv;
-    probA -= (actionScoreB * 0.05); // Arbitrary scaling for the impact metric
+    
+    if (playerImpacts && playerImpacts.length > 0) {
+      const totalImpactAdj = playerImpacts.reduce((sum, p) => sum + (p.impact * (weightMap[p.position] || 1.0)), 0);
+      probA += (totalImpactAdj * 0.05);
+    } else {
+      // Action2Score adjustment fallback (if B has a high action score, A's win probability goes down slightly)
+      probA -= (actionScoreB * 0.05);
+    }
     
     // 2. Apply Psychological Momentum (Scalable Psychological Momentum Forecasting)
     // Adjust odds based on relative momentum
