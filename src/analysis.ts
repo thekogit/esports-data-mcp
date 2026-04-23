@@ -82,6 +82,19 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
           required: ["teamAElo", "teamBElo", "bookmakerOddsTeamA", "bookmakerOddsTeamB", "bankroll"]
         }
+      },
+      {
+        name: "calculate_boltzmann_probs",
+        description: "Sharpens market odds using the Boltzmann distribution to correct for favorite-longshot bias.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            oddsHome: { type: "number" },
+            oddsAway: { type: "number" },
+            oddsDraw: { type: "number" }
+          },
+          required: ["oddsHome", "oddsAway"]
+        }
       }
     ]
   };
@@ -328,6 +341,33 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             recommended_wager_amount: recommendedWager.toFixed(2),
             kelly_fraction_used: "Quarter-Kelly (0.25) to account for model variance and overinference"
           }
+        }, null, 2) 
+      }] 
+    };
+  }
+
+  if (request.params.name === "calculate_boltzmann_probs") {
+    const oddsHome = args.oddsHome as number;
+    const oddsAway = args.oddsAway as number;
+    const oddsDraw = args.oddsDraw as number | undefined;
+
+    const eH = oddsHome / oddsAway;
+    const eA = oddsAway / oddsHome;
+    const eD = oddsDraw;
+
+    const pH_un = Math.exp(-eH);
+    const pA_un = Math.exp(-eA);
+    const pD_un = eD !== undefined ? Math.exp(-eD) : 0;
+
+    const Z = pH_un + pA_un + pD_un;
+
+    return { 
+      content: [{ 
+        type: "text", 
+        text: JSON.stringify({
+          home_prob: (pH_un / Z).toFixed(4),
+          away_prob: (pA_un / Z).toFixed(4),
+          draw_prob: (pD_un / Z).toFixed(4)
         }, null, 2) 
       }] 
     };
