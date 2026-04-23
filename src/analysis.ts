@@ -95,6 +95,34 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
           required: ["oddsHome", "oddsAway"]
         }
+      },
+      {
+        name: "calculate_bayesian_dirichlet",
+        description: "Updates market priors with historical evidence using a Bayesian Dirichlet posterior calculation.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            boltzmannProbs: {
+              type: "object",
+              properties: {
+                home: { type: "number" },
+                away: { type: "number" },
+                draw: { type: "number" }
+              },
+              required: ["home", "away"]
+            },
+            historicalCounts: {
+              type: "object",
+              properties: {
+                homeWins: { type: "number" },
+                awayWins: { type: "number" },
+                draws: { type: "number" }
+              },
+              required: ["homeWins", "awayWins"]
+            }
+          },
+          required: ["boltzmannProbs", "historicalCounts"]
+        }
       }
     ]
   };
@@ -370,6 +398,44 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           draw_prob: (pD_un / Z).toFixed(4)
         }, null, 2) 
       }] 
+    };
+  }
+
+  if (request.params.name === "calculate_bayesian_dirichlet") {
+    const boltzmannProbs = args.boltzmannProbs as { home: number; away: number; draw?: number };
+    const historicalCounts = args.historicalCounts as { homeWins: number; awayWins: number; draws?: number };
+
+    const homeWins = historicalCounts.homeWins;
+    const awayWins = historicalCounts.awayWins;
+    const draws = historicalCounts.draws || 0;
+
+    // Calculate Prior Strength S
+    const S = Math.round(homeWins + awayWins + draws);
+
+    // Calculate Alpha Parameters
+    const alphaH = boltzmannProbs.home * S;
+    const alphaA = boltzmannProbs.away * S;
+    const alphaD = (boltzmannProbs.draw || 0) * S;
+
+    // Calculate Totals
+    const totalAlpha = alphaH + alphaA + alphaD;
+    const totalCount = homeWins + awayWins + draws;
+
+    // Calculate Posterior Probabilities
+    const posteriorHome = (homeWins + alphaH) / (totalCount + totalAlpha);
+    const posteriorAway = (awayWins + alphaA) / (totalCount + totalAlpha);
+    const posteriorDraw = (draws + alphaD) / (totalCount + totalAlpha);
+
+    return {
+      content: [{
+        type: "text",
+        text: JSON.stringify({
+          posterior_home: posteriorHome.toFixed(4),
+          posterior_away: posteriorAway.toFixed(4),
+          posterior_draw: posteriorDraw.toFixed(4),
+          prior_strength: S
+        }, null, 2)
+      }]
     };
   }
 
