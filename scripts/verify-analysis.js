@@ -91,6 +91,39 @@ async function runTests() {
     });
     console.log(JSON.stringify(result, null, 2));
   } catch (e) { console.log("Error:", e.message); }
+
+  console.log("\nScenario 5: Player Impacts (Accurate Roles)");
+  try {
+    const result = await testServer('dist/analysis.js', 'get_optimal_bet_strategy', {
+      ...baseArgs,
+      playerImpacts: [
+        { impact: 0.2, position: 1 }, // Carry with high impact
+        { impact: 0.1, position: 2 }, // Mid with some impact
+        { impact: -0.1, position: 5 } // Support with negative impact
+      ]
+    });
+    console.log(JSON.stringify(result, null, 2));
+  } catch (e) { console.log("Error:", e.message); }
+
+  console.log("\nTesting Boltzmann Probabilities...");
+  try {
+    const result = await testServer('dist/analysis.js', 'calculate_boltzmann_probs', {
+      oddsHome: 2.0,
+      oddsAway: 2.0
+    });
+    console.log(JSON.stringify(result, null, 2));
+  } catch (e) { console.log("Error:", e.message); }
+
+  console.log("\nTesting Bayesian Dirichlet...");
+  try {
+    // Example: Boltzmann gives 50/50, but history shows 10/10 wins.
+    // Posterior should stay 50/50.
+    const result = await testServer('dist/analysis.js', 'calculate_bayesian_dirichlet', {
+      boltzmannProbs: { home: 0.5, away: 0.5, draw: 0 },
+      historicalCounts: { homeWins: 10, awayWins: 10, draws: 0 }
+    });
+    console.log(JSON.stringify(result, null, 2));
+  } catch (e) { console.log("Error:", e.message); }
 }
 
 runTests();
