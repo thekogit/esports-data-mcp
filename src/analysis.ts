@@ -2,6 +2,36 @@ import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 
+type GameContext = 'dota2' | 'cs2' | 'valo' | 'generic';
+
+interface GameParameters {
+  lambda: number; // Time decay
+  temperature: number; // Boltzmann sharpening
+  posWeights: Record<string | number, number>;
+  biasCorrection: 'standard' | 'reverse' | 'none';
+}
+
+const GAME_PROFILES: Record<GameContext, GameParameters> = {
+  dota2: { lambda: 0.96, temperature: 0.8, posWeights: { 1: 1.2, 2: 1.1, 3: 1.0, 4: 0.8, 5: 0.8 }, biasCorrection: 'reverse' },
+  cs2: { lambda: 0.98, temperature: 1.1, posWeights: { 'IGL': 1.1, 'Entry': 1.1, 'AWPer': 1.05 }, biasCorrection: 'standard' },
+  valo: { lambda: 0.92, temperature: 1.2, posWeights: { 'Duelist': 1.15, 'Initiator': 1.1, 'Controller': 1.0, 'Sentinel': 1.0 }, biasCorrection: 'none' },
+  generic: { lambda: 0.95, temperature: 1.0, posWeights: {}, biasCorrection: 'none' }
+};
+
+function identifyGameContext(playerImpacts: any[]): GameContext {
+  if (!playerImpacts || playerImpacts.length === 0) return 'generic';
+  
+  const sample = playerImpacts[0];
+  if (typeof sample.position === 'number' && [1, 2, 3, 4, 5].includes(sample.position)) return 'dota2';
+  
+  const roles = playerImpacts.map(p => (p.role || '').toLowerCase());
+  if (roles.some(r => ['duelist', 'initiator', 'sentinel', 'controller'].includes(r))) return 'valo';
+  if (roles.some(r => ['igl', 'awper', 'entry', 'lurker'].includes(r))) return 'cs2';
+  if (roles.some(r => ['carry', 'mid', 'jungler', 'support'].includes(r))) return 'dota2';
+  
+  return 'generic';
+}
+
 const server = new Server(
   { name: "analysis-mcp", version: "1.0.0" },
   { capabilities: { tools: {} } }
