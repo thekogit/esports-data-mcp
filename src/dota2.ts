@@ -1,7 +1,7 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
-import { getLiquipediaTournaments } from './utils/liquipedia';
+import { getLiquipediaTournaments, getLiquipediaRoster } from './utils/liquipedia';
 import { fetchJson } from './utils/fetcher';
 import { parseHawkLiveMatch } from './utils/hawk_live';
 import { compareTwoStrings } from 'string-similarity';
@@ -121,6 +121,17 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             }
           },
           required: ["heroes"]
+        }
+      },
+      {
+        name: "get_dota2_team_roster",
+        description: "Get the current team roster including players and coach. Uses team name.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            teamName: { type: "string", description: "Team name (e.g. 'Team Spirit')" }
+          },
+          required: ["teamName"]
         }
       }
     ]
@@ -263,6 +274,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }).sort((a, b) => a.position - b.position);
 
     return { content: [{ type: "text", text: JSON.stringify(results, null, 2) }] };
+  }
+
+  if (request.params.name === "get_dota2_team_roster") {
+    const teamName = args.teamName as string;
+    // Replace spaces with underscores for Liquipedia URLs
+    const roster = await getLiquipediaRoster('dota2', teamName.replace(/ /g, '_'));
+    return { content: [{ type: "text", text: JSON.stringify(roster, null, 2) }] };
   }
 
   throw new Error("Tool not found");
