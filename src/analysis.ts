@@ -2,7 +2,7 @@ import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 
-type GameContext = 'dota2' | 'cs2' | 'valo' | 'generic';
+export type GameContext = 'dota2' | 'cs2' | 'valo' | 'generic';
 
 interface GameParameters {
   lambda: number; // Time decay
@@ -18,12 +18,21 @@ const GAME_PROFILES: Record<GameContext, GameParameters> = {
   generic: { lambda: 0.95, temperature: 1.0, posWeights: {}, biasCorrection: 'none' }
 };
 
-function identifyGameContext(playerImpacts: any[]): GameContext {
+export function identifyGameContext(playerImpacts: any[], context?: string): GameContext {
+  const ctxLower = (context || '').toLowerCase();
+  
+  // 1. Context Keyword Check
+  if (ctxLower.includes('dota') || ctxLower.includes('roshan')) return 'dota2';
+  if (ctxLower.includes('valorant') || ctxLower.includes('spike')) return 'valo';
+  if (ctxLower.includes('cs2') || ctxLower.includes('hltv')) return 'cs2';
+  if (ctxLower.includes('league') || ctxLower.includes('nexus')) return 'dota2'; // Defaulting LoL to Dota profile for now as they share MOBA logic
+
   if (!playerImpacts || playerImpacts.length === 0) return 'generic';
   
-  const sample = playerImpacts[0];
-  if (typeof sample.position === 'number' && [1, 2, 3, 4, 5].includes(sample.position)) return 'dota2';
+  // 2. Position Check (Robust)
+  if (playerImpacts.some(p => typeof p.position === 'number' && [1, 2, 3, 4, 5].includes(p.position))) return 'dota2';
   
+  // 3. Role Check
   const roles = playerImpacts.map(p => (p.role || '').toLowerCase());
   if (roles.some(r => ['duelist', 'initiator', 'sentinel', 'controller'].includes(r))) return 'valo';
   if (roles.some(r => ['igl', 'awper', 'entry', 'lurker'].includes(r))) return 'cs2';
@@ -498,4 +507,6 @@ async function main() {
   console.error("Probability Analysis MCP Server running");
 }
 
-main().catch(console.error);
+if (process.env.NODE_ENV !== 'test') {
+  main().catch(console.error);
+}
