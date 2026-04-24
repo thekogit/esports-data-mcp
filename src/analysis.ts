@@ -447,19 +447,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const bankroll = args.bankroll as number;
     const polymarketProbA = args.polymarketProbabilityTeamA as number | undefined;
 
-    // 1. Calculate Fair Probability (Elo + Draft + ActionScore)
-    const weightMap: Record<number, number> = { 1: 1.2, 2: 1.1, 3: 1.0, 4: 0.8, 5: 0.8 };
+    // 1. Calculate Fair Probability using the new Bayesian engine
+    const context = identifyGameContext(playerImpacts || [], "generic");
+    const result = calculateMatchProbabilities(
+      context, 
+      { home: oddsA, away: oddsB },
+      playerImpacts || [],
+      [] // History not available in this tool
+    );
     
-    let probA = 1 / (1 + Math.pow(10, (eloB - eloA) / 400));
-    probA += draftAdv;
-    
-    if (playerImpacts && playerImpacts.length > 0) {
-      const totalImpactAdj = playerImpacts.reduce((sum, p) => sum + (p.impact * (weightMap[p.position] || 1.0)), 0);
-      probA += (totalImpactAdj * 0.05);
-    } else {
-      // Action2Score adjustment fallback (if B has a high action score, A's win probability goes down slightly)
-      probA -= (actionScoreB * 0.05);
-    }
+    let probA = result.home;
     
     // 2. Apply Psychological Momentum (Scalable Psychological Momentum Forecasting)
     // Adjust odds based on relative momentum
