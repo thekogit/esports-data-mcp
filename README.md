@@ -51,6 +51,15 @@ This MCP server provides standardized data interfaces for competitive esports an
   - `get_rivals_team_info`: Detailed team profiles, including rosters and coaches from Liquipedia.
   - `get_rivals_player_stats`: Player statistics and performance data.
 
+  ### Statistical Analysis
+  - `analyze_match_bayesian`: **Unified Bayesian Engine**. Automatically detects game context (Dota 2, CS2, Valorant) and calculates win probabilities, Expected Value (EV), and optimal betting strategy (Quarter-Kelly). Supports market data comparison (Polymarket).
+  - `get_optimal_bet_strategy`: Multi-factor betting recommendation combining Elo, Momentum, Action2Score, and Prediction Market consensus.
+  - `get_fair_odds`: Elo-based win probability with draft synergy adjustments.
+  - `get_edge_analysis`: Compares fair odds against bookmakers to find value.
+  - `calculate_kelly_wager`: Optimal bankroll management calculator.
+  - `get_team_momentum`: Psychological state forecasting (On Fire/Tilted).
+  - `calculate_boltzmann_probs`: favorite-longshot bias correction.
+
   ## Getting Started
 
 ### Prerequisites
