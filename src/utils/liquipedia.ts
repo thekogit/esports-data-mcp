@@ -51,15 +51,32 @@ export async function getLiquipediaRoster(game: string, teamName: string) {
   const players: any[] = [];
   let coach: string | null = null;
 
-  // 1. Parse Active Roster Table
-  $('.teamcard-inner .player, .roster-card .player, .wikitable.roster-table tr').each((i, el) => {
+  // 1. Parse Team Card Layout
+  $('.teamcard-inner .player').each((i, el) => {
     const name = $(el).text().trim();
     if (name && !players.some(p => p.id === name)) {
       players.push({ id: name });
     }
   });
 
-  // 2. Parse Staff/Coach from infobox or dedicated tables
+  // 2. Parse Roster Table Layout (more robust, avoids headers, captures real names)
+  $('.wikitable.roster-table tr, .wikitable.table-roster tr').each((i, row) => {
+    const cells = $(row).find('td');
+    if (cells.length >= 2) {
+      const idElement = $(cells[0]).find('.player');
+      const id = idElement.length ? idElement.text().trim() : $(cells[0]).text().trim();
+      const realName = $(cells[1]).text().trim();
+
+      if (id && id !== 'ID' && !players.some(p => p.id === id)) {
+        players.push({
+          id,
+          name: realName || undefined
+        });
+      }
+    }
+  });
+
+  // 3. Parse Staff/Coach from infobox or dedicated tables
   $('.infobox-cell-2:contains("Coach"), .infobox-cell-2:contains("Head Coach")').each((i, el) => {
     const nextCell = $(el).next('.infobox-cell-2');
     if (nextCell.length) {
@@ -69,16 +86,20 @@ export async function getLiquipediaRoster(game: string, teamName: string) {
   
   // Fallback for coach in staff tables
   if (!coach) {
-    $('.wikitable.staff-table tr, .wikitable tr').each((i, el) => {
-      const text = $(el).text();
-      if (text.includes('Coach') || text.includes('Head Coach')) {
-        coach = $(el).find('td').last().text().trim();
+    $('.wikitable.staff-table tr, .wikitable tr').each((i, row) => {
+      const cells = $(row).find('td');
+      if (cells.length >= 2) {
+        const role = $(cells[0]).text().trim();
+        const name = $(cells[1]).text().trim();
+        if (role.includes('Coach') || role.includes('Head Coach')) {
+          coach = name;
+        }
       }
     });
   }
 
   return {
-    players,
+    players: players.filter(p => p.id),
     coach,
     lastUpdated: new Date().toISOString()
   };
