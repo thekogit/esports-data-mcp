@@ -19,7 +19,11 @@
     "@types/string-similarity": "^4.0.2",
     "axios": "^1.15.1",
     "cheerio": "^1.2.0",
+    "cloudscraper": "^4.6.0",
     "hltv": "^3.5.0",
+    "puppeteer": "^24.42.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "string-similarity": "^4.0.4"
   },
   "devDependencies": {

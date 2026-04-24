@@ -4,6 +4,7 @@ import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprot
 import { getLiquipediaTournaments, getLiquipediaRoster } from './utils/liquipedia';
 import { fetchJson, fetchAndSummarize } from './utils/fetcher';
 import { parseHawkLiveMatch } from './utils/hawk_live';
+import { searchEGWTeams } from './utils/egamersworld';
 import { compareTwoStrings } from 'string-similarity';
 import { solvePositions, POSITION_MAP } from './utils/dota2_roles';
 
@@ -133,6 +134,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
           required: ["teamName"]
         }
+      },
+      {
+        name: "search_dota2_egw_teams",
+        description: "Search for Dota 2 teams on EGamersWorld (high accuracy for smaller/newer teams)",
+        inputSchema: {
+          type: "object",
+          properties: { name: { type: "string" } },
+          required: ["name"]
+        }
+      },
+      {
+        name: "get_dota2_egw_live_matches",
+        description: "Get live Dota 2 matches from EGamersWorld",
+        inputSchema: { type: "object", properties: {} }
       }
     ]
   };
@@ -140,6 +155,16 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const args = request.params.arguments || {};
+
+  if (request.params.name === "search_dota2_egw_teams") {
+    const teams = await searchEGWTeams('dota2', args.name as string);
+    return { content: [{ type: "text", text: JSON.stringify(teams, null, 2) }] };
+  }
+
+  if (request.params.name === "get_dota2_egw_live_matches") {
+    const matches = await getEGWLiveMatches('dota2');
+    return { content: [{ type: "text", text: JSON.stringify(matches, null, 2) }] };
+  }
 
   if (request.params.name === "get_dota2_heroes") {
     const heroes = await getHeroes();
@@ -184,15 +209,43 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
     }
     
-    // Fallback for other URLs (e.g. egamersworld, bo3)
+    if (url.includes('egamersworld.com')) {
+      try {
+        const summary = await fetchAndSummarize(url);
+        return { 
+          content: [{ 
+            type: "text", 
+            text: `Detailed parsing for egamersworld.com is in progress. Here is a summary of the match data:\n\n${summary}` 
+          }] 
+        };
+      } catch (error: any) {
+        return {
+          content: [{
+            type: "text",
+            text: `Error accessing egamersworld.com: ${error.message}\n\nNote: This site often blocks automated requests. You may need to provide the data manually or use hawk.live.`
+          }]
+        };
+      }
+    }
+    
+    // Fallback for other URLs (e.g. bo3)
     // Reduce noise by fetching a surgical summary
-    const summary = await fetchAndSummarize(url);
-    return { 
-      content: [{ 
-        type: "text", 
-        text: `URL deep parsing not yet supported for this domain. Here is a surgical text summary of the page to help you extract the data manually:\n\n${summary}` 
-      }] 
-    };
+    try {
+      const summary = await fetchAndSummarize(url);
+      return { 
+        content: [{ 
+          type: "text", 
+          text: `URL deep parsing not yet supported for this domain. Here is a surgical text summary of the page to help you extract the data manually:\n\n${summary}` 
+        }] 
+      };
+    } catch (error: any) {
+      return {
+        content: [{
+          type: "text",
+          text: `Error parsing match URL: ${error.message}\n\nPlease try using a supported live data source like https://hawk.live or https://liquipedia.net`
+        }]
+      };
+    }
   }
 
   if (request.params.name === "get_dota2_team_info") {
@@ -202,18 +255,38 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   if (request.params.name === "search_dota2_teams") {
     const name = (args.name as string).toLowerCase();
+    
+    // 1. Try OpenDota first (standard for IDs)
     const allTeams = await fetchJson(`https://api.opendota.com/api/teams`);
     
-    const teams = allTeams.map((team: any) => ({
+    let teams = allTeams.map((team: any) => ({
       ...team,
       score: Math.max(
         compareTwoStrings(name, (team.name || "").toLowerCase()),
         compareTwoStrings(name, (team.tag || "").toLowerCase())
       )
     }))
-    .filter((team: any) => team.score > 0.3 || (team.name || "").toLowerCase().includes(name))
+    .filter((team: any) => team.score > 0.4 || (team.name || "").toLowerCase().includes(name))
     .sort((a: any, b: any) => b.score - a.score)
     .slice(0, 10);
+
+    // 2. Fallback to EGW if results are poor (for newer/niche teams like Vertex Pack)
+    if (teams.length === 0 || teams[0].score < 0.7) {
+      const egwTeams = await searchEGWTeams('dota2', args.name as string);
+      if (egwTeams.length > 0) {
+        // Map EGW results to a similar structure
+        const enrichedEGW = egwTeams.map(t => ({
+          name: t.name,
+          egw_url: t.url,
+          logo_url: t.logo,
+          score: t.score,
+          note: "Team found on EGamersWorld (high accuracy fallback)"
+        }));
+        
+        // Merge results, prioritizing exact name matches from EGW
+        return { content: [{ type: "text", text: JSON.stringify([...enrichedEGW, ...teams].slice(0, 10), null, 2) }] };
+      }
+    }
 
     return { content: [{ type: "text", text: JSON.stringify(teams, null, 2) }] };
   }

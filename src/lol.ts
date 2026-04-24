@@ -2,6 +2,7 @@ import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { fetchHtml } from './utils/fetcher';
+import { searchEGWTeams, getEGWLiveMatches } from './utils/egamersworld';
 import { getLiquipediaTournaments, getLiquipediaRoster } from './utils/liquipedia';
 import * as cheerio from 'cheerio';
 
@@ -58,6 +59,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: { teamName: { type: "string" } },
           required: ["teamName"]
         }
+      },
+      {
+        name: "search_lol_egw_teams",
+        description: "Search for League of Legends teams on EGamersWorld (high accuracy for smaller/newer teams)",
+        inputSchema: {
+          type: "object",
+          properties: { name: { type: "string" } },
+          required: ["name"]
+        }
+      },
+      {
+        name: "get_lol_egw_live_matches",
+        description: "Get live League of Legends matches from EGamersWorld",
+        inputSchema: { type: "object", properties: {} }
       }
     ]
   };
@@ -65,6 +80,16 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const args = request.params.arguments || {};
+
+  if (request.params.name === "search_lol_egw_teams") {
+    const teams = await searchEGWTeams('league-of-legends', args.name as string);
+    return { content: [{ type: "text", text: JSON.stringify(teams, null, 2) }] };
+  }
+
+  if (request.params.name === "get_lol_egw_live_matches") {
+    const matches = await getEGWLiveMatches('league-of-legends');
+    return { content: [{ type: "text", text: JSON.stringify(matches, null, 2) }] };
+  }
 
   if (request.params.name === "get_lol_tournaments") {
     const data = await getLiquipediaTournaments('leagueoflegends');

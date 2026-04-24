@@ -3,6 +3,8 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { HLTV } from 'hltv';
 
+import { searchEGWTeams, getEGWLiveMatches } from './utils/egamersworld';
+
 // Simple cache implementation
 const cache = new Map<string, { data: any, timestamp: number }>();
 const CACHE_TTL = 300000; // 5 minutes
@@ -90,6 +92,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: { teamId: { type: "number" } },
           required: ["teamId"]
         }
+      },
+      {
+        name: "search_cs2_egw_teams",
+        description: "Search for CS2 teams on EGamersWorld (high accuracy for smaller/newer teams)",
+        inputSchema: {
+          type: "object",
+          properties: { name: { type: "string" } },
+          required: ["name"]
+        }
+      },
+      {
+        name: "get_cs2_egw_live_matches",
+        description: "Get live CS2 matches from EGamersWorld",
+        inputSchema: { type: "object", properties: {} }
       }
     ]
   };
@@ -98,6 +114,16 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const args = request.params.arguments || {};
   
+  if (request.params.name === "search_cs2_egw_teams") {
+    const teams = await searchEGWTeams('csgo', args.name as string);
+    return { content: [{ type: "text", text: JSON.stringify(teams, null, 2) }] };
+  }
+
+  if (request.params.name === "get_cs2_egw_live_matches") {
+    const matches = await getEGWLiveMatches('csgo');
+    return { content: [{ type: "text", text: JSON.stringify(matches, null, 2) }] };
+  }
+
   if (request.params.name === "get_cs2_events") {
     const events = await getCachedData("events", () => HLTV.getEvents());
     return { content: [{ type: "text", text: JSON.stringify(events.slice(0, 20), null, 2) }] };

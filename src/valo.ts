@@ -2,6 +2,7 @@ import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { fetchHtml, fetchJson } from './utils/fetcher';
+import { searchEGWTeams, getEGWLiveMatches } from './utils/egamersworld';
 import * as cheerio from 'cheerio';
 
 const server = new Server(
@@ -63,6 +64,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: { teamId: { type: "string" } },
           required: ["teamId"]
         }
+      },
+      {
+        name: "search_valo_egw_teams",
+        description: "Search for Valorant teams on EGamersWorld (high accuracy for smaller/newer teams)",
+        inputSchema: {
+          type: "object",
+          properties: { name: { type: "string" } },
+          required: ["name"]
+        }
+      },
+      {
+        name: "get_valo_egw_live_matches",
+        description: "Get live Valorant matches from EGamersWorld",
+        inputSchema: { type: "object", properties: {} }
       }
     ]
   };
@@ -70,6 +85,16 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const args = request.params.arguments || {};
+
+  if (request.params.name === "search_valo_egw_teams") {
+    const teams = await searchEGWTeams('valorant', args.name as string);
+    return { content: [{ type: "text", text: JSON.stringify(teams, null, 2) }] };
+  }
+
+  if (request.params.name === "get_valo_egw_live_matches") {
+    const matches = await getEGWLiveMatches('valorant');
+    return { content: [{ type: "text", text: JSON.stringify(matches, null, 2) }] };
+  }
 
   if (request.params.name === "get_valo_matches") {
     const html = await fetchHtml('https://www.vlr.gg/matches');

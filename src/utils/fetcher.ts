@@ -25,8 +25,13 @@ async function fetchWithCache(url: string, isJson: boolean): Promise<any> {
   try {
     const { data } = await axios.get(url, {
       headers: { 
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-        'Accept': isJson ? 'application/json' : 'text/html'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'Accept': isJson ? 'application/json' : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Sec-Ch-Ua': '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
+        'Sec-Ch-Ua-Mobile': '?0',
+        'Sec-Ch-Ua-Platform': '"Windows"',
+        'Upgrade-Insecure-Requests': '1'
       }
     });
 
@@ -37,8 +42,14 @@ async function fetchWithCache(url: string, isJson: boolean): Promise<any> {
     cache.set(url, { data, timestamp: now });
     return data;
   } catch (error: any) {
-    if (error.response && error.response.status === 429) {
-      throw new Error('Rate limit exceeded (429)');
+    if (error.response) {
+      if (error.response.status === 429) {
+        throw new Error('Rate limit exceeded (429). Please wait a few minutes.');
+      }
+      if (error.response.status === 403) {
+        throw new Error(`Access Forbidden (403). This site (${new URL(url).hostname}) might be protected by anti-bot measures like Cloudflare. Try using a different source like Hawk Live or Liquipedia.`);
+      }
+      throw new Error(`Request failed with status ${error.response.status}: ${error.response.statusText}`);
     }
     throw error;
   }
