@@ -95,6 +95,12 @@ export function calculateMatchProbabilities(
   prior.home = Math.max(0.01, Math.min(0.99, prior.home + adjustment));
   prior.away = Math.max(0.01, Math.min(0.99, prior.away - adjustment));
 
+  // Re-normalize probabilities (home + away + draw = 1.0) after adjustment
+  const sumAdj = prior.home + prior.away + prior.draw;
+  prior.home /= sumAdj;
+  prior.away /= sumAdj;
+  prior.draw /= sumAdj;
+
   // 3. Time-Decayed Dirichlet Update
   let homeWins = 0, awayWins = 0, draws = 0;
   history.forEach(match => {
