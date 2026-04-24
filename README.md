@@ -22,12 +22,34 @@ This MCP server provides standardized data interfaces for competitive esports an
   - `analyze_dota2_draft`: Head-to-head hero matchup analysis.
   - `identify_dota2_roles`: AI-driven position assignment (1-5).
 
+  ### Counter-Strike 2 (CS2)
+  - `get_cs2_matches`: Live scorebot and upcoming matches.
+  - `get_cs2_team_info`: Detailed team profiles including rosters, coaches, and rankings from HLTV.
+  - `get_cs2_player_stats`: Historical performance metrics for players.
+  - `get_cs2_map_performance`: Team/player stats on specific maps.
+
   ### Valorant
   - `get_valo_matches`: Live and upcoming matches from vlr.gg.
   - `get_valo_events`: Tournament listings by tier.
-  - `get_valo_team_info`: Detailed team profiles, including rosters and coaches.
+  - `get_valo_team_info`: Detailed team profiles, including rosters and coaches from vlr.gg.
   - `get_valo_player_info`: Individual player stats and history.
   - `get_valo_match_history`: Recent results for form analysis.
+
+  ### League of Legends (LoL)
+  - `get_lol_matches`: Upcoming and ongoing matches from Liquipedia.
+  - `get_lol_team_info`: Detailed team profiles, including rosters and coaches from Liquipedia.
+  - `get_lol_player_info`: Individual player history and team data.
+  - `get_lol_gol_team_stats`: Advanced team stats from Games of Legends (gol.gg).
+
+  ### Overwatch 2
+  - `get_ow_live_matches`: Upcoming and live matches from Liquipedia.
+  - `get_ow_team_info`: Detailed team profiles, including rosters and coaches from Liquipedia.
+  - `get_ow_player_stats`: Player performance metrics from Overbuff.
+
+  ### Marvel Rivals
+  - `get_rivals_tournaments`: List current and upcoming tournaments.
+  - `get_rivals_team_info`: Detailed team profiles, including rosters and coaches from Liquipedia.
+  - `get_rivals_player_stats`: Player statistics and performance data.
 
   ## Getting Started
 
