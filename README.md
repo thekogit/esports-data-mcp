@@ -4,16 +4,32 @@ This MCP server provides standardized data interfaces for competitive esports an
 
 ## Core Capabilities
 - **Multi-Title Support:** Unified ingestion pipelines for major esports titles:
-  - Dota 2
-  - Counter-Strike 2 (CS2)
-  - League of Legends (LoL)
-  - Overwatch
-  - Valorant
-  - Marvel Rivals
-- **Data Analysis:** Built-in analytical tools to process raw match data into actionable betting insights.
-- **Live Integration:** Capability to fetch and parse real-time match data from major providers.
+  - **Dota 2:** Professional hero data, matchups, draft analysis, role identification, and live match data.
+  - **Valorant:** Match tracking, tournament listings, and team/player information from vlr.gg.
+  - **Multi-Title Rosters:** Advanced team information fetching including current player rosters and coaching staff for major titles.
+  - **Data Analysis:** Built-in analytical tools to process raw match data into actionable betting insights.
+  - **Live Integration:** Capability to fetch and parse real-time match data from major providers.
 
-## Getting Started
+  ## Available Tools
+
+  ### Dota 2
+  - `get_dota2_heroes`: List all Dota 2 heroes with IDs.
+  - `get_dota2_leagues`: List active tournaments.
+  - `get_dota2_live_matches`: Real-time score and stats.
+  - `search_dota2_teams`: Find team IDs by name.
+  - `get_dota2_team_info`: Detailed historical team data.
+  - `get_dota2_team_roster`: **New!** Fetch current player roster and coach from Liquipedia.
+  - `analyze_dota2_draft`: Head-to-head hero matchup analysis.
+  - `identify_dota2_roles`: AI-driven position assignment (1-5).
+
+  ### Valorant
+  - `get_valo_matches`: Live and upcoming matches from vlr.gg.
+  - `get_valo_events`: Tournament listings by tier.
+  - `get_valo_team_info`: Detailed team profiles, including rosters and coaches.
+  - `get_valo_player_info`: Individual player stats and history.
+  - `get_valo_match_history`: Recent results for form analysis.
+
+  ## Getting Started
 
 ### Prerequisites
 - Node.js (v18+)

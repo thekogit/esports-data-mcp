@@ -94,4 +94,27 @@ describe('getLiquipediaRoster', () => {
     const roster = await getLiquipediaRoster('dota2', 'Team_Spirit');
     expect(roster.coach).toBe('Silent');
   });
+
+  it('should merge real names into players already found in team card', async () => {
+    const html = `
+      <div class="teamcard-inner">
+        <div class="player">Yatoro</div>
+      </div>
+      <table class="wikitable roster-table">
+        <tr><th>ID</th><th>Name</th><th>Role</th></tr>
+        <tr>
+          <td><span class="player">Yatoro</span></td>
+          <td>Illya Mulyarchuk</td>
+          <td>Carry</td>
+        </tr>
+      </table>
+    `;
+    mockedFetchHtml.mockResolvedValue(html);
+
+    const roster = await getLiquipediaRoster('dota2', 'Team_Spirit');
+    
+    expect(roster.players).toHaveLength(1);
+    expect(roster.players[0].id).toBe('Yatoro');
+    expect(roster.players[0].name).toBe('Illya Mulyarchuk');
+  });
 });

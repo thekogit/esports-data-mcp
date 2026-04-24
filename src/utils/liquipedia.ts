@@ -1,12 +1,29 @@
 import { fetchHtml } from './fetcher';
 import * as cheerio from 'cheerio';
 
-export async function getLiquipediaTournaments(game: string) {
+export interface Player {
+  id: string;
+  name?: string;
+}
+
+export interface Roster {
+  players: Player[];
+  coach: string | null;
+  lastUpdated: string;
+}
+
+export interface Tournament {
+  tier: string;
+  name: string;
+  dates: string;
+}
+
+export async function getLiquipediaTournaments(game: string): Promise<Tournament[]> {
   const url = `https://liquipedia.net/${game}/Portal:Tournaments`;
   const html = await fetchHtml(url).catch(() => null);
   if (!html) return [];
   const $ = cheerio.load(html);
-  const tournaments: any[] = [];
+  const tournaments: Tournament[] = [];
   
   // Liquipedia ongoing tournaments are usually in a table after the "Ongoing" heading
   // Common selector for these tables
@@ -30,32 +47,33 @@ export async function getLiquipediaTournaments(game: string) {
   // Fallback to divTable selector if still empty
   if (tournaments.length === 0) {
     $('.divTable .divRow').each((i, el) => {
-      tournaments.push({
-        name: $(el).find('.Tournament, .divCell:nth-child(2)').text().trim(),
-        dates: $(el).find('.Date, .divCell:nth-child(3)').text().trim(),
-        tier: $(el).find('.Tier, .divCell:nth-child(1)').text().trim(),
-      });
-    }
-    );
+      const name = $(el).find('.Tournament, .divCell:nth-child(2)').text().trim();
+      const dates = $(el).find('.Date, .divCell:nth-child(3)').text().trim();
+      const tier = $(el).find('.Tier, .divCell:nth-child(1)').text().trim();
+      
+      if (name) {
+        tournaments.push({ name, dates, tier });
+      }
+    });
   }
 
   return tournaments.filter(t => t.name);
 }
 
-export async function getLiquipediaRoster(game: string, teamName: string) {
+export async function getLiquipediaRoster(game: string, teamName: string): Promise<Roster> {
   const url = `https://liquipedia.net/${game}/${teamName}`;
   const html = await fetchHtml(url).catch(() => null);
   if (!html) return { players: [], coach: null, lastUpdated: new Date().toISOString() };
   const $ = cheerio.load(html);
   
-  const players: any[] = [];
+  const players: Player[] = [];
   let coach: string | null = null;
 
   // 1. Parse Team Card Layout
   $('.teamcard-inner .player').each((i, el) => {
-    const name = $(el).text().trim();
-    if (name && !players.some(p => p.id === name)) {
-      players.push({ id: name });
+    const id = $(el).text().trim();
+    if (id && !players.some(p => p.id === id)) {
+      players.push({ id });
     }
   });
 
@@ -67,11 +85,18 @@ export async function getLiquipediaRoster(game: string, teamName: string) {
       const id = idElement.length ? idElement.text().trim() : $(cells[0]).text().trim();
       const realName = $(cells[1]).text().trim();
 
-      if (id && id !== 'ID' && !players.some(p => p.id === id)) {
-        players.push({
-          id,
-          name: realName || undefined
-        });
+      if (id && id !== 'ID') {
+        const existingPlayer = players.find(p => p.id === id);
+        if (existingPlayer) {
+          if (realName && !existingPlayer.name) {
+            existingPlayer.name = realName;
+          }
+        } else {
+          players.push({
+            id,
+            name: realName || undefined
+          });
+        }
       }
     }
   });
