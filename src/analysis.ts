@@ -55,7 +55,11 @@ export function identifyGameContext(playerImpacts: PlayerImpact[], context?: str
   return 'generic';
 }
 
-function calculateMatchProbabilities(
+function sigmoid(x: number): number {
+  return 1 / (1 + Math.exp(-x));
+}
+
+export function calculateMatchProbabilities(
   context: GameContext,
   odds: { home: number; away: number; draw?: number },
   playerImpacts: PlayerImpact[],
@@ -63,7 +67,7 @@ function calculateMatchProbabilities(
 ) {
   const profile = GAME_PROFILES[context];
   
-  // 1. Boltzmann Prior
+  // 1. Boltzmann Prior (corrected for bias)
   const eH = odds.home / odds.away;
   const eA = odds.away / odds.home;
   const eD = odds.draw;
@@ -73,9 +77,25 @@ function calculateMatchProbabilities(
   const pD_un = eD !== undefined ? Math.exp(-eD / profile.temperature) : 0;
   const Z = pH_un + pA_un + pD_un;
   
-  const prior = { home: pH_un / Z, away: pA_un / Z, draw: pD_un / Z };
+  const prior = { 
+    home: pH_un / (Z || 1), 
+    away: pA_un / (Z || 1), 
+    draw: pD_un / (Z || 1) 
+  };
 
-  // 2. Time-Decayed Dirichlet Update
+  // 2. Logistic Action2Score Adjustment
+  let totalImpactAdj = 0;
+  playerImpacts.forEach(p => {
+    const weight = profile.posWeights[p.position || ''] || profile.posWeights[p.role || ''] || 1.0;
+    totalImpactAdj += p.impact * weight;
+  });
+  
+  // Scale impact adjustment to a probability shift (-0.2 to 0.2)
+  const adjustment = (sigmoid(totalImpactAdj) - 0.5) * 0.4;
+  prior.home = Math.max(0.01, Math.min(0.99, prior.home + adjustment));
+  prior.away = Math.max(0.01, Math.min(0.99, prior.away - adjustment));
+
+  // 3. Time-Decayed Dirichlet Update
   let homeWins = 0, awayWins = 0, draws = 0;
   history.forEach(match => {
     const daysAgo = (Date.now() - new Date(match.date).getTime()) / (1000 * 60 * 60 * 24);
@@ -86,16 +106,17 @@ function calculateMatchProbabilities(
     else draws += weight;
   });
 
-  const S = Math.round(homeWins + awayWins + draws) || 10; // Default strength
+  const S = Math.round(homeWins + awayWins + draws) || 10;
   const alphaH = prior.home * S;
   const alphaA = prior.away * S;
   const alphaD = prior.draw * S;
 
-  const postH = (homeWins + alphaH) / (S + homeWins + awayWins + draws);
-  const postA = (awayWins + alphaA) / (S + homeWins + awayWins + draws);
-  const postD = (draws + alphaD) / (S + homeWins + awayWins + draws);
+  const denominator = S + homeWins + awayWins + draws;
+  const postH = (homeWins + alphaH) / (denominator || 1);
+  const postA = (awayWins + alphaA) / (denominator || 1);
+  const postD = (draws + alphaD) / (denominator || 1);
 
-  return { home: postH, away: postA, draw: postD, strength: S };
+  return { home: postH, away: postA, draw: postD, strength: S, adjustment };
 }
 
 const server = new Server(
@@ -597,6 +618,37 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           posterior_away: posteriorAway.toFixed(4),
           posterior_draw: posteriorDraw.toFixed(4),
           prior_strength: S
+        }, null, 2)
+      }]
+    };
+  }
+
+  if (request.params.name === "analyze_match_bayesian") {
+    const odds = args.odds as { home: number; away: number; draw?: number };
+    const playerImpacts = args.playerImpacts as PlayerImpact[];
+    const historicalResults = args.historicalResults as any[];
+    const contextStr = args.context as string | undefined;
+
+    const context = identifyGameContext(playerImpacts, contextStr);
+    const result = calculateMatchProbabilities(context, odds, playerImpacts, historicalResults);
+
+    return {
+      content: [{
+        type: "text",
+        text: JSON.stringify({
+          game_context: context,
+          probabilities: {
+            home: (result.home * 100).toFixed(2) + "%",
+            away: (result.away * 100).toFixed(2) + "%",
+            draw: (result.draw * 100).toFixed(2) + "%"
+          },
+          fair_odds: {
+            home: (1 / result.home).toFixed(3),
+            away: (1 / result.away).toFixed(3),
+            draw: result.draw > 0 ? (1 / result.draw).toFixed(3) : "N/A"
+          },
+          prior_strength: result.strength,
+          impact_adjustment: result.adjustment.toFixed(4)
         }, null, 2)
       }]
     };
