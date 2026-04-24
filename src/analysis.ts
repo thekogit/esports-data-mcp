@@ -61,7 +61,7 @@ function sigmoid(x: number): number {
 
 export function calculateMatchProbabilities(
   context: GameContext,
-  odds: { home: number; away: number; draw?: number },
+  odds: { teamA: number; teamB: number; draw?: number },
   playerImpacts: PlayerImpact[],
   history: any[],
   elo?: { a: number, b: number }
@@ -73,11 +73,11 @@ export function calculateMatchProbabilities(
   if (elo) {
     baseProbA = 1 / (1 + Math.pow(10, (elo.b - elo.a) / 400));
   } else {
-    const eH = odds.home / odds.away;
-    const eA = odds.away / odds.home;
-    const pH_un = Math.exp(-eH / profile.temperature);
+    const eA = odds.teamA / odds.teamB;
+    const eB = odds.teamB / odds.teamA;
     const pA_un = Math.exp(-eA / profile.temperature);
-    baseProbA = pH_un / (pH_un + pA_un);
+    const pB_un = Math.exp(-eB / profile.temperature);
+    baseProbA = pA_un / (pA_un + pB_un);
   }
 
   // 2. Bias Correction
@@ -85,7 +85,7 @@ export function calculateMatchProbabilities(
   if (profile.biasCorrection === 'standard' && baseProbA > 0.6) baseProbA -= 0.02;
   baseProbA = Math.max(0.01, Math.min(0.99, baseProbA));
 
-  const prior = { home: baseProbA, away: 1 - baseProbA, draw: 0 };
+  const prior = { teamA: baseProbA, teamB: 1 - baseProbA, draw: 0 };
 
   // 3. Logistic Action2Score Adjustment
   let totalImpactAdj = 0;
@@ -96,37 +96,37 @@ export function calculateMatchProbabilities(
   
   // Scale impact adjustment to a probability shift (-0.2 to 0.2)
   const adjustment = (sigmoid(totalImpactAdj) - 0.5) * 0.4;
-  prior.home = Math.max(0.01, Math.min(0.99, prior.home + adjustment));
-  prior.away = Math.max(0.01, Math.min(0.99, prior.away - adjustment));
+  prior.teamA = Math.max(0.01, Math.min(0.99, prior.teamA + adjustment));
+  prior.teamB = Math.max(0.01, Math.min(0.99, prior.teamB - adjustment));
 
-  // Re-normalize probabilities (home + away + draw = 1.0) after adjustment
-  const sumAdj = prior.home + prior.away + prior.draw;
-  prior.home /= sumAdj;
-  prior.away /= sumAdj;
+  // Re-normalize probabilities after adjustment
+  const sumAdj = prior.teamA + prior.teamB + prior.draw;
+  prior.teamA /= sumAdj;
+  prior.teamB /= sumAdj;
   prior.draw /= sumAdj;
 
-  // 3. Time-Decayed Dirichlet Update
-  let homeWins = 0, awayWins = 0, draws = 0;
+  // 4. Time-Decayed Dirichlet Update
+  let teamAWins = 0, teamBWins = 0, draws = 0;
   history.forEach(match => {
     const daysAgo = (Date.now() - new Date(match.date).getTime()) / (1000 * 60 * 60 * 24);
     const weight = Math.pow(profile.lambda, Math.max(0, daysAgo));
     
-    if (match.winner === 'home') homeWins += weight;
-    else if (match.winner === 'away') awayWins += weight;
+    if (match.winner === 'teamA') teamAWins += weight;
+    else if (match.winner === 'teamB') teamBWins += weight;
     else draws += weight;
   });
 
-  const S = Math.round(homeWins + awayWins + draws) || 10;
-  const alphaH = prior.home * S;
-  const alphaA = prior.away * S;
+  const S = Math.round(teamAWins + teamBWins + draws) || 10;
+  const alphaA = prior.teamA * S;
+  const alphaB = prior.teamB * S;
   const alphaD = prior.draw * S;
 
-  const denominator = S + homeWins + awayWins + draws;
-  const postH = (homeWins + alphaH) / (denominator || 1);
-  const postA = (awayWins + alphaA) / (denominator || 1);
+  const denominator = S + teamAWins + teamBWins + draws;
+  const postA = (teamAWins + alphaA) / (denominator || 1);
+  const postB = (teamBWins + alphaB) / (denominator || 1);
   const postD = (draws + alphaD) / (denominator || 1);
 
-  return { home: postH, away: postA, draw: postD, strength: S, adjustment };
+  return { teamA: postA, teamB: postB, draw: postD, strength: S, adjustment };
 }
 
 const server = new Server(
@@ -227,11 +227,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         inputSchema: {
           type: "object",
           properties: {
-            oddsHome: { type: "number" },
-            oddsAway: { type: "number" },
+            oddsA: { type: "number" },
+            oddsB: { type: "number" },
             oddsDraw: { type: "number" }
           },
-          required: ["oddsHome", "oddsAway"]
+          required: ["oddsA", "oddsB"]
         }
       },
       {
@@ -243,20 +243,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             boltzmannProbs: {
               type: "object",
               properties: {
-                home: { type: "number" },
-                away: { type: "number" },
+                teamA: { type: "number" },
+                teamB: { type: "number" },
                 draw: { type: "number" }
               },
-              required: ["home", "away"]
+              required: ["teamA", "teamB"]
             },
             historicalCounts: {
               type: "object",
               properties: {
-                homeWins: { type: "number" },
-                awayWins: { type: "number" },
+                teamAWins: { type: "number" },
+                teamBWins: { type: "number" },
                 draws: { type: "number" }
               },
-              required: ["homeWins", "awayWins"]
+              required: ["teamAWins", "teamBWins"]
             }
           },
           required: ["boltzmannProbs", "historicalCounts"]
@@ -273,11 +273,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             odds: {
               type: "object",
               properties: {
-                home: { type: "number" },
-                away: { type: "number" },
+                teamA: { type: "number" },
+                teamB: { type: "number" },
                 draw: { type: "number" }
               },
-              required: ["home", "away"]
+              required: ["teamA", "teamB"]
             },
             playerImpacts: {
               type: "array",
@@ -297,7 +297,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               items: {
                 type: "object",
                 properties: {
-                  winner: { type: "string", enum: ["home", "away", "draw"] },
+                  winner: { type: "string", enum: ["teamA", "teamB", "draw"] },
                   date: { type: "string", description: "ISO date string" },
                   score: { type: "string" }
                 },
@@ -441,37 +441,32 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   if (request.params.name === "get_optimal_bet_strategy") {
     const eloA = args.teamAElo as number;
     const eloB = args.teamBElo as number;
-    const draftAdv = (args.teamADraftAdvantage as number) || 0;
-    const actionScoreB = (args.teamBActionScore as number) || 0;
-    const playerImpacts = args.playerImpacts as { impact: number; position: number }[] | undefined;
     const momentumA = Math.max(0.1, (args.teamAMomentum as number) ?? 1.0);
     const momentumB = Math.max(0.1, (args.teamBMomentum as number) ?? 1.0);
     const oddsA = args.bookmakerOddsTeamA as number;
     const oddsB = args.bookmakerOddsTeamB as number;
     const bankroll = args.bankroll as number;
     const polymarketProbA = args.polymarketProbabilityTeamA as number | undefined;
+    const playerImpacts = args.playerImpacts as PlayerImpact[] | undefined;
 
-    // 1. Calculate Fair Probability using the new Bayesian engine
+    // 1. Calculate Fair Probability using the new Bayesian engine (symmetric)
     const context = identifyGameContext(playerImpacts || [], "generic");
     const result = calculateMatchProbabilities(
       context, 
-      { home: oddsA, away: oddsB },
+      { teamA: oddsA, teamB: oddsB },
       playerImpacts || [],
-      [], // History not available in this tool
+      [],
       { a: eloA, b: eloB }
     );
     
-    let probA = result.home;
+    let probA = result.teamA;
     
-    // 2. Apply Psychological Momentum (Scalable Psychological Momentum Forecasting)
-    // Adjust odds based on relative momentum
+    // 2. Apply Psychological Momentum
     probA = probA * (momentumA / momentumB);
-    
-    // Normalize
     probA = Math.max(0.01, Math.min(0.99, probA));
     const probB = 1 - probA;
 
-    // 3. Compare with Bookmaker (A Computational View of Market Efficiency)
+    // 3. Compare with Bookmaker
     const impliedProbA = 1 / oddsA;
     const impliedProbB = 1 / oddsB;
     const evA = (probA * oddsA) - 1;
@@ -498,54 +493,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       prob = probB;
     }
 
-    // 5. Calculate Kelly Wager (Application of the Kelly Criterion to Prediction Markets)
+    // 5. Calculate Kelly Wager
     let recommendedWager = 0;
-    let kellyPct = 0;
     let recommendation = "No Value Bet - Skip";
 
-    if (bestTeam !== "None") {
-      if (odds > 1.0) {
-        const b = odds - 1;
-        const q = 1 - prob;
-        kellyPct = (prob * b - q) / b;
-        
-        // Use Fractional Kelly (1/4 Kelly) to adjust for Overinference/Underinference risks noted in literature
-        const fractionalKelly = kellyPct * 0.25; 
-        recommendedWager = Math.max(0, bankroll * fractionalKelly);
-      } else {
-        kellyPct = 0;
-        recommendedWager = 0;
-      }
-      
+    if (bestTeam !== "None" && odds > 1.0) {
+      const b = odds - 1;
+      const q = 1 - prob;
+      const kellyPct = (prob * b - q) / b;
+      recommendedWager = Math.max(0, bankroll * kellyPct * 0.25);
       recommendation = ev > 0.10 ? "Strong Value Bet" : "Marginal Value Bet";
-    }
-
-    // 6. Polymarket Consensus Logic
-    let marketValidation = "No Market Data";
-    let evMarket: number | undefined = undefined;
-
-    if (polymarketProbA !== undefined && bestTeam !== "None") {
-      marketValidation = "Neutral";
-      const modelProb = bestTeam === "Team A" ? probA : probB;
-      const marketProb = bestTeam === "Team A" ? polymarketProbA : (1 - polymarketProbA);
-      const impliedBookieProb = bestTeam === "Team A" ? impliedProbA : impliedProbB;
-
-      const marketEdge = marketProb - impliedBookieProb;
-
-      // EV relative to the market (how much better/worse our model is than the crowd)
-      evMarket = marketProb > 0 ? (modelProb / marketProb) - 1 : 0;
-
-      if (marketEdge > 0) {
-        marketValidation = "Confirmed";
-        if (recommendation === "Strong Value Bet") recommendation = "Confirmed Strong Value Bet";
-      } else if (marketEdge < 0) {
-        marketValidation = "Divergent";
-      }
-
-      if (Math.abs(modelProb - marketProb) > 0.20) {
-        marketValidation = "High Divergence";
-        recommendation = "High Divergence - Exercise Caution";
-      }
     }
 
     return { 
@@ -556,18 +513,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             teamA_true_prob: (probA * 100).toFixed(2) + "%",
             teamB_true_prob: (probB * 100).toFixed(2) + "%",
             teamA_EV: (evA * 100).toFixed(2) + "%",
-            teamB_EV: (evB * 100).toFixed(2) + "%",
-            polymarket_implied_prob: polymarketProbA !== undefined ? (polymarketProbA * 100).toFixed(2) + "%" : "N/A",
-            ev_market: evMarket !== undefined ? (evMarket * 100).toFixed(2) + "%" : "N/A"
+            teamB_EV: (evB * 100).toFixed(2) + "%"
           },
           optimal_bet: {
             target: bestTeam,
             rationale: recommendation,
-            market_validation: marketValidation,
             probability_edge: (edge * 100).toFixed(2) + "%",
             expected_value: (ev * 100).toFixed(2) + "%",
-            recommended_wager_amount: recommendedWager.toFixed(2),
-            kelly_fraction_used: "Quarter-Kelly (0.25) to account for model variance and overinference"
+            recommended_wager_amount: recommendedWager.toFixed(2)
           }
         }, null, 2) 
       }] 
@@ -575,65 +528,57 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   }
 
   if (request.params.name === "calculate_boltzmann_probs") {
-    const oddsHome = args.oddsHome as number;
-    const oddsAway = args.oddsAway as number;
+    const oddsA = args.oddsA as number;
+    const oddsB = args.oddsB as number;
     const oddsDraw = args.oddsDraw as number | undefined;
 
-    const eH = oddsHome / oddsAway;
-    const eA = oddsAway / oddsHome;
+    const eA = oddsA / oddsB;
+    const eB = oddsB / oddsA;
     const eD = oddsDraw;
 
-    const pH_un = Math.exp(-eH);
     const pA_un = Math.exp(-eA);
+    const pB_un = Math.exp(-eB);
     const pD_un = eD !== undefined ? Math.exp(-eD) : 0;
 
-    const Z = pH_un + pA_un + pD_un;
+    const Z = pA_un + pB_un + pD_un;
 
     return { 
       content: [{ 
         type: "text", 
         text: JSON.stringify({
-          home_prob: (pH_un / Z).toFixed(4),
-          away_prob: (pA_un / Z).toFixed(4),
-          draw_prob: (pD_un / Z).toFixed(4)
+          teamA_prob: (pA_un / (Z || 1)).toFixed(4),
+          teamB_prob: (pB_un / (Z || 1)).toFixed(4),
+          draw_prob: (pD_un / (Z || 1)).toFixed(4)
         }, null, 2) 
       }] 
     };
   }
 
   if (request.params.name === "calculate_bayesian_dirichlet") {
-    const boltzmannProbs = args.boltzmannProbs as { home: number; away: number; draw?: number };
-    const historicalCounts = args.historicalCounts as { homeWins: number; awayWins: number; draws?: number };
+    const boltzmannProbs = args.boltzmannProbs as { teamA: number; teamB: number; draw?: number };
+    const historicalCounts = args.historicalCounts as { teamAWins: number; teamBWins: number; draws?: number };
 
-    const homeWins = historicalCounts.homeWins;
-    const awayWins = historicalCounts.awayWins;
+    const teamAWins = historicalCounts.teamAWins;
+    const teamBWins = historicalCounts.teamBWins;
     const draws = historicalCounts.draws || 0;
 
-    // Calculate Prior Strength S
-    const S = Math.round(homeWins + awayWins + draws);
-
-    // Calculate Alpha Parameters
-    const alphaH = boltzmannProbs.home * S;
-    const alphaA = boltzmannProbs.away * S;
+    const S = Math.round(teamAWins + teamBWins + draws) || 10;
+    const alphaA = boltzmannProbs.teamA * S;
+    const alphaB = boltzmannProbs.teamB * S;
     const alphaD = (boltzmannProbs.draw || 0) * S;
 
-    // Calculate Totals
-    const totalAlpha = alphaH + alphaA + alphaD;
-    const totalCount = homeWins + awayWins + draws;
-    const denominator = totalCount + totalAlpha;
-
-    // Calculate Posterior Probabilities
-    const posteriorHome = (homeWins + alphaH) / (denominator || 1);
-    const posteriorAway = (awayWins + alphaA) / (denominator || 1);
-    const posteriorDraw = (draws + alphaD) / (denominator || 1);
+    const denominator = S + teamAWins + teamBWins + draws;
+    const postA = (teamAWins + alphaA) / (denominator || 1);
+    const postB = (teamBWins + alphaB) / (denominator || 1);
+    const postD = (draws + alphaD) / (denominator || 1);
 
     return {
       content: [{
         type: "text",
         text: JSON.stringify({
-          posterior_home: posteriorHome.toFixed(4),
-          posterior_away: posteriorAway.toFixed(4),
-          posterior_draw: posteriorDraw.toFixed(4),
+          posterior_teamA: postA.toFixed(4),
+          posterior_teamB: postB.toFixed(4),
+          posterior_draw: postD.toFixed(4),
           prior_strength: S
         }, null, 2)
       }]
@@ -641,7 +586,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   }
 
   if (request.params.name === "analyze_match_bayesian") {
-    const odds = args.odds as { home: number; away: number; draw?: number };
+    const odds = args.odds as { teamA: number; teamB: number; draw?: number };
     const playerImpacts = args.playerImpacts as PlayerImpact[];
     const historicalResults = args.historicalResults as any[];
     const contextStr = args.context as string | undefined;
@@ -651,26 +596,22 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const context = identifyGameContext(playerImpacts, contextStr);
     const result = calculateMatchProbabilities(context, odds, playerImpacts, historicalResults);
 
-    // EV Analysis
-    const evHome = (result.home * odds.home) - 1;
-    const evAway = (result.away * odds.away) - 1;
+    const evA = (result.teamA * odds.teamA) - 1;
+    const evB = (result.teamB * odds.teamB) - 1;
     const evDraw = odds.draw ? (result.draw * odds.draw) - 1 : -1;
 
-    // Betting Strategy (Quarter-Kelly)
-    let bestOutcome: 'home' | 'away' | 'draw' = 'home';
-    let maxEV = evHome;
-    if (evAway > maxEV) { bestOutcome = 'away'; maxEV = evAway; }
+    let bestOutcome: 'teamA' | 'teamB' | 'draw' = 'teamA';
+    let maxEV = evA;
+    if (evB > maxEV) { bestOutcome = 'teamB'; maxEV = evB; }
     if (evDraw > maxEV) { bestOutcome = 'draw'; maxEV = evDraw; }
 
     let recommendation = "Skip";
     let wager = 0;
     
-    if (maxEV > 0.02) { // 2% minimum edge for recommendation
-      const p = bestOutcome === 'home' ? result.home : (bestOutcome === 'away' ? result.away : result.draw);
-      const o = bestOutcome === 'home' ? odds.home : (bestOutcome === 'away' ? odds.away : odds.draw!);
-      const b = o - 1;
-      const q = 1 - p;
-      const kelly = (p * b - q) / b;
+    if (maxEV > 0.02) {
+      const p = bestOutcome === 'teamA' ? result.teamA : (bestOutcome === 'teamB' ? result.teamB : result.draw);
+      const o = bestOutcome === 'teamA' ? odds.teamA : (bestOutcome === 'teamB' ? odds.teamB : odds.draw!);
+      const kelly = (p * (o - 1) - (1 - p)) / (o - 1);
       wager = Math.max(0, bankroll * kelly * 0.25);
       recommendation = `Bet on ${bestOutcome} (+EV: ${(maxEV * 100).toFixed(2)}%)`;
     }
@@ -681,30 +622,28 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         text: JSON.stringify({
           game_context: context,
           probabilities: {
-            home: (result.home * 100).toFixed(2) + "%",
-            away: (result.away * 100).toFixed(2) + "%",
+            teamA: (result.teamA * 100).toFixed(2) + "%",
+            teamB: (result.teamB * 100).toFixed(2) + "%",
             draw: (result.draw * 100).toFixed(2) + "%"
           },
           fair_odds: {
-            home: (1 / result.home).toFixed(3),
-            away: (1 / result.away).toFixed(3),
+            teamA: (1 / result.teamA).toFixed(3),
+            teamB: (1 / result.teamB).toFixed(3),
             draw: result.draw > 0 ? (1 / result.draw).toFixed(3) : "N/A"
           },
           ev_analysis: {
-            home: (evHome * 100).toFixed(2) + "%",
-            away: (evAway * 100).toFixed(2) + "%",
+            teamA: (evA * 100).toFixed(2) + "%",
+            teamB: (evB * 100).toFixed(2) + "%",
             draw: odds.draw ? (evDraw * 100).toFixed(2) + "%" : "N/A"
           },
           betting_strategy: {
             recommendation,
             optimal_wager: wager.toFixed(2),
-            kelly_fraction: "0.25 (Quarter-Kelly)",
-            bankroll_used: bankroll.toFixed(2)
+            kelly_fraction: "0.25 (Quarter-Kelly)"
           },
           market_comparison: marketData ? {
-            polymarket_diff: marketData.polymarketProb ? ((result.home - marketData.polymarketProb) * 100).toFixed(2) + "%" : "N/A",
-            exchange_ev: marketData.exchangeOdds ? ((result.home * marketData.exchangeOdds - 1) * 100).toFixed(2) + "%" : "N/A"
-          } : "No market data provided",
+            polymarket_diff: marketData.polymarketProb ? ((result.teamA - marketData.polymarketProb) * 100).toFixed(2) + "%" : "N/A"
+          } : "No market data",
           prior_strength: result.strength,
           impact_adjustment: result.adjustment.toFixed(4)
         }, null, 2)

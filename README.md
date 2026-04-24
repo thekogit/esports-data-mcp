@@ -26,7 +26,7 @@ where $\sigma$ is the sigmoid function $\frac{1}{1+e^{-x}}$. This bounds the per
 ### 4. Time-Decayed Bayesian Dirichlet Update
 Finally, we update our prior belief with historical head-to-head results using a Dirichlet-Multinomial update with a time-decay factor $\lambda$:
 $$\alpha_{new} = (\lambda \cdot \alpha_{old}) + x_t$$
-where $x_t$ is the result of match $t$ (one-hot encoded) and $\lambda \in [0.9, 0.99]$ ensures that recent form carries more weight than distant history.
+where $x_t$ is the result of match $t$ (one-hot encoded for Team A, Team B, or Draw) and $\lambda \in [0.9, 0.99]$ ensures that recent form carries more weight than distant history.
 
 ## Available Tools
 
