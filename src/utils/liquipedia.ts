@@ -45,11 +45,41 @@ export async function getLiquipediaTournaments(game: string) {
 export async function getLiquipediaRoster(game: string, teamName: string) {
   const url = `https://liquipedia.net/${game}/${teamName}`;
   const html = await fetchHtml(url).catch(() => null);
-  if (!html) return [];
+  if (!html) return { players: [], coach: null, lastUpdated: new Date().toISOString() };
   const $ = cheerio.load(html);
-  const players: string[] = [];
-  $('.teamcard-inner .player').each((i, el) => {
-    players.push($(el).text().trim());
+  
+  const players: any[] = [];
+  let coach: string | null = null;
+
+  // 1. Parse Active Roster Table
+  $('.teamcard-inner .player, .roster-card .player, .wikitable.roster-table tr').each((i, el) => {
+    const name = $(el).text().trim();
+    if (name && !players.some(p => p.id === name)) {
+      players.push({ id: name });
+    }
   });
-  return players;
+
+  // 2. Parse Staff/Coach from infobox or dedicated tables
+  $('.infobox-cell-2:contains("Coach"), .infobox-cell-2:contains("Head Coach")').each((i, el) => {
+    const nextCell = $(el).next('.infobox-cell-2');
+    if (nextCell.length) {
+      coach = nextCell.text().trim();
+    }
+  });
+  
+  // Fallback for coach in staff tables
+  if (!coach) {
+    $('.wikitable.staff-table tr, .wikitable tr').each((i, el) => {
+      const text = $(el).text();
+      if (text.includes('Coach') || text.includes('Head Coach')) {
+        coach = $(el).find('td').last().text().trim();
+      }
+    });
+  }
+
+  return {
+    players,
+    coach,
+    lastUpdated: new Date().toISOString()
+  };
 }
