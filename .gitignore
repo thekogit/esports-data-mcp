@@ -4,3 +4,17 @@ dist/
 .env
 *.log
 .worktrees/
+
+# Test and development files
+src/**/*.test.ts
+src/utils/*.test.ts
+scripts/*.js
+docs/superpowers/
+
+# Temporary data and helper files
+check_void.js
+data_page.json
+extract_json.js
+fetch_html.js
+match_page.html
+mcp-snippet.json

@@ -2,69 +2,59 @@
 
 This MCP server provides standardized data interfaces for competitive esports analytics, enabling seamless integration with betting platforms, statistical models, and live dashboards.
 
-## Core Capabilities
-- **Multi-Title Support:** Unified ingestion pipelines for major esports titles:
-  - **Dota 2:** Professional hero data, matchups, draft analysis, role identification, and live match data.
-  - **Valorant:** Match tracking, tournament listings, and team/player information from vlr.gg.
-  - **Multi-Title Rosters:** Advanced team information fetching including current player rosters and coaching staff for major titles.
-  - **Data Analysis:** Built-in analytical tools to process raw match data into actionable betting insights.
-  - **Live Integration:** Capability to fetch and parse real-time match data from major providers.
+## Mathematical Logic & Bayesian Analysis
 
-  ## Available Tools
+The core of our analysis engine uses a hierarchical Bayesian framework to correct for market biases and non-stationary team form.
 
-  ### Dota 2
-  - `get_dota2_heroes`: List all Dota 2 heroes with IDs.
-  - `get_dota2_leagues`: List active tournaments.
-  - `get_dota2_live_matches`: Real-time score and stats.
-  - `search_dota2_teams`: Find team IDs by name.
-  - `get_dota2_team_info`: Detailed historical team data.
-  - `get_dota2_team_roster`: **New!** Fetch current player roster and coach from Liquipedia.
-  - `analyze_dota2_draft`: Head-to-head hero matchup analysis.
-  - `identify_dota2_roles`: AI-driven position assignment (1-5).
+### 1. Baseline Win Probability (Elo)
+We calculate the initial win probability for Team $A$ against Team $B$ using the standard Elo logistics curve:
+$$P_{Elo}(A) = \frac{1}{1 + 10^{(R_B - R_A)/400}}$$
+where $R_A$ and $R_B$ are the respective Elo ratings.
 
-  ### Counter-Strike 2 (CS2)
-  - `get_cs2_matches`: Live scorebot and upcoming matches.
-  - `get_cs2_team_info`: Detailed team profiles including rosters, coaches, and rankings from HLTV.
-  - `get_cs2_player_stats`: Historical performance metrics for players.
-  - `get_cs2_map_performance`: Team/player stats on specific maps.
+### 2. Boltzmann Sharpening (Market Prior)
+If Elo is unavailable, we derive a prior from bookmaker odds using the Boltzmann distribution to correct for "favorite-longshot bias" (FLB):
+$$P_i = \frac{\exp(-E_i / T)}{\sum_j \exp(-E_j / T)}$$
+where $E_i$ is the inverse odd (energy level) and $T$ is the "market temperature."
+- **Low $T$ (0.8)**: Sharpens favorites (Dota 2 profile).
+- **High $T$ (1.2)**: Increases entropy for volatile games (Valorant profile).
 
-  ### Valorant
-  - `get_valo_matches`: Live and upcoming matches from vlr.gg.
-  - `get_valo_events`: Tournament listings by tier.
-  - `get_valo_team_info`: Detailed team profiles, including rosters and coaches from vlr.gg.
-  - `get_valo_player_info`: Individual player stats and history.
-  - `get_valo_match_history`: Recent results for form analysis.
+### 3. Logistic Action2Score Adjustment
+We adjust the win probability based on individual player impact scores, weighted by their specific game roles (e.g., Carry vs. Support):
+$$Adjustment = (\sigma(\sum_{i=1}^n Impact_i \cdot W_i) - 0.5) \cdot 0.4$$
+where $\sigma$ is the sigmoid function $\frac{1}{1+e^{-x}}$. This bounds the performance adjustment to a $\pm 20\%$ shift.
 
-  ### League of Legends (LoL)
-  - `get_lol_matches`: Upcoming and ongoing matches from Liquipedia.
-  - `get_lol_team_info`: Detailed team profiles, including rosters and coaches from Liquipedia.
-  - `get_lol_player_info`: Individual player history and team data.
-  - `get_lol_gol_team_stats`: Advanced team stats from Games of Legends (gol.gg).
+### 4. Time-Decayed Bayesian Dirichlet Update
+Finally, we update our prior belief with historical head-to-head results using a Dirichlet-Multinomial update with a time-decay factor $\lambda$:
+$$\alpha_{new} = (\lambda \cdot \alpha_{old}) + x_t$$
+where $x_t$ is the result of match $t$ (one-hot encoded) and $\lambda \in [0.9, 0.99]$ ensures that recent form carries more weight than distant history.
 
-  ### Overwatch 2
-  - `get_ow_live_matches`: Upcoming and live matches from Liquipedia.
-  - `get_ow_team_info`: Detailed team profiles, including rosters and coaches from Liquipedia.
-  - `get_ow_player_stats`: Player performance metrics from Overbuff.
+## Available Tools
 
-  ### Marvel Rivals
-  - `get_rivals_tournaments`: List current and upcoming tournaments.
-  - `get_rivals_team_info`: Detailed team profiles, including rosters and coaches from Liquipedia.
-  - `get_rivals_player_stats`: Player statistics and performance data.
+### Statistical Analysis (Unified Engine)
+- `analyze_match_bayesian`: **Unified Bayesian Engine**. Automatically detects game context (Dota 2, CS2, Valorant) and calculates win probabilities, Expected Value (EV), and optimal betting strategy (Quarter-Kelly). Supports market data comparison (Polymarket).
 
-  ### Statistical Analysis
-  - `analyze_match_bayesian`: **Unified Bayesian Engine**. Automatically detects game context (Dota 2, CS2, Valorant) and calculates win probabilities, Expected Value (EV), and optimal betting strategy (Quarter-Kelly). Supports market data comparison (Polymarket).
-  - `get_optimal_bet_strategy`: Multi-factor betting recommendation combining Elo, Momentum, Action2Score, and Prediction Market consensus.
-  - `get_fair_odds`: Elo-based win probability with draft synergy adjustments.
-  - `get_edge_analysis`: Compares fair odds against bookmakers to find value.
-  - `calculate_kelly_wager`: Optimal bankroll management calculator.
-  - `get_team_momentum`: Psychological state forecasting (On Fire/Tilted).
-  - `calculate_boltzmann_probs`: favorite-longshot bias correction.
+### Title-Specific Data Fetchers
+- **Dota 2:** `get_dota2_heroes`, `get_dota2_live_matches`, `search_dota2_teams`, `get_dota2_team_info`, `get_dota2_team_roster`.
+- **CS2:** `get_cs2_matches`, `get_cs2_team_info`, `get_cs2_player_stats`.
+- **Valorant:** `get_valo_matches`, `get_valo_events`, `get_valo_team_info`.
+- **League of Legends:** `get_lol_matches`, `get_lol_team_info`, `get_lol_gol_team_stats`.
+- **Others:** Overwatch 2, Marvel Rivals support.
 
-  ## Getting Started
+## Getting Started
 
-### Prerequisites
-- Node.js (v18+)
-- npm or yarn
+### MCP Configuration
+Add the following snippet to your `mcp.json` or `config.json` (adjusting paths to your local directory):
+```json
+{
+  "mcpServers": {
+    "esports-analysis": {
+      "command": "node",
+      "args": ["C:/Users/user/esports_betting_mcp/dist/analysis.js"],
+      "cwd": "C:/Users/user/esports_betting_mcp"
+    }
+  }
+}
+```
 
 ### Installation
 1. Clone the repository:
@@ -77,15 +67,10 @@ This MCP server provides standardized data interfaces for competitive esports an
    npm install
    ```
 3. Configuration:
-   Create a `.env` file in the project root based on `.env.example` (if provided) and add your necessary API tokens and service credentials. **Never commit the `.env` file to version control.**
+   Create a `.env` file in the project root and add your necessary API tokens.
 
 ### Running
 - Development: `npm run dev`
 - Build: `npm run build`
-- Run MCP: `node dist/index.js`
+- Run MCP: `node dist/analysis.js`
 
-## Development
-- **Testing:** `npm test`
-- **Linting:** `npm run lint`
-
-For detailed technical design and implementation plans, see the `docs/superpowers/` directory.
