@@ -107,19 +107,30 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const html = await fetchHtml(`https://www.vlr.gg/team/${args.teamId}`);
     const $ = cheerio.load(html);
     
-    const players = $('.team-roster-item').map((i, el) => ({
-      player: $(el).find('.team-roster-item-name-alias').text().trim(),
-      realName: $(el).find('.team-roster-item-name-real').text().trim(),
-    })).get();
-
-    // Find coach in the staff section
     let coach: string | null = null;
-    $('.team-staff-item').each((i, el) => {
-      const role = $(el).find('.team-staff-item-role').text().trim().toLowerCase();
+    const players: any[] = [];
+
+    $('.team-roster-item').each((i, el) => {
+      const alias = $(el).find('.team-roster-item-name-alias').text().trim();
+      const realName = $(el).find('.team-roster-item-name-real').text().trim();
+      const role = $(el).find('.team-roster-item-name-role').text().trim().toLowerCase();
+
       if (role.includes('coach')) {
-        coach = $(el).find('.team-staff-item-name-alias').text().trim();
+        coach = alias;
+      } else if (alias) {
+        players.push({ player: alias, realName });
       }
     });
+
+    // Fallback to staff section if coach still not found
+    if (!coach) {
+      $('.team-staff-item').each((i, el) => {
+        const role = $(el).find('.team-staff-item-role').text().trim().toLowerCase();
+        if (role.includes('coach')) {
+          coach = $(el).find('.team-staff-item-name-alias').text().trim();
+        }
+      });
+    }
 
     const team: any = {
       name: $('.team-header-name h1').text().trim(),
