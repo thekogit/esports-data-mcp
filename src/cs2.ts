@@ -115,7 +115,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   if (request.params.name === "get_cs2_team_info") {
     const teamId = args.teamId as number;
     const teamInfo = await getCachedData(`team_${teamId}`, () => HLTV.getTeam({ id: teamId }));
-    return { content: [{ type: "text", text: JSON.stringify(teamInfo, null, 2) }] };
+    return { 
+      content: [{ 
+        type: "text", 
+        text: JSON.stringify({
+          name: teamInfo.name,
+          players: teamInfo.players.map((p: any) => ({ id: p.name, name: p.fullname })),
+          coach: teamInfo.coach ? teamInfo.coach.name : null,
+          rank: teamInfo.rank,
+          recentResults: teamInfo.recentResults
+        }, null, 2) 
+      }] 
+    };
   }
 
   if (request.params.name === "get_cs2_team_match_history") {
