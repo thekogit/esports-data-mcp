@@ -4,6 +4,12 @@ import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprot
 
 export type GameContext = 'dota2' | 'cs2' | 'valo' | 'generic';
 
+export interface PlayerImpact {
+  impact: number;
+  position?: number;
+  role?: string;
+}
+
 interface GameParameters {
   lambda: number; // Time decay
   temperature: number; // Boltzmann sharpening
@@ -18,14 +24,22 @@ const GAME_PROFILES: Record<GameContext, GameParameters> = {
   generic: { lambda: 0.95, temperature: 1.0, posWeights: {}, biasCorrection: 'none' }
 };
 
-export function identifyGameContext(playerImpacts: any[], context?: string): GameContext {
+/**
+ * Identifies the game context using keyword heuristics from strings 
+ * and structural analysis of player roles/positions.
+ * 
+ * @param playerImpacts Array of player performance and role data
+ * @param context Optional string context (e.g. tournament name, game title)
+ * @returns Detected GameContext
+ */
+export function identifyGameContext(playerImpacts: PlayerImpact[], context?: string): GameContext {
   const ctxLower = (context || '').toLowerCase();
   
   // 1. Context Keyword Check
   if (ctxLower.includes('dota') || ctxLower.includes('roshan')) return 'dota2';
   if (ctxLower.includes('valorant') || ctxLower.includes('spike')) return 'valo';
   if (ctxLower.includes('cs2') || ctxLower.includes('hltv')) return 'cs2';
-  if (ctxLower.includes('league') || ctxLower.includes('nexus')) return 'dota2'; // Defaulting LoL to Dota profile for now as they share MOBA logic
+  if (ctxLower.includes('league') || ctxLower.includes('nexus')) return 'dota2'; // TODO: Add dedicated LoL profile if MOBA parameters diverge from Dota 2
 
   if (!playerImpacts || playerImpacts.length === 0) return 'generic';
   

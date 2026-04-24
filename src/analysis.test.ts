@@ -24,17 +24,17 @@ describe('identifyGameContext', () => {
 
   test('detects dota2 from positions using .some()', () => {
     expect(identifyGameContext([{ impact: 1, position: 3 }], '')).toBe('dota2');
-    expect(identifyGameContext([{ impact: 1, role: 'something' }, { position: 5 }], '')).toBe('dota2');
+    expect(identifyGameContext([{ impact: 1, role: 'something' }, { impact: 1, position: 5 }], '')).toBe('dota2');
   });
 
   test('detects games from roles', () => {
-    expect(identifyGameContext([{ role: 'Duelist' }], '')).toBe('valo');
-    expect(identifyGameContext([{ role: 'AWPer' }], '')).toBe('cs2');
-    expect(identifyGameContext([{ role: 'Jungler' }], '')).toBe('dota2');
+    expect(identifyGameContext([{ impact: 1, role: 'Duelist' }], '')).toBe('valo');
+    expect(identifyGameContext([{ impact: 1, role: 'AWPer' }], '')).toBe('cs2');
+    expect(identifyGameContext([{ impact: 1, role: 'Jungler' }], '')).toBe('dota2');
   });
 
   test('returns generic for unknown context and roles', () => {
     expect(identifyGameContext([], 'random')).toBe('generic');
-    expect(identifyGameContext([{ role: 'unknown' }], '')).toBe('generic');
+    expect(identifyGameContext([{ impact: 1, role: 'unknown' }], '')).toBe('generic');
   });
 });
