@@ -106,12 +106,25 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   if (request.params.name === "get_valo_team_info") {
     const html = await fetchHtml(`https://www.vlr.gg/team/${args.teamId}`);
     const $ = cheerio.load(html);
+    
+    const players = $('.team-roster-item').map((i, el) => ({
+      player: $(el).find('.team-roster-item-name-alias').text().trim(),
+      realName: $(el).find('.team-roster-item-name-real').text().trim(),
+    })).get();
+
+    // Find coach in the staff section
+    let coach: string | null = null;
+    $('.team-staff-item').each((i, el) => {
+      const role = $(el).find('.team-staff-item-role').text().trim().toLowerCase();
+      if (role.includes('coach')) {
+        coach = $(el).find('.team-staff-item-name-alias').text().trim();
+      }
+    });
+
     const team: any = {
       name: $('.team-header-name h1').text().trim(),
-      roster: $('.team-roster-item').map((i, el) => ({
-        player: $(el).find('.team-roster-item-name-alias').text().trim(),
-        realName: $(el).find('.team-roster-item-name-real').text().trim(),
-      })).get()
+      roster: players,
+      coach: coach
     };
     return { content: [{ type: "text", text: JSON.stringify(team, null, 2) }] };
   }
