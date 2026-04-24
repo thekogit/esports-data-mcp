@@ -63,27 +63,31 @@ export function calculateMatchProbabilities(
   context: GameContext,
   odds: { home: number; away: number; draw?: number },
   playerImpacts: PlayerImpact[],
-  history: any[]
+  history: any[],
+  elo?: { a: number, b: number }
 ) {
   const profile = GAME_PROFILES[context];
   
-  // 1. Boltzmann Prior (corrected for bias)
-  const eH = odds.home / odds.away;
-  const eA = odds.away / odds.home;
-  const eD = odds.draw;
+  // 1. Baseline Probability (Elo-based if available, else Market-based)
+  let baseProbA: number;
+  if (elo) {
+    baseProbA = 1 / (1 + Math.pow(10, (elo.b - elo.a) / 400));
+  } else {
+    const eH = odds.home / odds.away;
+    const eA = odds.away / odds.home;
+    const pH_un = Math.exp(-eH / profile.temperature);
+    const pA_un = Math.exp(-eA / profile.temperature);
+    baseProbA = pH_un / (pH_un + pA_un);
+  }
 
-  const pH_un = Math.exp(-eH / profile.temperature);
-  const pA_un = Math.exp(-eA / profile.temperature);
-  const pD_un = eD !== undefined ? Math.exp(-eD / profile.temperature) : 0;
-  const Z = pH_un + pA_un + pD_un;
-  
-  const prior = { 
-    home: pH_un / (Z || 1), 
-    away: pA_un / (Z || 1), 
-    draw: pD_un / (Z || 1) 
-  };
+  // 2. Bias Correction
+  if (profile.biasCorrection === 'reverse' && baseProbA > 0.6) baseProbA += 0.05;
+  if (profile.biasCorrection === 'standard' && baseProbA > 0.6) baseProbA -= 0.02;
+  baseProbA = Math.max(0.01, Math.min(0.99, baseProbA));
 
-  // 2. Logistic Action2Score Adjustment
+  const prior = { home: baseProbA, away: 1 - baseProbA, draw: 0 };
+
+  // 3. Logistic Action2Score Adjustment
   let totalImpactAdj = 0;
   playerImpacts.forEach(p => {
     const weight = profile.posWeights[p.position || ''] || profile.posWeights[p.role || ''] || 1.0;
@@ -453,7 +457,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       context, 
       { home: oddsA, away: oddsB },
       playerImpacts || [],
-      [] // History not available in this tool
+      [], // History not available in this tool
+      { a: eloA, b: eloB }
     );
     
     let probA = result.home;
@@ -615,11 +620,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     // Calculate Totals
     const totalAlpha = alphaH + alphaA + alphaD;
     const totalCount = homeWins + awayWins + draws;
+    const denominator = totalCount + totalAlpha;
 
     // Calculate Posterior Probabilities
-    const posteriorHome = (homeWins + alphaH) / (totalCount + totalAlpha);
-    const posteriorAway = (awayWins + alphaA) / (totalCount + totalAlpha);
-    const posteriorDraw = (draws + alphaD) / (totalCount + totalAlpha);
+    const posteriorHome = (homeWins + alphaH) / (denominator || 1);
+    const posteriorAway = (awayWins + alphaA) / (denominator || 1);
+    const posteriorDraw = (draws + alphaD) / (denominator || 1);
 
     return {
       content: [{

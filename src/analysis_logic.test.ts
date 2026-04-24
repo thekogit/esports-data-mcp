@@ -43,4 +43,34 @@ describe('calculateMatchProbabilities', () => {
     expect(resNeg.adjustment).toBeLessThan(0);
     expect(resPos.home).toBeGreaterThan(resNeg.home);
   });
+
+  test('Elo Integration', () => {
+    const elo = { a: 1600, b: 1400 };
+    const odds = { home: 1.5, away: 2.5 };
+    const result = calculateMatchProbabilities('valo', odds, [], [], elo);
+    
+    // Elo prob: ~0.76
+    expect(result.home).toBeGreaterThan(0.7);
+    expect(result.home).toBeLessThan(0.8);
+  });
+
+  test('Bias Correction reverse (Dota 2)', () => {
+    const elo = { a: 1147, b: 1000 }; // ~0.7 baseline
+    const odds = { home: 1.5, away: 2.5 };
+    const result = calculateMatchProbabilities('dota2', odds, [], [], elo);
+    
+    // ~0.7 + 0.05 = 0.75
+    expect(result.home).toBeGreaterThan(0.72);
+  });
+
+  test('Bias Correction standard (CS2)', () => {
+    const elo = { a: 1147, b: 1000 }; // ~0.7 baseline
+    const odds = { home: 1.5, away: 2.5 };
+    const result = calculateMatchProbabilities('cs2', odds, [], [], elo);
+    
+    // ~0.7 - 0.02 = 0.68
+    expect(result.home).toBeLessThan(0.7);
+    expect(result.home).toBeGreaterThan(0.65);
+  });
 });
+
