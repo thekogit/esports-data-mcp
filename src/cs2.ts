@@ -105,11 +105,21 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   
   if (request.params.name === "get_cs2_matches") {
     const rawMatches = await getCachedData("matches", () => HLTV.getMatches());
-    const matchesWithOdds = rawMatches.map((m: any) => ({
-      ...m,
+    
+    // Noise Reduction: Filter to essential data only
+    const cleanMatches = rawMatches.map((m: any) => ({
+      id: m.id,
+      date: m.date ? new Date(m.date).toISOString().split('T')[0] : "TBD",
+      team1: m.team1?.name || "TBD",
+      team2: m.team2?.name || "TBD",
+      format: m.format,
+      event: m.event?.name || "Unknown",
+      live: m.live,
+      stars: m.stars,
       odds: m.odds || null
-    }));
-    return { content: [{ type: "text", text: JSON.stringify(matchesWithOdds.slice(0, 15), null, 2) }] };
+    })).slice(0, 15);
+
+    return { content: [{ type: "text", text: JSON.stringify(cleanMatches, null, 2) }] };
   }
 
   if (request.params.name === "get_cs2_team_info") {

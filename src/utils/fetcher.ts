@@ -1,4 +1,5 @@
 import axios from 'axios';
+import * as cheerio from 'cheerio';
 
 interface CacheEntry {
   data: any;
@@ -49,4 +50,22 @@ export async function fetchHtml(url: string): Promise<string> {
 
 export async function fetchJson<T = any>(url: string): Promise<T> {
   return fetchWithCache(url, true);
+}
+
+/**
+ * Sanitizes HTML by removing scripts, styles, and ads, 
+ * then returns a condensed text summary to reduce token noise.
+ */
+export async function fetchAndSummarize(url: string): Promise<string> {
+  const html = await fetchHtml(url);
+  const $ = cheerio.load(html);
+
+  // Remove noisy elements
+  $('script, style, iframe, nav, footer, ads, .ads, #ads, .footer, .header, .nav').remove();
+
+  // Get text and collapse whitespace
+  const text = $('body').text().replace(/\s+/g, ' ').trim();
+  
+  // Return first 2000 chars - enough for context, short enough to save tokens
+  return text.substring(0, 2000);
 }

@@ -2,7 +2,7 @@ import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { getLiquipediaTournaments, getLiquipediaRoster } from './utils/liquipedia';
-import { fetchJson } from './utils/fetcher';
+import { fetchJson, fetchAndSummarize } from './utils/fetcher';
 import { parseHawkLiveMatch } from './utils/hawk_live';
 import { compareTwoStrings } from 'string-similarity';
 import { solvePositions, POSITION_MAP } from './utils/dota2_roles';
@@ -160,7 +160,21 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         (m.team_name_dire || "").toLowerCase().includes(search)
       );
     }
-    return { content: [{ type: "text", text: JSON.stringify(data.slice(0, 10), null, 2) }] };
+
+    // Surgical Filtering to reduce token noise
+    const cleanData = data.slice(0, 10).map((m: any) => ({
+      match_id: m.match_id,
+      team_radiant: m.team_name_radiant || "Unknown",
+      team_dire: m.team_name_dire || "Unknown",
+      score_radiant: m.radiant_score,
+      score_dire: m.dire_score,
+      game_time: Math.floor(m.game_time / 60) + ":" + (m.game_time % 60).toString().padStart(2, '0'),
+      radiant_lead: m.radiant_lead,
+      league_name: m.league_name,
+      series_type: m.series_type === 1 ? "BO3" : (m.series_type === 2 ? "BO5" : "BO1")
+    }));
+
+    return { content: [{ type: "text", text: JSON.stringify(cleanData, null, 2) }] };
   }
 
   if (request.params.name === "parse_dota2_match_url") {
@@ -169,7 +183,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const data = await parseHawkLiveMatch(url);
       return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
     }
-    return { content: [{ type: "text", text: "Currently only hawk.live URLs are supported for deep parsing." }] };
+    
+    // Fallback for other URLs (e.g. egamersworld, bo3)
+    // Reduce noise by fetching a surgical summary
+    const summary = await fetchAndSummarize(url);
+    return { 
+      content: [{ 
+        type: "text", 
+        text: `URL deep parsing not yet supported for this domain. Here is a surgical text summary of the page to help you extract the data manually:\n\n${summary}` 
+      }] 
+    };
   }
 
   if (request.params.name === "get_dota2_team_info") {

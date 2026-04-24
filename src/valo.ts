@@ -143,10 +143,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   if (request.params.name === "get_valo_player_info") {
     const html = await fetchHtml(`https://www.vlr.gg/player/${args.playerId}`);
     const $ = cheerio.load(html);
+    
+    const stats: any = {};
+    $('.player-stats-item').each((i, el) => {
+      const label = $(el).find('.player-stats-item-label').text().trim().toLowerCase().replace(' ', '_');
+      const val = $(el).find('.player-stats-item-val').text().trim();
+      if (label) stats[label] = val;
+    });
+
     const player: any = {
       name: $('.player-header-name h1').text().trim(),
-      teams: $('.player-header-teams').text().trim(),
-      stats: $('.player-stats-table').text().trim(), // basic scrape of stats
+      alias: $('.player-header-name h2').text().trim(),
+      current_team: $('.player-header-teams').text().trim(),
+      stats: stats
     };
     return { content: [{ type: "text", text: JSON.stringify(player, null, 2) }] };
   }

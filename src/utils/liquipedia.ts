@@ -57,7 +57,7 @@ export async function getLiquipediaTournaments(game: string): Promise<Tournament
     });
   }
 
-  return tournaments.filter(t => t.name);
+  return tournaments.filter(t => t.name).slice(0, 20);
 }
 
 export async function getLiquipediaRoster(game: string, teamName: string): Promise<Roster> {
