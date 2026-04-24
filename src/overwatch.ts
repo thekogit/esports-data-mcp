@@ -74,7 +74,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   }
 
   if (request.params.name === "get_ow_team_info") {
-    const roster = await getLiquipediaRoster('overwatch', args.teamName as string);
+    const team = args.teamName as string;
+    const roster = await getLiquipediaRoster('overwatch', team.replace(/ /g, '_'));
     return { content: [{ type: "text", text: JSON.stringify(roster, null, 2) }] };
   }
 

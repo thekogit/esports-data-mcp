@@ -69,7 +69,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   }
 
   if (request.params.name === "get_rivals_team_info") {
-    const roster = await getLiquipediaRoster('marvelrivals', args.teamName as string);
+    const team = args.teamName as string;
+    const roster = await getLiquipediaRoster('marvelrivals', team.replace(/ /g, '_'));
     return { content: [{ type: "text", text: JSON.stringify(roster, null, 2) }] };
   }
 
