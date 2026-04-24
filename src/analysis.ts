@@ -55,6 +55,49 @@ export function identifyGameContext(playerImpacts: PlayerImpact[], context?: str
   return 'generic';
 }
 
+function calculateMatchProbabilities(
+  context: GameContext,
+  odds: { home: number; away: number; draw?: number },
+  playerImpacts: PlayerImpact[],
+  history: any[]
+) {
+  const profile = GAME_PROFILES[context];
+  
+  // 1. Boltzmann Prior
+  const eH = odds.home / odds.away;
+  const eA = odds.away / odds.home;
+  const eD = odds.draw;
+
+  const pH_un = Math.exp(-eH / profile.temperature);
+  const pA_un = Math.exp(-eA / profile.temperature);
+  const pD_un = eD !== undefined ? Math.exp(-eD / profile.temperature) : 0;
+  const Z = pH_un + pA_un + pD_un;
+  
+  const prior = { home: pH_un / Z, away: pA_un / Z, draw: pD_un / Z };
+
+  // 2. Time-Decayed Dirichlet Update
+  let homeWins = 0, awayWins = 0, draws = 0;
+  history.forEach(match => {
+    const daysAgo = (Date.now() - new Date(match.date).getTime()) / (1000 * 60 * 60 * 24);
+    const weight = Math.pow(profile.lambda, Math.max(0, daysAgo));
+    
+    if (match.winner === 'home') homeWins += weight;
+    else if (match.winner === 'away') awayWins += weight;
+    else draws += weight;
+  });
+
+  const S = Math.round(homeWins + awayWins + draws) || 10; // Default strength
+  const alphaH = prior.home * S;
+  const alphaA = prior.away * S;
+  const alphaD = prior.draw * S;
+
+  const postH = (homeWins + alphaH) / (S + homeWins + awayWins + draws);
+  const postA = (awayWins + alphaA) / (S + homeWins + awayWins + draws);
+  const postD = (draws + alphaD) / (S + homeWins + awayWins + draws);
+
+  return { home: postH, away: postA, draw: postD, strength: S };
+}
+
 const server = new Server(
   { name: "analysis-mcp", version: "1.0.0" },
   { capabilities: { tools: {} } }
@@ -186,6 +229,53 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             }
           },
           required: ["boltzmannProbs", "historicalCounts"]
+        }
+      },
+      {
+        name: "analyze_match_bayesian",
+        description: "Unified Bayesian analysis tool that automatically detects game context and applies tuned mathematical constants for win probability estimation.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            teamA: { type: "string" },
+            teamB: { type: "string" },
+            odds: {
+              type: "object",
+              properties: {
+                home: { type: "number" },
+                away: { type: "number" },
+                draw: { type: "number" }
+              },
+              required: ["home", "away"]
+            },
+            playerImpacts: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  player: { type: "string" },
+                  impact: { type: "number" },
+                  position: { type: "number" },
+                  role: { type: "string" }
+                },
+                required: ["impact"]
+              }
+            },
+            historicalResults: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  winner: { type: "string", enum: ["home", "away", "draw"] },
+                  date: { type: "string", description: "ISO date string" },
+                  score: { type: "string" }
+                },
+                required: ["winner", "date"]
+              }
+            },
+            context: { type: "string", description: "Optional game/tournament context string" }
+          },
+          required: ["teamA", "teamB", "odds", "playerImpacts", "historicalResults"]
         }
       }
     ]
