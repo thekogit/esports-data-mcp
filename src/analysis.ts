@@ -300,7 +300,15 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 required: ["winner", "date"]
               }
             },
-            context: { type: "string", description: "Optional game/tournament context string" }
+            context: { type: "string", description: "Optional game/tournament context string" },
+            marketData: {
+              type: "object",
+              properties: {
+                polymarketProb: { type: "number", description: "Polymarket implied probability (0.0 to 1.0)" },
+                exchangeOdds: { type: "number", description: "Exchange decimal odds" }
+              }
+            },
+            bankroll: { type: "number", description: "Total bankroll for Kelly calculation", default: 1000 }
           },
           required: ["teamA", "teamB", "odds", "playerImpacts", "historicalResults"]
         }
@@ -634,9 +642,35 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const playerImpacts = args.playerImpacts as PlayerImpact[];
     const historicalResults = args.historicalResults as any[];
     const contextStr = args.context as string | undefined;
+    const marketData = args.marketData as { polymarketProb?: number; exchangeOdds?: number } | undefined;
+    const bankroll = (args.bankroll as number) || 1000;
 
     const context = identifyGameContext(playerImpacts, contextStr);
     const result = calculateMatchProbabilities(context, odds, playerImpacts, historicalResults);
+
+    // EV Analysis
+    const evHome = (result.home * odds.home) - 1;
+    const evAway = (result.away * odds.away) - 1;
+    const evDraw = odds.draw ? (result.draw * odds.draw) - 1 : -1;
+
+    // Betting Strategy (Quarter-Kelly)
+    let bestOutcome: 'home' | 'away' | 'draw' = 'home';
+    let maxEV = evHome;
+    if (evAway > maxEV) { bestOutcome = 'away'; maxEV = evAway; }
+    if (evDraw > maxEV) { bestOutcome = 'draw'; maxEV = evDraw; }
+
+    let recommendation = "Skip";
+    let wager = 0;
+    
+    if (maxEV > 0.02) { // 2% minimum edge for recommendation
+      const p = bestOutcome === 'home' ? result.home : (bestOutcome === 'away' ? result.away : result.draw);
+      const o = bestOutcome === 'home' ? odds.home : (bestOutcome === 'away' ? odds.away : odds.draw!);
+      const b = o - 1;
+      const q = 1 - p;
+      const kelly = (p * b - q) / b;
+      wager = Math.max(0, bankroll * kelly * 0.25);
+      recommendation = `Bet on ${bestOutcome} (+EV: ${(maxEV * 100).toFixed(2)}%)`;
+    }
 
     return {
       content: [{
@@ -653,6 +687,21 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             away: (1 / result.away).toFixed(3),
             draw: result.draw > 0 ? (1 / result.draw).toFixed(3) : "N/A"
           },
+          ev_analysis: {
+            home: (evHome * 100).toFixed(2) + "%",
+            away: (evAway * 100).toFixed(2) + "%",
+            draw: odds.draw ? (evDraw * 100).toFixed(2) + "%" : "N/A"
+          },
+          betting_strategy: {
+            recommendation,
+            optimal_wager: wager.toFixed(2),
+            kelly_fraction: "0.25 (Quarter-Kelly)",
+            bankroll_used: bankroll.toFixed(2)
+          },
+          market_comparison: marketData ? {
+            polymarket_diff: marketData.polymarketProb ? ((result.home - marketData.polymarketProb) * 100).toFixed(2) + "%" : "N/A",
+            exchange_ev: marketData.exchangeOdds ? ((result.home * marketData.exchangeOdds - 1) * 100).toFixed(2) + "%" : "N/A"
+          } : "No market data provided",
           prior_strength: result.strength,
           impact_adjustment: result.adjustment.toFixed(4)
         }, null, 2)
