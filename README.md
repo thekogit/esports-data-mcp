@@ -34,7 +34,7 @@ where $x_t$ is the result of match $t$ (one-hot encoded for Team A, Team B, or D
 - `analyze_match_bayesian`: **Unified Bayesian Engine**. Automatically detects game context (Dota 2, CS2, Valorant) and calculates win probabilities, Expected Value (EV), and optimal betting strategy (Quarter-Kelly). Supports market data comparison (Polymarket).
 
 ### Title-Specific Data Fetchers
-- **Dota 2:** `get_dota2_heroes`, `get_dota2_live_matches`, `search_dota2_teams`, `get_dota2_team_info`, `get_dota2_team_roster`, `search_dota2_egw_teams` (fallback).
+- **Dota 2:** `get_dota2_heroes`, `get_dota2_live_matches`, `search_dota2_teams`, `get_dota2_team_info`, `get_dota2_team_roster`, `get_dota2_team_match_history`, `search_dota2_egw_teams` (fallback).
 - **CS2:** `get_cs2_matches`, `get_cs2_team_info`, `get_cs2_player_stats`, `search_cs2_egw_teams`, `get_cs2_egw_live_matches`.
 - **Valorant:** `get_valo_matches`, `get_valo_events`, `get_valo_team_info`, `search_valo_egw_teams`, `get_valo_egw_live_matches`.
 - **League of Legends:** `get_lol_matches`, `get_lol_team_info`, `get_lol_gol_team_stats`, `search_lol_egw_teams`, `get_lol_egw_live_matches`.

@@ -1,10 +1,10 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
-import { getLiquipediaTournaments, getLiquipediaRoster } from './utils/liquipedia';
+import { getLiquipediaTournaments, getLiquipediaRoster, getLiquipediaMatchHistory } from './utils/liquipedia';
 import { fetchJson, fetchAndSummarize } from './utils/fetcher';
 import { parseHawkLiveMatch } from './utils/hawk_live';
-import { searchEGWTeams } from './utils/egamersworld';
+import { searchEGWTeams, getEGWLiveMatches } from './utils/egamersworld';
 import { compareTwoStrings } from 'string-similarity';
 import { solvePositions, POSITION_MAP } from './utils/dota2_roles';
 
@@ -33,6 +33,17 @@ async function getHeroes(): Promise<Hero[]> {
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
+      {
+        name: "get_dota2_team_match_history",
+        description: "Get recent match history for a specific Dota 2 team from Liquipedia.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            teamName: { type: "string", description: "Team name (e.g. 'Team Spirit')" }
+          },
+          required: ["teamName"]
+        }
+      },
       {
         name: "get_dota2_heroes",
         description: "List all Dota 2 heroes with their IDs and names. Use this to map hero names to IDs.",
@@ -155,6 +166,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const args = request.params.arguments || {};
+
+  if (request.params.name === "get_dota2_team_match_history") {
+    const teamName = args.teamName as string;
+    const history = await getLiquipediaMatchHistory('dota2', teamName);
+    return { content: [{ type: "text", text: JSON.stringify(history, null, 2) }] };
+  }
 
   if (request.params.name === "search_dota2_egw_teams") {
     const teams = await searchEGWTeams('dota2', args.name as string);

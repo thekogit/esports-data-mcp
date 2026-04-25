@@ -12,10 +12,42 @@ export interface Roster {
   lastUpdated: string;
 }
 
+export interface MatchHistory {
+  date: string;
+  team1: string;
+  score: string;
+  team2: string;
+  tournament: string;
+}
+
 export interface Tournament {
   tier: string;
   name: string;
   dates: string;
+}
+
+export async function getLiquipediaMatchHistory(game: string, teamName: string): Promise<MatchHistory[]> {
+  const url = `https://liquipedia.net/${game}/Special:RunQuery/Match_history?Match_history%5Bteam%5D=${encodeURIComponent(teamName)}&pfRunQueryFormName=Match_history`;
+  const html = await fetchHtml(url).catch(() => null);
+  if (!html) return [];
+  const $ = cheerio.load(html);
+  
+  const matches: MatchHistory[] = [];
+  $('.wikitable tr').each((i, row) => {
+    if (i === 0) return; // header
+    const cells = $(row).find('td');
+    if (cells.length >= 5) {
+      matches.push({
+        date: $(cells[0]).text().trim(),
+        team1: $(cells[1]).text().trim(),
+        score: $(cells[2]).text().trim(),
+        team2: $(cells[3]).text().trim(),
+        tournament: $(cells[4]).text().trim()
+      });
+    }
+  });
+
+  return matches.slice(0, 20);
 }
 
 export async function getLiquipediaTournaments(game: string): Promise<Tournament[]> {
