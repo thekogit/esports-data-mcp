@@ -116,17 +116,17 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   
   if (request.params.name === "search_cs2_egw_teams") {
     const teams = await searchEGWTeams('csgo', args.name as string);
-    return { content: [{ type: "text", text: JSON.stringify(teams, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(teams) }] };
   }
 
   if (request.params.name === "get_cs2_egw_live_matches") {
     const matches = await getEGWLiveMatches('csgo');
-    return { content: [{ type: "text", text: JSON.stringify(matches, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(matches) }] };
   }
 
   if (request.params.name === "get_cs2_events") {
     const events = await getCachedData("events", () => HLTV.getEvents());
-    return { content: [{ type: "text", text: JSON.stringify(events.slice(0, 20), null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(events.slice(0, 20)) }] };
   }
   
   if (request.params.name === "get_cs2_matches") {
@@ -145,7 +145,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       odds: m.odds || null
     })).slice(0, 15);
 
-    return { content: [{ type: "text", text: JSON.stringify(cleanMatches, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(cleanMatches) }] };
   }
 
   if (request.params.name === "get_cs2_team_info") {
@@ -168,7 +168,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           players: activePlayers,
           coach: coachObj ? coachObj.name : null,
           rank: teamInfo.rank
-        }, null, 2) 
+        }) 
       }] 
     };
   }
@@ -176,18 +176,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   if (request.params.name === "get_cs2_team_match_history") {
     const teamId = args.teamId as number;
     const teamInfo = await getCachedData(`team_${teamId}`, () => HLTV.getTeam({ id: teamId }));
-    return { content: [{ type: "text", text: JSON.stringify(teamInfo.recentResults || [], null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(teamInfo.recentResults || []) }] };
   }
 
   if (request.params.name === "get_cs2_team_rankings") {
     const rankings = await getCachedData("rankings", () => HLTV.getTeamRanking());
-    return { content: [{ type: "text", text: JSON.stringify(rankings.slice(0, 20), null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(rankings.slice(0, 20)) }] };
   }
 
   if (request.params.name === "get_cs2_player_stats") {
     const playerId = args.playerId as number;
     const stats = await getCachedData(`player_${playerId}`, () => HLTV.getPlayerStats({ id: playerId }));
-    return { content: [{ type: "text", text: JSON.stringify(stats, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(stats) }] };
   }
 
   if (request.params.name === "get_cs2_map_performance") {
@@ -203,7 +203,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           return obj;
         }, {} as any);
     }
-    return { content: [{ type: "text", text: JSON.stringify(mapStats, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(mapStats) }] };
   }
 
   if (request.params.name === "get_cs2_player_map_performance") {
@@ -213,7 +213,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       id: playerId,
       maps: [mapName as any]
     }));
-    return { content: [{ type: "text", text: JSON.stringify(stats, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(stats) }] };
   }
   throw new Error("Tool not found");
 });

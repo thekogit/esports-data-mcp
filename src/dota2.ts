@@ -23,10 +23,16 @@ interface Hero {
 }
 
 let heroCache: Hero[] | null = null;
+import fallbackHeroes from './utils/heroes.json';
 
 async function getHeroes(): Promise<Hero[]> {
   if (heroCache) return heroCache;
-  heroCache = await fetchJson('https://api.opendota.com/api/heroes');
+  try {
+    heroCache = await fetchJson('https://api.opendota.com/api/heroes');
+  } catch (error) {
+    console.warn('Failed to fetch heroes from OpenDota, using local fallback:', error instanceof Error ? error.message : String(error));
+    heroCache = fallbackHeroes as Hero[];
+  }
   return heroCache || [];
 }
 
@@ -170,31 +176,43 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   if (request.params.name === "get_dota2_team_match_history") {
     const teamName = args.teamName as string;
     const history = await getLiquipediaMatchHistory('dota2', teamName);
-    return { content: [{ type: "text", text: JSON.stringify(history, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(history) }] };
   }
 
   if (request.params.name === "search_dota2_egw_teams") {
     const teams = await searchEGWTeams('dota2', args.name as string);
-    return { content: [{ type: "text", text: JSON.stringify(teams, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(teams) }] };
   }
 
   if (request.params.name === "get_dota2_egw_live_matches") {
     const matches = await getEGWLiveMatches('dota2');
-    return { content: [{ type: "text", text: JSON.stringify(matches, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(matches) }] };
   }
 
   if (request.params.name === "get_dota2_heroes") {
     const heroes = await getHeroes();
-    return { content: [{ type: "text", text: JSON.stringify(heroes, null, 2) }] };
+    const minified = heroes.map(h => ({ id: h.id, name: h.localized_name }));
+    return { content: [{ type: "text", text: JSON.stringify(minified) }] };
   }
 
   if (request.params.name === "get_dota2_leagues") {
     const data = await getLiquipediaTournaments('dota2');
-    return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(data) }] };
   }
 
   if (request.params.name === "get_dota2_live_matches") {
-    let data = await fetchJson('https://api.opendota.com/api/live');
+    let data;
+    try {
+      data = await fetchJson('https://api.opendota.com/api/live');
+    } catch (error: any) {
+      return {
+        content: [{
+          type: "text",
+          text: `Error fetching live matches from OpenDota: ${error.message}\n\nThis API is sometimes unavailable. You can try using the 'get_dota2_egw_live_matches' tool as a fallback for live scores.`
+        }]
+      };
+    }
+
     if (args.teamName) {
       const search = (args.teamName as string).toLowerCase();
       data = data.filter((m: any) => 
@@ -216,14 +234,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       series_type: m.series_type === 1 ? "BO3" : (m.series_type === 2 ? "BO5" : "BO1")
     }));
 
-    return { content: [{ type: "text", text: JSON.stringify(cleanData, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(cleanData) }] };
   }
 
   if (request.params.name === "parse_dota2_match_url") {
     const url = args.url as string;
     if (url.includes('hawk.live')) {
       const data = await parseHawkLiveMatch(url);
-      return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+      return { content: [{ type: "text", text: JSON.stringify(data) }] };
     }
     
     if (url.includes('egamersworld.com')) {
@@ -267,7 +285,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   if (request.params.name === "get_dota2_team_info") {
     const data = await fetchJson(`https://api.opendota.com/api/teams/${args.teamId}`);
-    return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(data) }] };
   }
 
   if (request.params.name === "search_dota2_teams") {
@@ -277,7 +295,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const allTeams = await fetchJson(`https://api.opendota.com/api/teams`);
     
     let teams = allTeams.map((team: any) => ({
-      ...team,
+      team_id: team.team_id,
+      name: team.name,
+      tag: team.tag,
+      rating: team.rating,
+      wins: team.wins,
+      losses: team.losses,
       score: Math.max(
         compareTwoStrings(name, (team.name || "").toLowerCase()),
         compareTwoStrings(name, (team.tag || "").toLowerCase())
@@ -301,11 +324,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }));
         
         // Merge results, prioritizing exact name matches from EGW
-        return { content: [{ type: "text", text: JSON.stringify([...enrichedEGW, ...teams].slice(0, 10), null, 2) }] };
+        return { content: [{ type: "text", text: JSON.stringify([...enrichedEGW, ...teams].slice(0, 10)) }] };
       }
     }
 
-    return { content: [{ type: "text", text: JSON.stringify(teams, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(teams) }] };
   }
 
   if (request.params.name === "get_dota2_hero_matchups") {
@@ -315,13 +338,15 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       getHeroes()
     ]);
     
-    // Enrich with localized names
+    // Enrich with localized names and minify
     const enriched = matchups.map((m: any) => ({
-      ...m,
-      hero_name: heroes.find(h => h.id === m.hero_id)?.localized_name || "Unknown"
+      hero_id: m.hero_id,
+      hero_name: heroes.find(h => h.id === m.hero_id)?.localized_name || "Unknown",
+      games_played: m.games_played,
+      wins: m.wins
     })).slice(0, 20);
 
-    return { content: [{ type: "text", text: JSON.stringify(enriched, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(enriched) }] };
   }
 
   if (request.params.name === "analyze_dota2_draft") {
@@ -361,7 +386,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           matchups: results,
           overall_radiant_advantage: (totalRadiantAdvantage * 100).toFixed(2) + "%",
           recommendation: totalRadiantAdvantage > 0 ? "Radiant Draft Advantage" : "Dire Draft Advantage"
-        }, null, 2) 
+        }) 
       }] 
     };
   }
@@ -386,14 +411,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       };
     }).sort((a, b) => a.position - b.position);
 
-    return { content: [{ type: "text", text: JSON.stringify(results, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(results) }] };
   }
 
   if (request.params.name === "get_dota2_team_roster") {
     const teamName = args.teamName as string;
     // Replace spaces with underscores for Liquipedia URLs
     const roster = await getLiquipediaRoster('dota2', teamName.replace(/ /g, '_'));
-    return { content: [{ type: "text", text: JSON.stringify(roster, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(roster) }] };
   }
 
   throw new Error("Tool not found");

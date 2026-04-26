@@ -52,7 +52,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   if (request.params.name === "get_rivals_player_stats") {
     // Using unofficial API or tracker scrape
     const { data } = await axios.get(`https://marvelrivalsapi.com/api/v1/player/${args.username}`).catch(() => ({ data: "Rate limited or player not found" }));
-    return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(data) }] };
   }
 
   if (request.params.name === "get_rivals_counters_synergies") {
@@ -60,18 +60,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     if (!html) return { content: [{ type: "text", text: "Data unavailable" }] };
     const $ = cheerio.load(html);
     const counters = $('.counter-card').map((i, el) => $(el).text().trim()).get();
-    return { content: [{ type: "text", text: JSON.stringify(counters.slice(0, 10), null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(counters.slice(0, 10)) }] };
   }
 
   if (request.params.name === "get_rivals_tournaments") {
     const data = await getLiquipediaTournaments('marvelrivals');
-    return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(data) }] };
   }
 
   if (request.params.name === "get_rivals_team_info") {
     const team = args.teamName as string;
     const roster = await getLiquipediaRoster('marvelrivals', team.replace(/ /g, '_'));
-    return { content: [{ type: "text", text: JSON.stringify(roster, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(roster) }] };
   }
 
   throw new Error("Tool not found");

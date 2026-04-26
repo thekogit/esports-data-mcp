@@ -88,12 +88,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   if (request.params.name === "search_valo_egw_teams") {
     const teams = await searchEGWTeams('valorant', args.name as string);
-    return { content: [{ type: "text", text: JSON.stringify(teams, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(teams) }] };
   }
 
   if (request.params.name === "get_valo_egw_live_matches") {
     const matches = await getEGWLiveMatches('valorant');
-    return { content: [{ type: "text", text: JSON.stringify(matches, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(matches) }] };
   }
 
   if (request.params.name === "get_valo_matches") {
@@ -111,7 +111,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         });
       }
     });
-    return { content: [{ type: "text", text: JSON.stringify(matches.slice(0, 20), null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(matches.slice(0, 20)) }] };
   }
   
   if (request.params.name === "get_valo_events") {
@@ -125,7 +125,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         dates: $(el).find('.event-item-desc').text().trim(),
       });
     });
-    return { content: [{ type: "text", text: JSON.stringify(events.slice(0, 20), null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(events.slice(0, 20)) }] };
   }
 
   if (request.params.name === "get_valo_team_info") {
@@ -162,7 +162,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       roster: players,
       coach: coach
     };
-    return { content: [{ type: "text", text: JSON.stringify(team, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(team) }] };
   }
 
   if (request.params.name === "get_valo_player_info") {
@@ -182,14 +182,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       current_team: $('.player-header-teams').text().trim(),
       stats: stats
     };
-    return { content: [{ type: "text", text: JSON.stringify(player, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(player) }] };
   }
 
   if (request.params.name === "get_valo_agent_stats") {
     const agent = args.agentName as string;
     try {
       const data = await fetchJson(`https://valorantdatalab.com/api/synergy.php?agent=${agent}`);
-      return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+      return { content: [{ type: "text", text: JSON.stringify(data) }] };
     } catch (error) {
       return { content: [{ type: "text", text: "Stats temporarily unavailable or rate limited." }] };
     }
@@ -210,7 +210,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         team2: $(el).find('.m-item-team-name').eq(1).text().trim(),
       });
     });
-    return { content: [{ type: "text", text: JSON.stringify(matches, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(matches) }] };
   }
 
   throw new Error("Tool not found");

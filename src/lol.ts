@@ -83,23 +83,23 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   if (request.params.name === "search_lol_egw_teams") {
     const teams = await searchEGWTeams('league-of-legends', args.name as string);
-    return { content: [{ type: "text", text: JSON.stringify(teams, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(teams) }] };
   }
 
   if (request.params.name === "get_lol_egw_live_matches") {
     const matches = await getEGWLiveMatches('league-of-legends');
-    return { content: [{ type: "text", text: JSON.stringify(matches, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(matches) }] };
   }
 
   if (request.params.name === "get_lol_tournaments") {
     const data = await getLiquipediaTournaments('leagueoflegends');
-    return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(data) }] };
   }
   
   if (request.params.name === "get_lol_team_info") {
     const team = args.teamName as string;
     const roster = await getLiquipediaRoster('leagueoflegends', team.replace(/ /g, '_'));
-    return { content: [{ type: "text", text: JSON.stringify(roster, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(roster) }] };
   }
 
   if (request.params.name === "get_lol_player_info") {
@@ -111,7 +111,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       teams: $('.infobox-cell-2').text().trim(),
       history: $('.wikitable-tournament-results').text().trim(), // basic scrape
     };
-    return { content: [{ type: "text", text: JSON.stringify(info, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(info) }] };
   }
 
   if (request.params.name === "get_lol_counters") {
@@ -124,7 +124,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     $('.champion-box .name').each((i, el) => {
       counters.push($(el).text().trim());
     });
-    return { content: [{ type: "text", text: JSON.stringify(counters, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(counters) }] };
   }
 
   if (request.params.name === "get_lol_matches") {
@@ -152,7 +152,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
     });
     
-    return { content: [{ type: "text", text: JSON.stringify(matches, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(matches) }] };
   }
 
   if (request.params.name === "get_lol_gol_team_stats") {
@@ -180,7 +180,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
     });
 
-    return { content: [{ type: "text", text: JSON.stringify(stats, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(stats) }] };
   }
 
   throw new Error("Tool not found");

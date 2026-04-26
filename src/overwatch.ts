@@ -54,12 +54,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     if (!html) return { content: [{ type: "text", text: "Profile private or not found" }] };
     const $ = cheerio.load(html);
     const stats = $('.stats-container').text().trim();
-    return { content: [{ type: "text", text: JSON.stringify({ stats }, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify({ stats }) }] };
   }
 
   if (request.params.name === "get_ow_tournaments") {
     const data = await getLiquipediaTournaments('overwatch');
-    return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(data) }] };
   }
 
   if (request.params.name === "get_ow_live_matches") {
@@ -70,13 +70,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     $('.infobox_matches_content').each((i, el) => {
        matches.push($(el).text().trim());
     });
-    return { content: [{ type: "text", text: JSON.stringify(matches.slice(0, 10), null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(matches.slice(0, 10)) }] };
   }
 
   if (request.params.name === "get_ow_team_info") {
     const team = args.teamName as string;
     const roster = await getLiquipediaRoster('overwatch', team.replace(/ /g, '_'));
-    return { content: [{ type: "text", text: JSON.stringify(roster, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify(roster) }] };
   }
 
   throw new Error("Tool not found");

@@ -1,5 +1,9 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
+import puppeteer from 'puppeteer-extra';
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+
+puppeteer.use(StealthPlugin());
 
 interface CacheEntry {
   data: any;
@@ -12,6 +16,27 @@ const MAX_CACHE_SIZE = 1000;
 
 export function clearCache() {
   cache.clear();
+}
+
+export async function fetchWithPuppeteer(url: string): Promise<string> {
+  let browser;
+  try {
+    browser = await puppeteer.launch({ 
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+    const page = await browser.newPage();
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+    const html = await page.content();
+    return html;
+  } catch (error) {
+    console.error(`Error fetching URL with Puppeteer (${url}):`, error);
+    throw error;
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
+  }
 }
 
 async function fetchWithCache(url: string, isJson: boolean): Promise<any> {
@@ -43,12 +68,23 @@ async function fetchWithCache(url: string, isJson: boolean): Promise<any> {
     cache.set(url, { data, timestamp: now });
     return data;
   } catch (error: any) {
+    if (error.response && error.response.status === 403 && !isJson) {
+      console.warn(`Access Forbidden (403) for ${url}. Attempting fallback to Puppeteer.`);
+      try {
+        const data = await fetchWithPuppeteer(url);
+        if (cache.size >= MAX_CACHE_SIZE) {
+          cache.clear();
+        }
+        cache.set(url, { data, timestamp: now });
+        return data;
+      } catch (puppeteerError) {
+        throw new Error(`Puppeteer fallback failed after 403: ${puppeteerError}`);
+      }
+    }
+
     if (error.response) {
       if (error.response.status === 429) {
         throw new Error('Rate limit exceeded (429). Please wait a few minutes.');
-      }
-      if (error.response.status === 403) {
-        throw new Error(`Access Forbidden (403). This site (${new URL(url).hostname}) might be protected by anti-bot measures like Cloudflare. Try using a different source like Hawk Live or Liquipedia.`);
       }
       throw new Error(`Request failed with status ${error.response.status}: ${error.response.statusText}`);
     }

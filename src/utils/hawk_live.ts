@@ -1,6 +1,7 @@
 import { fetchHtml, fetchJson } from './fetcher';
 import * as cheerio from 'cheerio';
 import { solvePositions, POSITION_MAP, HeroRoleInfo } from './dota2_roles';
+import fallbackHeroes from './heroes.json';
 
 export interface DraftHero {
   hero: string;
@@ -120,9 +121,9 @@ export async function parseHawkLiveMatch(url: string): Promise<MatchData | null>
       radiantDraft = enrichDraftWithPositions(radiantDraft.slice(0, 5), allHeroes);
       direDraft = enrichDraftWithPositions(direDraft.slice(0, 5), allHeroes);
     } catch (e) {
-      console.error("Failed to enrich draft roles", e);
-      radiantDraft = radiantDraft.slice(0, 5);
-      direDraft = direDraft.slice(0, 5);
+      console.warn("Failed to fetch heroes from OpenDota for enrichment, using local fallback:", e instanceof Error ? e.message : String(e));
+      radiantDraft = enrichDraftWithPositions(radiantDraft.slice(0, 5), fallbackHeroes as HeroRoleInfo[]);
+      direDraft = enrichDraftWithPositions(direDraft.slice(0, 5), fallbackHeroes as HeroRoleInfo[]);
     }
 
     return {

@@ -332,8 +332,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     // Base Elo Probability
     let probA = 1 / (1 + Math.pow(10, (eloB - eloA) / 400));
     
-    // Adjust for Draft Advantage
-    probA += draftAdv;
+    // Adjust for Draft Advantage (make it the most important factor)
+    probA += draftAdv * 5.0;
     
     // Normalize
     probA = Math.max(0.01, Math.min(0.99, probA));
@@ -347,7 +347,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           teamB_win_probability: (probB * 100).toFixed(2) + "%",
           teamA_fair_decimal_odds: (1 / probA).toFixed(3),
           teamB_fair_decimal_odds: (1 / probB).toFixed(3)
-        }, null, 2) 
+        }) 
       }] 
     };
   }
@@ -368,7 +368,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           probability_edge: (edge * 100).toFixed(2) + "%",
           is_value_bet: ev > 0,
           recommendation: ev > 0.05 ? "Strong Value" : (ev > 0 ? "Marginal Value" : "No Value (Avoid)")
-        }, null, 2) 
+        }) 
       }] 
     };
   }
@@ -389,7 +389,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             recommended_wager_amount: "0.00",
             bankroll_remaining: bankroll.toFixed(2),
             note: "Odds must be greater than 1.0 for Kelly Criterion."
-          }, null, 2) 
+          }) 
         }] 
       };
     }
@@ -409,7 +409,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           adjusted_kelly_percentage: (adjustedKellyPct * 100).toFixed(2) + "%",
           recommended_wager_amount: recommendedWager.toFixed(2),
           bankroll_remaining: (bankroll - recommendedWager).toFixed(2)
-        }, null, 2) 
+        }) 
       }] 
     };
   }
@@ -433,7 +433,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         text: JSON.stringify({
           momentum_multiplier: momentumScore.toFixed(3),
           psychological_state: momentumScore > 1.1 ? "On Fire" : (momentumScore < 0.9 ? "Tilted" : "Stable")
-        }, null, 2) 
+        }) 
       }] 
     };
   }
@@ -461,6 +461,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     
     let probA = result.teamA;
     
+    // Apply massive Draft Advantage weight
+    const draftAdv = (args.teamADraftAdvantage as number) || 0;
+    probA += draftAdv * 5.0;
+
     // 2. Apply Psychological Momentum
     probA = probA * (momentumA / momentumB);
     probA = Math.max(0.01, Math.min(0.99, probA));
@@ -522,7 +526,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             expected_value: (ev * 100).toFixed(2) + "%",
             recommended_wager_amount: recommendedWager.toFixed(2)
           }
-        }, null, 2) 
+        }) 
       }] 
     };
   }
@@ -549,7 +553,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           teamA_prob: (pA_un / (Z || 1)).toFixed(4),
           teamB_prob: (pB_un / (Z || 1)).toFixed(4),
           draw_prob: (pD_un / (Z || 1)).toFixed(4)
-        }, null, 2) 
+        }) 
       }] 
     };
   }
@@ -580,7 +584,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           posterior_teamB: postB.toFixed(4),
           posterior_draw: postD.toFixed(4),
           prior_strength: S
-        }, null, 2)
+        })
       }]
     };
   }
@@ -646,7 +650,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           } : "No market data",
           prior_strength: result.strength,
           impact_adjustment: result.adjustment.toFixed(4)
-        }, null, 2)
+        })
       }]
     };
   }
