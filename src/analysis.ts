@@ -1,6 +1,7 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
+import { analyzeMatch } from './tools/orchestrator';
 
 export type GameContext = 'dota2' | 'cs2' | 'valo' | 'generic';
 
@@ -315,6 +316,19 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             bankroll: { type: "number", description: "Total bankroll for Kelly calculation", default: 1000 }
           },
           required: ["teamA", "teamB", "odds", "playerImpacts", "historicalResults"]
+        }
+      },
+      {
+        name: "analyze_match",
+        description: "Comprehensive end-to-end match analysis. Fetches data, normalizes it, gets market sentiment, and runs the Bayesian math engine to provide a betting recommendation.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            matchUrl: { type: "string", description: "URL of the match (e.g. from hawk.live, vlr.gg, or hltv.org)" },
+            game: { type: "string", enum: ["dota2", "cs2", "lol", "valo"], description: "The game being played" },
+            bankroll: { type: "number", description: "Current bankroll for Kelly calculation", default: 1000 }
+          },
+          required: ["matchUrl", "game"]
         }
       }
     ]
@@ -653,6 +667,30 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         })
       }]
     };
+  }
+
+  if (request.params.name === "analyze_match") {
+    const matchUrl = args.matchUrl as string;
+    const game = args.game as string;
+    const bankroll = (args.bankroll as number) || 1000;
+
+    try {
+      const analysis = await analyzeMatch(matchUrl, game, bankroll);
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(analysis)
+        }]
+      };
+    } catch (error: any) {
+      return {
+        content: [{
+          type: "text",
+          text: `Error during match analysis: ${error.message}`
+        }],
+        isError: true
+      };
+    }
   }
 
   throw new Error("Tool not found");

@@ -14,6 +14,24 @@ const cache = new Map<string, CacheEntry>();
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes in milliseconds
 const MAX_CACHE_SIZE = 1000;
 
+const USER_AGENTS = [
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:123.0) Gecko/20100101 Firefox/123.0',
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Edge/122.0.2365.92'
+];
+
+function getRandomUserAgent(): string {
+  return USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)];
+}
+
+async function randomDelay(min: number = 1000, max: number = 3000) {
+  const delay = Math.floor(Math.random() * (max - min + 1) + min);
+  return new Promise(resolve => setTimeout(resolve, delay));
+}
+
 export function clearCache() {
   cache.clear();
 }
@@ -21,12 +39,39 @@ export function clearCache() {
 export async function fetchWithPuppeteer(url: string): Promise<string> {
   let browser;
   try {
+    await randomDelay(1500, 4000); // Mimic human wait time before opening a page
     browser = await puppeteer.launch({ 
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: [
+        '--no-sandbox', 
+        '--disable-setuid-sandbox',
+        '--disable-infobars',
+        '--window-position=0,0',
+        '--ignore-certifcate-errors',
+        '--ignore-certifcate-errors-spki-list',
+        '--user-agent=' + getRandomUserAgent()
+      ]
     });
     const page = await browser.newPage();
+    
+    // Set realistic viewport
+    await page.setViewport({
+      width: 1920 + Math.floor(Math.random() * 100),
+      height: 1080 + Math.floor(Math.random() * 100),
+      deviceScaleFactor: 1,
+      hasTouch: false,
+      isLandscape: true,
+      isMobile: false,
+    });
+
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+    
+    // Randomly scroll to mimic human behavior
+    await page.evaluate(() => {
+      window.scrollBy(0, window.innerHeight / 2);
+    });
+    await randomDelay(500, 1500);
+
     const html = await page.content();
     return html;
   } catch (error) {
@@ -48,10 +93,12 @@ async function fetchWithCache(url: string, isJson: boolean): Promise<any> {
   }
 
   try {
+    await randomDelay(500, 2000); // Slight delay for normal requests
+    
     const { data } = await axios.get(url, {
       timeout: 10000,
       headers: { 
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'User-Agent': getRandomUserAgent(),
         'Accept': isJson ? 'application/json' : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.9',
         'Sec-Ch-Ua': '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',

@@ -2,50 +2,53 @@
 
 This MCP server provides standardized data interfaces for competitive esports analytics, enabling seamless integration with betting platforms, statistical models, and live dashboards.
 
-## Mathematical Logic & Bayesian Analysis
+## Architecture & Technology
 
-The core of our analysis engine uses a hierarchical Bayesian framework to correct for market biases and non-stationary team form.
+We use a modern **Medallion Data Architecture** combined with a robust **Bayesian Math Engine** to provide high-fidelity predictions.
 
-### 1. Baseline Win Probability (Elo)
-We calculate the initial win probability for Team $A$ against Team $B$ using the standard Elo logistics curve:
-$$P_{Elo}(A) = \frac{1}{1 + 10^{(R_B - R_A)/400}}$$
-where $R_A$ and $R_B$ are the respective Elo ratings.
+### 1. Data Engineering (Medallion Pipeline)
+- **Bronze Layer (Raw):** Chaotic data from multiple sources (Liquipedia, HLTV, HawkLive, Polymarket).
+- **Silver Layer (Normalized):** Data is cleaned, validated, and normalized using our `GameDataSchema`. This ensures player roles (e.g., "Carry" vs. "Pos 1") and game-specific variables are consistent across all titles.
+- **Gold Layer (Analysis):** Structured feature vectors ready for the predictive models.
+- **Human-Mimicry Stealth:** Our fetchers use `puppeteer-extra-plugin-stealth` with randomized headers, User-Agents, and interaction patterns to prevent bans and ensure reliable access to live data.
 
-### 2. Boltzmann Sharpening (Market Prior)
-If Elo is unavailable, we derive a prior from bookmaker odds using the Boltzmann distribution to correct for "favorite-longshot bias" (FLB):
-$$P_i = \frac{\exp(-E_i / T)}{\sum_j \exp(-E_j / T)}$$
-where $E_i$ is the inverse odd (energy level) and $T$ is the "market temperature."
-- **Low $T$ (0.8)**: Sharpens favorites (Dota 2 profile).
-- **High $T$ (1.2)**: Increases entropy for volatile games (Valorant profile).
-
-### 3. Logistic Action2Score Adjustment
-We adjust the win probability based on individual player impact scores, weighted by their specific game roles (e.g., Carry vs. Support):
-$$Adjustment = (\sigma(\sum_{i=1}^n Impact_i \cdot W_i) - 0.5) \cdot 0.4$$
-where $\sigma$ is the sigmoid function $\frac{1}{1+e^{-x}}$. This bounds the performance adjustment to a $\pm 20\%$ shift.
-
-### 4. Time-Decayed Bayesian Dirichlet Update
-Finally, we update our prior belief with historical head-to-head results using a Dirichlet-Multinomial update with a time-decay factor $\lambda$:
-$$\alpha_{new} = (\lambda \cdot \alpha_{old}) + x_t$$
-where $x_t$ is the result of match $t$ (one-hot encoded for Team A, Team B, or Draw) and $\lambda \in [0.9, 0.99]$ ensures that recent form carries more weight than distant history.
+### 2. Bayesian Math Engine (Python/PyMC)
+Predictions are powered by a dedicated Python service (`src/math_engine/`) using **Hierarchical Bayesian Modeling**.
+- **Priors:** Historical performance at the Player, Hero, and Map levels.
+- **Likelihood:** Real-time data from live match drafts and **Polymarket** sentiment (captured as a crowd-sourced prior).
+- **Inference:** We calculate posterior win probabilities with confidence intervals, accounting for the uncertainty inherent in low-sample e-sports data.
 
 ## Available Tools
 
-### Statistical Analysis (Unified Engine)
-- `analyze_match_bayesian`: **Unified Bayesian Engine**. Automatically detects game context (Dota 2, CS2, Valorant) and calculates win probabilities, Expected Value (EV), and optimal betting strategy (Quarter-Kelly). Supports market data comparison (Polymarket).
+### 🚀 Smart Orchestrator (Recommended)
+- `analyze_match`: **The "One-Tool" Solution.** Simply provide a match URL (e.g., HawkLive or Liquipedia) and the game type. The orchestrator automatically:
+  1. Fetches and normalizes raw data.
+  2. Gathers market sentiment from Polymarket.
+  3. Executes the Bayesian Math Engine.
+  4. Returns a comprehensive "Best Bet" recommendation with Kelly Criterion bankroll management.
+
+### Statistical Analysis (Advanced)
+- `analyze_match_bayesian`: Unified Bayesian Engine (Legacy/Detailed). Manually provide team stats and historical data for granular control.
+- `get_fair_odds`: Elo and Draft-based probability calculation.
+- `calculate_kelly_wager`: Optimal bet sizing based on bankroll and edge.
 
 ### Title-Specific Data Fetchers
-- **Dota 2:** `get_dota2_heroes`, `get_dota2_live_matches`, `search_dota2_teams`, `get_dota2_team_info`, `get_dota2_team_roster`, `get_dota2_team_match_history`, `search_dota2_egw_teams` (fallback).
-- **CS2:** `get_cs2_matches`, `get_cs2_team_info`, `get_cs2_player_stats`, `search_cs2_egw_teams`, `get_cs2_egw_live_matches`.
-- **Valorant:** `get_valo_matches`, `get_valo_events`, `get_valo_team_info`, `search_valo_egw_teams`, `get_valo_egw_live_matches`.
-- **League of Legends:** `get_lol_matches`, `get_lol_team_info`, `get_lol_gol_team_stats`, `search_lol_egw_teams`, `get_lol_egw_live_matches`.
-- **Others:** Overwatch 2, Marvel Rivals support.
-
-> **Note on Egamersworld Fetching:** Tools targeting `egamersworld.com` use a headless Chromium instance (`puppeteer-extra` + `puppeteer-extra-plugin-stealth`) to bypass Cloudflare and other aggressive anti-bot measures. This allows robust live match and team data extraction across all supported games.
+- **Dota 2:** `get_dota2_heroes`, `get_dota2_live_matches`, `search_dota2_teams`, `get_dota2_team_info`, `get_dota2_team_roster`, `get_dota2_team_match_history`.
+- **CS2:** `get_cs2_matches`, `get_cs2_team_info`, `get_cs2_player_stats`.
+- **Valorant:** `get_valo_matches`, `get_valo_events`, `get_valo_team_info`.
+- **League of Legends:** `get_lol_matches`, `get_lol_team_info`, `get_lol_gol_team_stats`.
 
 ## Getting Started
 
+### Prerequisites
+- **Node.js**: v18+
+- **Python**: v3.9+ (with `pymc`, `pandas`, `numpy`)
+  ```bash
+  pip install -r src/math_engine/requirements.txt
+  ```
+
 ### MCP Configuration
-Add the following snippet to your `mcp.json` or `config.json` (adjusting paths to your local directory):
+Add the following snippet to your `mcp.json` or `config.json`:
 ```json
 {
   "mcpServers": {
@@ -68,11 +71,8 @@ Add the following snippet to your `mcp.json` or `config.json` (adjusting paths t
    ```bash
    npm install
    ```
-3. Configuration:
-   Create a `.env` file in the project root and add your necessary API tokens.
-
-### Running
-- Development: `npm run dev`
-- Build: `npm run build`
-- Run MCP: `node dist/analysis.js`
+3. Build the project:
+   ```bash
+   npm run build
+   ```
 
