@@ -11,6 +11,7 @@ import {
 import { getLiquipediaRoster, getLiquipediaMatchHistory } from '../utils/liquipedia';
 import { getPolymarketProbability } from '../utils/polymarket';
 import { parseHawkLiveMatch } from '../utils/hawk_live';
+import { parseVlrMatch, parseHltvMatch, parseGolMatch } from '../utils/cross_game_parsers';
 
 export interface AnalysisResult {
   match: NormalizedMatch;
@@ -36,6 +37,18 @@ export async function analyzeMatch(
 
   if (esportsGame === EsportsGame.DOTA2 && matchUrl.includes('hawk.live')) {
     rawData = await parseHawkLiveMatch(matchUrl);
+    teamAName = rawData?.teamA || teamAName;
+    teamBName = rawData?.teamB || teamBName;
+  } else if (matchUrl.includes('vlr.gg')) {
+    rawData = await parseVlrMatch(matchUrl);
+    teamAName = rawData?.teamA || teamAName;
+    teamBName = rawData?.teamB || teamBName;
+  } else if (matchUrl.includes('hltv.org')) {
+    rawData = await parseHltvMatch(matchUrl);
+    teamAName = rawData?.teamA || teamAName;
+    teamBName = rawData?.teamB || teamBName;
+  } else if (matchUrl.includes('gol.gg')) {
+    rawData = await parseGolMatch(matchUrl);
     teamAName = rawData?.teamA || teamAName;
     teamBName = rawData?.teamB || teamBName;
   } else {
