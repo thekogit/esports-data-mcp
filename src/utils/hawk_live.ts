@@ -110,8 +110,10 @@ export async function parseHawkLiveMatch(url: string): Promise<MatchData | null>
     // 2. Fallback to DOM parsing if Inertia failed
     if (!parsedFromInertia) {
       const title = $('title').text() || '';
+      let titleTeamA = 'Unknown';
+      let titleTeamB = 'Unknown';
       if (title.includes(' vs ')) {
-        [teamA, teamB] = title.split(' vs ').map(t => t.split('|')[0].replace(/live score and stats/i, '').trim());
+        [titleTeamA, titleTeamB] = title.split(' vs ').map(t => t.split('|')[0].replace(/live score and stats/i, '').trim());
       }
 
       const getHeroName = (img: any) => {
@@ -122,6 +124,9 @@ export async function parseHawkLiveMatch(url: string): Promise<MatchData | null>
         return match ? match[1].replace(/_/g, ' ') : null;
       };
 
+      let radiantFound = false;
+      let direFound = false;
+
       $('.TeamHeroPick, .hero-icon-container, .PickRow').each((i, el) => {
         const $el = $(el);
         const heroImg = $el.find('img[src*="/heroes/"]');
@@ -130,7 +135,8 @@ export async function parseHawkLiveMatch(url: string): Promise<MatchData | null>
           const playerName = $el.find('.PlayerName, .name, .nickname').text().trim() || 
                              $el.text().replace(heroName || '', '').trim();
           
-          const side = $el.closest('.Radiant, .radiant-side').length > 0 || $el.parents().text().toLowerCase().includes('radiant') ? 'radiant' : 'dire';
+          const isRadiantElement = $el.closest('.Radiant, .radiant-side').length > 0 || $el.parents().text().toLowerCase().includes('radiant');
+          const side = isRadiantElement ? 'radiant' : 'dire';
           
           if (heroName) {
             const draftObj: DraftHero = {
@@ -140,11 +146,31 @@ export async function parseHawkLiveMatch(url: string): Promise<MatchData | null>
             };
             draftObj.role = POSITION_MAP[draftObj.position || 0];
             
-            if (side === 'radiant') radiantDraft.push(draftObj);
-            else direDraft.push(draftObj);
+            if (side === 'radiant') {
+              radiantDraft.push(draftObj);
+              radiantFound = true;
+            } else {
+              direDraft.push(draftObj);
+              direFound = true;
+            }
           }
         }
       });
+
+      // Try to determine which team is which side from the DOM if possible
+      // This is a bit speculative but often teams are in specific containers
+      const radiantContainerText = $('.Radiant, .radiant-side, .team-radiant').text().toLowerCase();
+      if (radiantContainerText.includes(titleTeamA.toLowerCase())) {
+        teamA = titleTeamA;
+        teamB = titleTeamB;
+      } else if (radiantContainerText.includes(titleTeamB.toLowerCase())) {
+        teamA = titleTeamB;
+        teamB = titleTeamA;
+      } else {
+        // Default to title order if we can't tell, but this is where the swap happens
+        teamA = titleTeamA;
+        teamB = titleTeamB;
+      }
 
       if (radiantDraft.length === 0 && direDraft.length === 0) {
         $('img[src*="/heroes/"]').each((i, el) => {
