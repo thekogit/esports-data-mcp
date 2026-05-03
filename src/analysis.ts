@@ -491,31 +491,17 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const evB = (probB * oddsB) - 1;
 
     // 4. Determine best bet
-    let bestTeam = "None";
-    let edge = 0;
-    let ev = 0;
-    let odds = 0;
-    let prob = 0;
-
-    if (evA > 0 && evA > evB) {
-      bestTeam = "Team A";
-      edge = probA - impliedProbA;
-      ev = evA;
-      odds = oddsA;
-      prob = probA;
-    } else if (evB > 0 && evB > evA) {
-      bestTeam = "Team B";
-      edge = probB - impliedProbB;
-      ev = evB;
-      odds = oddsB;
-      prob = probB;
-    }
+    let bestTeam = probA >= probB ? "Team A" : "Team B";
+    let edge = bestTeam === "Team A" ? probA - impliedProbA : probB - impliedProbB;
+    let ev = bestTeam === "Team A" ? evA : evB;
+    let odds = bestTeam === "Team A" ? oddsA : oddsB;
+    let prob = bestTeam === "Team A" ? probA : probB;
 
     // 5. Calculate Kelly Wager
     let recommendedWager = 0;
     let recommendation = "No Value Bet - Skip";
 
-    if (bestTeam !== "None" && odds > 1.0) {
+    if (ev > 0 && odds > 1.0) {
       const b = odds - 1;
       const q = 1 - prob;
       const kellyPct = (prob * b - q) / b;
