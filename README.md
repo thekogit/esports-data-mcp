@@ -32,7 +32,7 @@ graph TD
     Registry --> OW[src/overwatch.ts]
     
     Analysis --> Orchestrator[src/tools/orchestrator.ts]
-    Orchestrator --> Fetchers[src/utils/fetchers]
+    Orchestrator --> Fetchers[src/utils/fetcher.ts]
     Orchestrator --> MathEngine[src/math_engine/predictor.py]
     
     Fetchers --> Sources[(Liquipedia, HLTV, HawkLive, Polymarket)]

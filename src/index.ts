@@ -1,12 +1,12 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { registerAnalysisTools } from './analysis.js';
-import { registerCS2Tools } from './cs2.js';
-import { registerDota2Tools } from './dota2.js';
-import { registerLolTools } from './lol.js';
-import { registerMarvelRivalsTools } from './marvel_rivals.js';
-import { registerOverwatchTools } from './overwatch.js';
-import { registerValoTools } from './valo.js';
+import { registerAnalysisTools } from './analysis';
+import { registerCS2Tools } from './cs2';
+import { registerDota2Tools } from './dota2';
+import { registerLolTools } from './lol';
+import { registerMarvelRivalsTools } from './marvel_rivals';
+import { registerOverwatchTools } from './overwatch';
+import { registerValoTools } from './valo';
 
 // 1. Create the unified server
 const unifiedServer = new Server(
