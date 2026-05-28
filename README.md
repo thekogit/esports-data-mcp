@@ -18,6 +18,30 @@ Predictions are powered by a dedicated Python service (`src/math_engine/`) using
 - **Likelihood:** Real-time data from live match drafts and **Polymarket** sentiment (captured as a crowd-sourced prior).
 - **Inference:** We calculate posterior win probabilities with confidence intervals, accounting for the uncertainty inherent in low-sample e-sports data.
 
+### System Architecture
+```mermaid
+graph TD
+    User([User/Client]) --> Index[src/index.ts - Unified Server]
+    Index --> Registry{Plugin Registry}
+    Registry --> Analysis[src/analysis.ts]
+    Registry --> CS2[src/cs2.ts]
+    Registry --> Dota2[src/dota2.ts]
+    Registry --> LoL[src/lol.ts]
+    Registry --> Valo[src/valo.ts]
+    Registry --> Rivals[src/marvel_rivals.ts]
+    Registry --> OW[src/overwatch.ts]
+    
+    Analysis --> Orchestrator[src/tools/orchestrator.ts]
+    Orchestrator --> Fetchers[src/utils/fetchers]
+    Orchestrator --> MathEngine[src/math_engine/predictor.py]
+    
+    Fetchers --> Sources[(Liquipedia, HLTV, HawkLive, Polymarket)]
+```
+
+### Decision Log: Architectural Evolution
+- **Refactor from Monkey-Patching (2026-05-28):** Migrated from a monolithic `index.ts` that used `Module.prototype.require` hacks to a modular Plugin Registry pattern. This ensures type safety, prevents runtime crashes from conflicting server instances, and aligns with senior engineering standards for MCP server development.
+- **Strict Validation with Zod (2026-05-28):** Replaced loose argument handling with strict Zod schemas for every tool. This provides immediate feedback on malformed inputs and prevents downstream mathematical errors in the Bayesian engine.
+
 ## Available Tools
 
 ### 🚀 Smart Orchestrator (Recommended)
