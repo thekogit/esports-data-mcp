@@ -761,7 +761,7 @@ export function registerAnalysisTools(server: Server) {
         return {
           content: [{
             type: "text",
-            text: `Invalid input: ${error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')}`
+            text: `Invalid input: ${error.issues.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')}`
           }],
           isError: true
         };
